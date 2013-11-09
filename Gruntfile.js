@@ -51,6 +51,9 @@ module.exports = function(grunt) {
             },
             css: {
                 files: ['app/styles/**/*.css'],
+            },
+            html: {
+                files: ['app/index.html', 'app/views/**/*.html'],
             }
         },
         

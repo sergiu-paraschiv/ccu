@@ -1,0 +1,93 @@
+#footer {
+    margin-top: 33px;
+    overflow: hidden;
+    
+    background: #2e2e2e;
+}
+
+    #footer .copy {
+        display: block;
+        padding: 26px 0 0 35px;
+        
+        font-size: 22px;
+        color: #6d6d6d;
+        font-weight: normal;
+    }
+    
+    #footer .social {
+        display: block;
+        width: 344px;
+        margin: 15px auto;
+        overflow: hidden;
+    }
+    
+        #footer .social li {
+            display: block;
+            float: left;
+            margin: 16px;
+        }
+        
+            #footer .social li a {
+                display: block;
+                width: 58px;
+                height: 58px;
+            }
+        
+            #footer .social li a span {
+                display: none;
+            }
+        
+        #footer .social .facebook {
+            background: url('../images/footer.social.facebook.png') no-repeat 0 0 transparent;
+        }
+        
+        #footer .social .twitter {
+            background: url('../images/footer.social.twitter.png') no-repeat 0 0 transparent;
+        }
+        
+        #footer .social .googleplus {
+            background: url('../images/footer.social.googleplus.png') no-repeat 0 0 transparent;
+        }
+        
+@media (min-width: 960px) {
+    #footer {
+        margin-top: 44px;
+        padding-bottom: 23px;
+    }
+    
+        #footer .copy {
+            padding: 42px 0 0 29px;
+            float: left;
+            
+            font-size: 12px;
+        }
+        
+        #footer .social {
+            float: right;
+            width: 172px;
+            margin: 24px 0 0 0;
+        }
+        
+            #footer .social li {
+                display: block;
+                float: left;
+                margin: 10px 9px 10px 10px;
+            }
+            
+                #footer .social li a {
+                    width: 32px;
+                    height: 32px;
+                }
+                
+            #footer .social .facebook {
+                background: url('../images/xdpi.footer.social.facebook.png') no-repeat 0 0 transparent;
+            }
+            
+            #footer .social .twitter {
+                background: url('../images/xdpi.footer.social.twitter.png') no-repeat 0 0 transparent;
+            }
+            
+            #footer .social .googleplus {
+                background: url('../images/xdpi.footer.social.googleplus.png') no-repeat 0 0 transparent;
+            }
+}

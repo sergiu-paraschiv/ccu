@@ -1,0 +1,133 @@
+#mainfeature {
+    position: relative;
+    
+    z-index: 50;
+}
+
+    #mainfeature .feature {
+        height: 289px;
+        background: url('../images/mainfeature.png') no-repeat 0 0 transparent;
+    }
+
+        #mainfeature .feature .detail {
+            display: block;
+            width: 320x;
+            height: 289px;
+            
+            background: url('../images/mainfeature.detail.png') no-repeat 0 0 transparent;
+        }
+        
+            #mainfeature .feature .detail p {
+                display: none;
+            }
+            
+#secondaryfeatures {
+    position: relative;
+}
+
+    #secondaryfeatures .feature {
+        position: relative;
+        margin-bottom: 44px;
+    }
+    
+        #secondaryfeatures .feature .detail {                
+            width: 461px;
+            margin-left: 179px;
+            
+            color: #444444;
+            font-size: 24px;               
+        }
+        
+            #secondaryfeatures .feature .detail p {
+                display: none;
+            }
+            
+            #secondaryfeatures .feature .detail strong {                    
+                display: block;
+      
+                font-weight: normal;
+            }
+                
+        #secondaryfeatures .feature.willrose {
+            background: url('../images/feature.willrose.png') no-repeat 39px 46px transparent;
+        }
+        
+            #secondaryfeatures .feature.willrose .detail {                             
+                background: url('../images/feature.willrose.text.png') no-repeat 0px 54px transparent;
+            }
+            
+                #secondaryfeatures .feature.willrose .detail strong {
+                    padding-top: 192px;
+                }
+                
+        #secondaryfeatures .feature.roosevelt {
+            background: url('../images/feature.roosevelt.png') no-repeat 39px 46px transparent;
+        }
+        
+            #secondaryfeatures .feature.roosevelt .detail {                             
+                background: url('../images/feature.roosevelt.text.png') no-repeat 0px 54px transparent;
+            }
+            
+                #secondaryfeatures .feature.roosevelt .detail strong {
+                    padding-top: 144px;
+                }
+
+@media (min-width: 960px) {
+    #mainfeature {
+        background: url('../images/xdpi.mainfeature.png') no-repeat center center #c9dadb;
+    }
+    
+        #mainfeature .feature {
+            background: none;
+            height: 364px;
+        }
+        
+            #mainfeature .feature .detail {
+                width: 320x;
+                height: 289px;
+                margin-top: 90px;
+            
+                background: url('../images/xdpi.mainfeature.detail.png') no-repeat 0 0 transparent;
+            }
+          
+        #secondaryfeatures {
+            overflow: hidden;
+        }
+        
+            #secondaryfeatures .feature {
+                width: 50%;
+                float: left;
+                margin-top: 34px;
+            }
+            
+                #secondaryfeatures .feature .detail {
+                    margin-left: 123px;
+                    
+                    font-size: 14px;                    
+                }
+            
+            #secondaryfeatures .feature.willrose {
+                background: url('../images/xdpi.feature.willrose.png') no-repeat 28px 46px transparent;
+            }
+            
+                #secondaryfeatures .feature.willrose .detail {                             
+                    background: url('../images/xdpi.feature.willrose.text.png') no-repeat 0px 54px transparent;
+                }
+                
+                    #secondaryfeatures .feature.willrose .detail strong {
+                        padding-top: 148px;
+                        padding-left: 6px;
+                    }
+                    
+            #secondaryfeatures .feature.roosevelt {
+                background: url('../images/xdpi.feature.roosevelt.png') no-repeat 28px 46px transparent;
+            }
+            
+                #secondaryfeatures .feature.roosevelt .detail {                             
+                    background: url('../images/xdpi.feature.roosevelt.text.png') no-repeat 0px 54px transparent;
+                }
+                
+                    #secondaryfeatures .feature.roosevelt .detail strong {
+                        padding-top: 148px;
+                    }
+}

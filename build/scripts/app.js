@@ -1,1 +1,1 @@
-!function(){"use strict"}(this.jQuery);
+!function(a){"use strict";function b(b){b&&b.preventDefault(),a(this).parent().toggleClass("closed")}a("#header .menu.main .handle").click(b),a("#header .menu.account .handle").click(b)}(this.jQuery);
