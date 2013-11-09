@@ -1,0 +1,74 @@
+#places .list {
+    padding: 24px 24px 10px 32px;
+}
+
+    #places .list .header {
+        overflow: hidden;
+        margin-bottom: 45px;
+    }
+
+        #places .list .header .title {
+            display: block;
+            float: left;
+                        
+            color: #2e2e2e;
+            font-size: 34px;
+            line-height: 82px;
+        }
+        
+        #places .list .header .button.add {
+            float: right;
+        }
+    
+    #places .list .button.more {
+        float: none;
+        margin: 45px auto 0 auto;
+        width: 230px;
+    }
+    
+    #places .list .item {
+        display: block;
+        overflow: hidden;
+        margin: 0 0 37px 0;
+        
+        cursor: pointer;
+        color: #777777;
+    }
+    
+        #places .list .item img {
+            display: block;
+            float: left;
+            margin-right: 28px;
+        }
+        
+        #places .list .item .title {
+            display: block;
+            float: left;
+            overflow: hidden;
+            width: 402px;
+            height: 36px;
+            margin-top: 12px;
+            
+            font-size: 30px;
+            line-height: 36px;
+            font-weight: bold;
+        }
+        
+        #places .list .item .address {
+            display: block;
+            float: left;
+            overflow: hidden;
+            height: 36px;
+            width: 402px;
+            margin-top: 4px;
+            
+            font-size: 24px;
+            line-height: 36px;
+        }
+        
+        #places .list .item .rating {
+            display: block;
+            float: left;
+            margin-top: 21px;
+            margin-left: 2px;
+        }

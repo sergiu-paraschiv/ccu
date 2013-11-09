@@ -22,10 +22,6 @@ module.exports = function(grunt) {
             all: ['app/scripts/**/*.js']
         },
         
-        csslint: {
-            all: ['app/styles/**/*.css']
-        },
-        
         useminPrepare: {
             html: 'app/index.html',
             options: {
@@ -53,7 +49,7 @@ module.exports = function(grunt) {
                 files: ['app/styles/**/*.css'],
             },
             html: {
-                files: ['app/index.html', 'app/views/**/*.html'],
+                files: ['app/index.html', 'app/views/*.html', 'app/views/**/*.html'],
             }
         },
         
@@ -77,7 +73,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-csslint');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -87,8 +82,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-open');
 
     grunt.registerTask('default', [
-        'jshint',
-        'csslint'
+        'jshint'
     ]);
     
     grunt.registerTask('build', [

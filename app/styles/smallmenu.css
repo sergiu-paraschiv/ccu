@@ -1,0 +1,51 @@
+#smallmenu {
+    z-index: 50;
+}
+
+    #smallmenu li {
+        display: block;
+        float: left;
+    }
+
+        #smallmenu li a {
+            display: block;
+            width: 160px;
+            height: 0;
+            padding-top: 158px;
+        }
+        
+            #smallmenu li a span {
+                display: none;
+            }
+            
+    #smallmenu .places {    
+        background: url('../images/smallmenu.places.png') no-repeat 30px 34px #4a79a8;
+    }
+
+    #smallmenu .jobs {
+        background: url('../images/smallmenu.jobs.png') no-repeat 30px 34px #0099cc;        
+    }
+
+    #smallmenu .news {
+        background: url('../images/smallmenu.news.png') no-repeat 34px 34px #00bbcc;        
+    }
+
+    #smallmenu .about {
+        background: url('../images/smallmenu.about.png') no-repeat 35px 34px #00cc95;        
+    }
+
+    #smallmenu .active {
+        height: 18px;
+    }
+
+        #smallmenu .active.places {
+            background: url('../images/smallmenu.places.active.png') no-repeat 60px 0 transparent;
+        }
+        
+        #smallmenu .active.jobs {
+            background: url('../images/smallmenu.jobs.active.png') no-repeat 220px 0 transparent;
+        }
+        
+        #smallmenu .active.news {
+            background: url('../images/smallmenu.news.active.png') no-repeat 380px 0 transparent;
+        }

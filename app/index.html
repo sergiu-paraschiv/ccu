@@ -15,19 +15,22 @@
         <link rel="stylesheet" href="styles/header.css" />
         <link rel="stylesheet" href="styles/features.css" />
         <link rel="stylesheet" href="styles/mainmenu.css" />
+        <link rel="stylesheet" href="styles/smallmenu.css" />
         <link rel="stylesheet" href="styles/footer.css" />
+        <link rel="stylesheet" href="styles/components.css" />
+        <link rel="stylesheet" href="styles/places.css" />
         <!-- endbuild -->
     </head>
     
-    <body>
+    <body ng-app="Crosscut" ng-controller="MainCtrl">
         <header id="header">
             <div class="container clearfix">
-                <a href="" class="logo">
+                <a ui-sref="home" class="logo">
                     <h1>crosscut USA</h1>
                 </a>
                 
-                <div class="main menu closed">
-                    <a href="" class="handle">&nbsp;</a>
+                <div class="main menu" ng-class="{'closed': mainMenuIsClosed}">
+                    <a href="" class="handle" ng-click="toggleMainMenu()">&nbsp;</a>
                     
                     <ul class="content">
                         <li>
@@ -40,8 +43,8 @@
                     </ul>    
                 </div>
                 
-                <div class="account menu closed">
-                    <a href="" class="handle"><span>Hi, <strong>Adam Smith</strong></span></a>
+                <div class="account menu" ng-class="{'closed': accountMenuIsClosed}">
+                    <a href="" class="handle" ng-click="toggleAccountMenu()"><span>Hi, <strong>Adam Smith</strong></span></a>
                 
                     <ul class="content">
                         <li>
@@ -56,51 +59,7 @@
             </div>
         </header>
         
-        <div id="mainfeature">
-            <div class="container feature">
-                <div class="detail">
-                    <p>Crosscut empowers homeless people to forge their way up and out of homelessness by connecting them with resources and opportunities.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div id="mainmenu">
-            <ul class="container">
-                <li class="places">
-                    <a href="">Places</a>
-                </li>
-                
-                <li class="jobs">
-                    <a href="">Jobs</a>
-                </li>
-                
-                <li class="news">
-                    <a href="">News</a>
-                </li>
-                
-                <li class="about">
-                    <a href="">About Crosscut</a>
-                </li>
-            </ul>
-        </div>
-        
-        <div id="secondaryfeatures">
-            <div class="container">
-                <div class="feature willrose">
-                    <div class="detail">
-                        <p>“Success is not counted by how high you have climbed but by how many people you brought with you.”</p>
-                        <strong>Dr. Will Rose</strong>
-                    </div>
-                </div>
-                
-                <div class="feature roosevelt">
-                    <div class="detail">
-                        <p>“Nobody cares how much you know, until they know how much you care.”</p>
-                        <strong>Theodore Roosevelt</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div ui-view="content"></div>
         
         <footer id="footer">
             <div class="container">
@@ -124,10 +83,20 @@
         
         <!-- build:js scripts/lib.js -->
         <script src="components/jquery/jquery.js"></script>
+        <script src="components/angular/angular.js"></script>
+        <script src="components/angular-ui-router/release/angular-ui-router.js"></script>
         <!-- endbuild -->
         
         <!-- build:js scripts/app.js -->
-        <script src="scripts/main.js"></script>
+        <script src="scripts/app.js"></script>
+        
+        <script src="scripts/modules/main.js"></script>
+        
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/home.js"></script>
+        <script src="scripts/controllers/places.js"></script>
+        <script src="scripts/controllers/jobs.js"></script>
+        <script src="scripts/controllers/news.js"></script>
         <!-- endbuild -->
     </body>
 </html>
