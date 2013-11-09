@@ -1,0 +1,19 @@
+{
+  "name": "crosscutUSA",
+  "version": "0.0.0",
+  "main": "index.html",
+  "authors": [
+    "Sergiu Paraschiv"
+  ],
+  "license": "none",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.0.3"
+  }
+}
