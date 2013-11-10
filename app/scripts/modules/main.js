@@ -29,6 +29,16 @@
                     }
                 }    
             })
+
+            .state('place', {
+                url: '/place/{id}',
+                views: {
+                    'content': {
+                        templateUrl: 'views/place.html',
+                        controller: 'PlaceCtrl'
+                    }
+                }
+            })
             
             .state('jobs', {
                 url: '/jobs',

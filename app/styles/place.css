@@ -1,0 +1,241 @@
+#place .header {
+    padding: 32px;
+}
+   
+    #place .header .title {
+        font-size: 36px;
+        color: #2e2e2e;
+    }
+
+    #place .header .address {
+        display: block;
+        margin-top: 10px;
+
+        font-size: 24px;
+        color: #777777;
+    }
+
+    #place .header .rating {
+        margin-top: 17px;
+    }
+
+    #place .header .rating.inline {
+        display: none;
+    }
+
+    #place .actions {
+        overflow: hidden;
+        padding: 3px 0 25px 29px;
+    }
+
+        #place .actions li {
+            display: block;
+            float: left;
+            margin-right: 20px;
+        }
+
+#place .map {
+    width: 640px;
+    height: 500px;
+    margin: 0 auto;
+}
+
+#place .section {
+    padding: 45px 35px 3px 35px;
+}
+
+    #place .section .title {
+        font-size: 36px;
+        color: #2e2e2e;
+    }
+
+    #place .section .description {
+        margin-top: 37px;
+
+        font-size: 24px;
+        line-height: 36px;
+        color: #777777;
+    }
+
+    #place .section .gallery {
+        margin-top: 37px;
+        overflow: hidden;
+    }
+
+        #place .section .gallery img {
+            display: block;
+            float: left;
+            width: 278px;
+            height: 278px;
+            margin: 0 14px 14px 0;
+        }
+
+            #place .section .gallery img:nth-child(2n) {
+                margin-right: 0;
+            }
+
+     #place .reviews .header {
+         overflow: hidden;
+         padding: 0;
+         width: 100%;
+         float: none;
+     }
+
+        #place .reviews .header .title {
+            float: left;
+
+            line-height: 88px;
+        }
+
+        #place .reviews .header .button {
+            float: right;
+        }
+
+#place .reviews .review {
+    overflow: hidden;
+    margin-bottom: 52px;
+    margin-top: 23px;
+}
+
+     #place .reviews .review .rating {
+         float: right;
+         margin-top: 8px;
+     }
+
+    #place .reviews .review .username {
+        float: left;
+        width: 300px;
+
+        color: #777777;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    #place .reviews .review .date {
+        float: left;
+        width: 300px;
+
+        color: #999999;
+        font-size: 24px;
+    }
+
+    #place .reviews .review .description {
+        width: 100%;
+        float: left;
+        margin-top: 10px;
+
+        color: #777777;
+        font-size: 24px;
+        line-height: 30px;
+    }
+    
+@media (min-width: 960px) {
+    #place .header {
+        padding: 22px 0 11px 0;
+        float: left;
+    }
+   
+        #place .header .title { 
+            display: inline-block;
+                       
+            font-size: 16px;
+        }
+
+        #place .header .address {
+            margin-top: 1px;
+
+            font-size: 14px;
+        }
+
+        #place .header .rating {
+            margin-top: 0;
+            margin-left: 6px;
+        }
+
+        #place .header .rating.end {
+            display: none;
+        }
+
+        #place .header .rating.inline {
+            display: inline-block;
+        }
+
+        #place .actions {
+            padding: 14px 0 25px 0;
+            float: right;
+        }
+
+            #place .actions li {
+                margin-right: 0;
+                margin-left: 10px;
+            }
+
+    #place .map {
+        width: 100%;
+        min-width: 960px;
+        height: 275px;
+    }
+
+    #place .section {
+        padding: 21px 20px 30px 0;
+        float: left;
+        width: 330px;
+    }
+
+        #place .section.reviews {
+            padding-top: 11px;
+        }
+
+     #place .section:last-child {
+         padding-right: 0;
+         width: 300px;
+     }
+
+        #place .section .title {
+            font-size: 18px;
+        }
+
+        #place .section .description {
+            margin-right: 20px;
+
+            font-size: 14px;
+            line-height: 24px;
+        }
+
+        #place .reviews .header .title {
+            padding-top: 10px;
+
+            line-height: 24px;           
+        }
+
+    #place .section .gallery img {
+        width: 140px;
+        height: 140px;
+    }
+
+    #place .reviews .review {
+        margin-bottom: 20px;
+    }
+
+        #place .reviews .review .username {
+            float: left;
+            width: 240px;
+
+            font-size: 14px;
+        }
+
+        #place .reviews .review .date {
+            float: left;
+            width: 240px;
+
+            font-size: 12px;
+        }
+
+        #place .reviews .review .description {
+            float: left;
+            margin-top: 10px;
+
+            font-size: 14px;
+            line-height: 18px;
+        }
+}

@@ -1,4 +1,4 @@
-<div id="smallmenu" class="container">
+<div id="smallmenu">
     <ul class="container">
         <li class="places">
             <a ui-sref="places"><span>Places</span></a>
@@ -17,7 +17,7 @@
         </li>
     </ul>
     
-    <div class="active places">&nbsp;</div>
+    <div class="container active places">&nbsp;</div>
 </div>
 
 <div id="places" class="container">
@@ -42,7 +42,7 @@
         </div>
         
         <div class="container">
-            <a href="" class="item" ng-repeat="place in places">
+            <a class="item" ng-repeat="place in places" ui-sref="place({id: place.id})">
                 <img ng-src="{{getPlaceImage(place.image)}}" alt="" />
                 <h3 class="title">{{place.title}}</h3>
                 <span class="address">{{place.address}}</span>

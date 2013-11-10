@@ -41,6 +41,16 @@
                     }
                 }    
             })
+
+            .state('place', {
+                url: '/place/{id}',
+                views: {
+                    'content': {
+                        templateUrl: 'views/place.html',
+                        controller: 'PlaceCtrl'
+                    }
+                }
+            })
             
             .state('jobs', {
                 url: '/jobs',
@@ -92,10 +102,40 @@
     ]);
 
 }).call(this.Crosscut, this.angular);
+(function (maps, undefined) {
+    'use strict';
+
+    this.Main.directive('map', [
+        function () {
+            return {
+                restrict: 'E',
+                transclude: false,
+                replace: true,
+                scope: {
+                },
+                templateUrl: 'views/directives/map.html',
+
+                controller: function ($scope, $element) {
+                    var map;
+
+                    var mapOptions = {
+                        zoom: 8,
+                        center: new maps.LatLng(-34.397, 150.644),
+                        mapTypeId: maps.MapTypeId.ROADMAP
+                    };
+
+                    map = new maps.Map($element[0], mapOptions);
+                }
+            };
+        }
+    ]);
+
+}).call(this.Crosscut, this.google.maps);
 (function (undefined) {
     'use strict';
 
     function Place(data) {
+        this.id = data.id;
         this.image = data.image || '';
         this.title = data.title || '';
         this.address = data.address || '';
@@ -188,6 +228,7 @@
 
             $scope.places = [
                 new Place({
+                    id: 1,
                     image: 'images/dynamic/place1.png',
                     title: 'Topeka Rescue Missio...',
                     address: 'Topeka, KS 66608',
@@ -195,6 +236,7 @@
                 }),
 
                 new Place({
+                    id: 2,
                     image: 'images/dynamic/place2.png',
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
@@ -202,6 +244,7 @@
                 }),
 
                 new Place({
+                    id: 3,
                     image: 'images/dynamic/place3.png',
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
@@ -209,6 +252,7 @@
                 }),
 
                 new Place({
+                    id: 4,
                     image: 'images/dynamic/place4.png',
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
@@ -216,54 +260,77 @@
                 }),
 
                 new Place({
+                    id: 5,
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
                     rating: 3
                 }),
 
                 new Place({
+                    id: 6,
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
                     rating: 2.5
                 }),
 
                 new Place({
+                    id: 7,
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
                     rating: 2
                 }),
 
                 new Place({
+                    id: 8,
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
                     rating: 1.5
                 }),
 
                 new Place({
+                    id: 9,
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
                     rating: 1
                 }),
 
                 new Place({
+                    id: 10,
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
                     rating: 0.5
                 }),
 
                 new Place({
+                    id: 11,
                     title: 'City of Portland, Oxfor...',
                     address: 'St. Johns St, Right on Park Av...',
                     rating: 0
                 }),
 
                 new Place({
+                    id: 12,
                     image: 'images/dynamic/place1.png',
                     title: 'Topeka Rescue Missio...',
                     address: 'Topeka, KS 66608',
                     rating: 3.65
                 })
             ];
+        }
+    ]);
+        
+}).call(this.Crosscut, this.angular);
+(function(undefined) {
+    'use strict';
+
+    var Place = this.Models.Place;
+   
+    this.Main.controller('PlaceCtrl', [
+        '$scope', 
+        '$stateParams',
+
+        function ($scope, $stateParams) {
+            
         }
     ]);
         
@@ -499,6 +566,11 @@
 }).call(this.Crosscut, this.angular);
 angular.module('Crosscut').run(['$templateCache', function($templateCache) {
 
+  $templateCache.put('views/directives/map.html',
+    "<div class=\"map\">&nbsp;</div>"
+  );
+
+
   $templateCache.put('views/directives/rating.html',
     "<span class=\"rating\" ng-class=\"getRatingClass()\">\r" +
     "\n" +
@@ -606,7 +678,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('views/jobs.html',
-    "<div id=\"smallmenu\" class=\"container\">\r" +
+    "<div id=\"smallmenu\">\r" +
     "\n" +
     "    <ul class=\"container\">\r" +
     "\n" +
@@ -644,7 +716,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "    \r" +
     "\n" +
-    "    <div class=\"active jobs\">&nbsp;</div>\r" +
+    "    <div class=\"container active jobs\">&nbsp;</div>\r" +
     "\n" +
     "</div>\r" +
     "\n" +
@@ -747,7 +819,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('views/news.html',
-    "<div id=\"smallmenu\" class=\"container\">\r" +
+    "<div id=\"smallmenu\">\r" +
     "\n" +
     "    <ul class=\"container\">\r" +
     "\n" +
@@ -785,7 +857,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "    <div class=\"active news\">&nbsp;</div>\r" +
+    "    <div class=\"container active news\">&nbsp;</div>\r" +
     "\n" +
     "</div>\r" +
     "\n" +
@@ -831,8 +903,8 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('views/places.html',
-    "<div id=\"smallmenu\" class=\"container\">\r" +
+  $templateCache.put('views/place.html',
+    "<div id=\"smallmenu\">\r" +
     "\n" +
     "    <ul class=\"container\">\r" +
     "\n" +
@@ -870,7 +942,238 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "    \r" +
     "\n" +
-    "    <div class=\"active places\">&nbsp;</div>\r" +
+    "    <div class=\"container active places\">&nbsp;</div>\r" +
+    "\n" +
+    "</div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "<div class=\"container\">\r" +
+    "\n" +
+    "    <ul class=\"tabs\">\r" +
+    "\n" +
+    "        <li class=\"active\">\r" +
+    "\n" +
+    "            <a href=\"\">Shelters</a>\r" +
+    "\n" +
+    "        </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <li>\r" +
+    "\n" +
+    "            <a href=\"\">Food Pantries</a>\r" +
+    "\n" +
+    "        </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <li>\r" +
+    "\n" +
+    "            <a href=\"\">Food Banks</a>\r" +
+    "\n" +
+    "        </li>\r" +
+    "\n" +
+    "    </ul>\r" +
+    "\n" +
+    "</div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "<div id=\"place\">\r" +
+    "\n" +
+    "    <div class=\"container\">\r" +
+    "\n" +
+    "        <div class=\"header\">\r" +
+    "\n" +
+    "            <h1 class=\"title\"><strong>HELP Women's Shelter</strong></h1>\r" +
+    "\n" +
+    "            <rating data-value=\"4.35\" class=\"inline\"></rating>\r" +
+    "\n" +
+    "            <span class=\"address\">Brooklyn, NY 11216</span>\r" +
+    "\n" +
+    "            <rating data-value=\"4.35\" class=\"end\"></rating>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <ul class=\"actions\">\r" +
+    "\n" +
+    "            <li>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"button directions notext\"><span>Directions</span></a>\r" +
+    "\n" +
+    "            </li>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <li>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"button phone notext\"><span>Call phone</span></a>\r" +
+    "\n" +
+    "            </li>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <li>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"button alarm notext\"><span>Set alarm</span></a>\r" +
+    "\n" +
+    "            </li>\r" +
+    "\n" +
+    "        </ul>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "    <map></map>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "    <div class=\"container\">\r" +
+    "\n" +
+    "        <div class=\"section\">\r" +
+    "\n" +
+    "            <h2 class=\"title\"><strong>About this shelter</strong></h2>\r" +
+    "\n" +
+    "            <div class=\"description\">Emergency Shelter Families/Singles. Regular Beds 150, Upper Bunks 136, Total Beds 286. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed vestibulum libero, consequat aliquam erat. Nulla in euismod massa, vel vestibulum orci. Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam.</div>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"section\">\r" +
+    "\n" +
+    "            <h2 class=\"title\"><strong>Photos</strong> (4)</h2>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"gallery\">\r" +
+    "\n" +
+    "                <img class=\"photo\" src=\"images/dynamic/photo1.png\" alt=\"\" />\r" +
+    "\n" +
+    "                <img class=\"photo\" src=\"images/dynamic/photo2.png\" alt=\"\" />\r" +
+    "\n" +
+    "                <img class=\"photo\" src=\"images/dynamic/photo3.png\" alt=\"\" />\r" +
+    "\n" +
+    "                <img class=\"photo\" src=\"images/dynamic/photo4.png\" alt=\"\" />\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"section reviews\">\r" +
+    "\n" +
+    "            <div class=\"header\">\r" +
+    "\n" +
+    "                <h2 class=\"title\"><strong>Reviews</strong> (3)</h2>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"button notext add\"><span>&nbsp;</span></a>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"review\">\r" +
+    "\n" +
+    "                <rating data-value=\"3.5\"></rating>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <h3 class=\"username\">A google user</h3>\r" +
+    "\n" +
+    "                <span class=\"date\">27 Oct 2013</span>\r" +
+    "\n" +
+    "                <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"review\">\r" +
+    "\n" +
+    "                <rating data-value=\"2.5\"></rating>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <h3 class=\"username\">A google user</h3>\r" +
+    "\n" +
+    "                <span class=\"date\">27 Oct 2013</span>\r" +
+    "\n" +
+    "                <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"review\">\r" +
+    "\n" +
+    "                <rating data-value=\"1\"></rating>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <h3 class=\"username\">A google user</h3>\r" +
+    "\n" +
+    "                <span class=\"date\">27 Oct 2013</span>\r" +
+    "\n" +
+    "                <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('views/places.html',
+    "<div id=\"smallmenu\">\r" +
+    "\n" +
+    "    <ul class=\"container\">\r" +
+    "\n" +
+    "        <li class=\"places\">\r" +
+    "\n" +
+    "            <a ui-sref=\"places\"><span>Places</span></a>\r" +
+    "\n" +
+    "        </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <li class=\"jobs\">\r" +
+    "\n" +
+    "            <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
+    "\n" +
+    "        </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <li class=\"news\">\r" +
+    "\n" +
+    "            <a ui-sref=\"news\"><span>News</span></a>\r" +
+    "\n" +
+    "        </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <li class=\"about\">\r" +
+    "\n" +
+    "            <a href=\"\"><span>About Crosscut</span></a>\r" +
+    "\n" +
+    "        </li>\r" +
+    "\n" +
+    "    </ul>\r" +
+    "\n" +
+    "    \r" +
+    "\n" +
+    "    <div class=\"container active places\">&nbsp;</div>\r" +
     "\n" +
     "</div>\r" +
     "\n" +
@@ -920,7 +1223,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"container\">\r" +
     "\n" +
-    "            <a href=\"\" class=\"item\" ng-repeat=\"place in places\">\r" +
+    "            <a class=\"item\" ng-repeat=\"place in places\" ui-sref=\"place({id: place.id})\">\r" +
     "\n" +
     "                <img ng-src=\"{{getPlaceImage(place.image)}}\" alt=\"\" />\r" +
     "\n" +

@@ -2,6 +2,7 @@
     'use strict';
 
     function Place(data) {
+        this.id = data.id;
         this.image = data.image || '';
         this.title = data.title || '';
         this.address = data.address || '';

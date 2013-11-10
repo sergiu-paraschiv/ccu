@@ -40,6 +40,10 @@
     cursor: pointer;
 }
 
+    .button.notext span {
+        display: none;
+    }
+
     .button.add {
         padding-left: 48px;
         
@@ -47,6 +51,30 @@
         
         color: #0099cc;
         font-size: 28px;
+    }
+
+    .button.notext.add {
+        padding: 44px 55px;
+
+        background: url('../images/button.notext.add.png') no-repeat center center transparent;
+    }
+
+    .button.directions {
+        padding: 44px 55px;
+        
+        background: url('../images/button.directions.png') no-repeat center center transparent;
+    }
+
+    .button.phone {
+        padding: 44px 55px;
+        
+        background: url('../images/button.phone.png') no-repeat center center transparent;
+    }
+
+    .button.alarm {
+        padding: 44px 55px;
+        
+        background: url('../images/button.alarm.png') no-repeat center center transparent;
     }
     
 .rating {
@@ -135,6 +163,30 @@
         .button.add {
              background: url('../images/xdpi.button.add.png') no-repeat 8px center transparent;
              padding-left: 28px;
+        }
+
+        .button.notext.add {
+            padding: 22px 27px;
+
+            background: url('../images/xdpi.button.notext.add.png') no-repeat center center transparent;
+        }
+
+        .button.directions {
+            padding: 22px 27px;
+        
+            background: url('../images/xdpi.button.directions.png') no-repeat center center transparent;
+        }
+
+        .button.phone {
+            padding: 22px 27px;
+        
+            background: url('../images/xdpi.button.phone.png') no-repeat center center transparent;
+        }
+
+        .button.alarm {
+            padding: 22px 27px;
+        
+            background: url('../images/xdpi.button.alarm.png') no-repeat center center transparent;
         }
 
     .rating {
