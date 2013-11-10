@@ -1,5 +1,9 @@
 #smallmenu {
     z-index: 50;
+
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
     #smallmenu li {
@@ -12,6 +16,10 @@
             width: 160px;
             height: 0;
             padding-top: 158px;
+
+            text-align: center;
+            color: #ffffff;
+            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.05);
         }
         
             #smallmenu li a span {
@@ -49,3 +57,37 @@
         #smallmenu .active.news {
             background: url('../images/smallmenu.news.active.png') no-repeat 380px 0 transparent;
         }
+
+@media (min-width: 960px) {
+    #smallmenu li a {
+        width: 240px;
+        height: 14px;
+        padding-top: 94px;
+        padding-bottom: 34px;
+    }
+
+        #smallmenu li a span {
+            display: block;
+        }
+
+    #smallmenu .active {
+        display: none;
+    }
+
+    #smallmenu .places {    
+        background: url('../images/xdpi.smallmenu.places.png') no-repeat 91px 20px #4a79a8;
+    }
+
+    #smallmenu .jobs {
+        background: url('../images/xdpi.smallmenu.jobs.png') no-repeat 91px 20px #0099cc;        
+    }
+
+    #smallmenu .news {
+        background: url('../images/xdpi.smallmenu.news.png') no-repeat 91px 20px #00bbcc;        
+    }
+
+    #smallmenu .about {
+        background: url('../images/xdpi.smallmenu.about.png') no-repeat 91px 20px #00cc95;        
+    }
+
+}

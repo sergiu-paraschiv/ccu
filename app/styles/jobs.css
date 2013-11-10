@@ -1,0 +1,71 @@
+#jobs .list {
+    padding: 24px 24px 10px 32px;
+}
+
+    #jobs .list .item .title {
+        width: 581px;
+        height: 31px;
+       
+        line-height: 31px;
+        font-size: 24px;
+    }
+
+    #jobs .list .item .address {
+        width: 581px;
+        margin-top: 0;
+
+        font-size: 24px;
+    }
+
+    #jobs .list .item .date {
+        width: 300px;
+
+        font-size: 24px;
+    }
+
+    #jobs .list .item.up {
+        background: url('../images/jobs.icon.up.png') no-repeat 519px 38px transparent;
+    }
+
+    #jobs .list .item.check {
+        background: url('../images/jobs.icon.check.png') no-repeat 519px 38px transparent;
+    }
+
+@media (min-width: 960px) {
+
+    #jobs .list {
+        padding: 18px 5px 10px 10px;
+    }
+
+        #jobs .list .item .title {
+            width: 415px;
+            height: 16px;
+            margin-top: 2px;
+
+            line-height: 16px;
+            font-size: 16px;
+        }
+
+        #jobs .list .item .address {
+            width: 415px;
+            margin-top: 5px;
+            height: 14px;
+
+            font-size: 14px;
+            line-height: 14px;
+        }
+
+        #jobs .list .item .date {
+            width: 300px;
+
+            font-size: 12px;
+        }
+
+         #jobs .list .item.up {
+            background: url('../images/xdpi.jobs.icon.up.png') no-repeat 400px 20px transparent;
+        }
+
+        #jobs .list .item.check {
+            background: url('../images/xdpi.jobs.icon.check.png') no-repeat 400px 20px transparent;
+        }
+}

@@ -1,7 +1,9 @@
 (function($, undefined) {
     'use strict';
     
-    this.Crosscut = {};
+    this.Crosscut = {
+        Models: {}
+    };
     
     this.Crosscut.exports = function(where, what) {
         $.extend(true, where, what);

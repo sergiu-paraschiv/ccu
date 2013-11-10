@@ -1,0 +1,140 @@
+.list .header {
+    overflow: hidden;
+    margin-bottom: 45px;
+}
+
+    .list .header .title {
+        display: block;
+        float: left;
+                        
+        color: #2e2e2e;
+        font-size: 34px;
+        line-height: 82px;
+    }
+
+    .list .header .button.add {
+        float: right;
+    }
+    
+    .list .button.more {
+        float: none;
+        margin: 45px auto 0 auto;
+        width: 230px;
+    }
+    
+    .list .item {
+        display: block;
+        overflow: hidden;
+        margin: 0 0 37px 0;
+        
+        cursor: pointer;
+        color: #777777;
+    }
+        
+        .list .item .date {
+            display: block;
+            float: left;
+            overflow: hidden;
+            height: 36px;
+            width: 402px;
+            margin-top: 4px;
+            
+            color: #999999;
+            font-size: 24px;
+            line-height: 36px;
+        }
+    
+        .list .item .title {
+            display: block;
+            float: left;
+            overflow: hidden;
+            width: 402px;
+            height: 36px;
+            margin-top: 12px;
+            
+            font-size: 30px;
+            line-height: 36px;
+            font-weight: bold;
+        }
+        
+        .list .item .address {
+            display: block;
+            float: left;
+            overflow: hidden;
+            height: 36px;
+            width: 402px;
+            margin-top: 4px;
+            
+            font-size: 24px;
+            line-height: 36px;
+        }
+
+        .list .item .rating {
+            display: block;
+            float: left;
+            margin-top: 21px;
+            margin-left: 2px;
+        }
+
+@media (min-width: 960px) {
+    .list {
+        overflow: hidden;
+    }
+
+        .list .header {
+            margin-bottom: 27px;
+        }
+
+            .list .header .title {
+                font-size: 18px;
+                line-height: 38px;
+            }
+
+        .list .button.more {
+            margin: 45px auto 0 auto;
+            width: 145px;
+        }
+
+         .list .item {
+             width: 460px;
+             float: left;
+             margin-bottom: 28px;
+         }
+
+            .list .item:nth-child(2n) {
+                margin-left: 30px;
+                width: 455px;
+            }
+
+            .list .item .date {
+                width: 364px;
+                height: 18px;
+                margin-top: 1px;
+
+                font-size: 14px;
+                line-height: 18px;
+            }
+
+            .list .item .title {
+                width: 364px;
+                margin-top: 5px;
+                height: 18px;
+
+                font-size: 16px;
+                line-height: 18px;
+            }
+        
+            .list .item .address {
+                width: 364px;
+                height: 18px;
+                margin-top: 1px;
+
+                font-size: 14px;
+                line-height: 18px;
+            }
+
+            .list .item .rating {
+                margin-top: 11px;
+                margin-left: 2px;
+            }
+}

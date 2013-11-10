@@ -4,16 +4,42 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         clean: {
-            build: {
-                src: ['.tmp', 'build']
+            beforeBuild: {
+                src: ['build']
+            },
+
+            afterBuild: {
+                src: ['.tmp', 'build/scripts/templates.js']
+            }
+        },
+
+        ngtemplates: {
+            Crosscut: {
+                cwd: 'app',
+                src: 'views/**/*.html',
+                dest: '.tmp/concat/scripts/templates.js'
+            }
+        },
+
+        concat: {
+            addTemplates: {
+                src: ['.tmp/concat/scripts/app.js', '.tmp/concat/scripts/templates.js'],
+                dest: '.tmp/concat/scripts/app.js'
             }
         },
         
         copy: {
-            build: {
-                files: [
-                    { expand: true, flatten: true, src: ['app/images/*'], dest: 'build/images/'},
+            beforeBuild: {
+                files: [                    
                     { expand: true, flatten: true, src: ['app/index.html'], dest: 'build/'}
+                ]
+            },
+
+            afterBuild: {
+                files: [
+                    { expand: true, flatten: true, src: ['app/images/*'], dest: 'build/images/' },
+                    { expand: true, flatten: true, src: ['app/images/dynamic/*'], dest: 'build/images/dynamic/' },
+                    { expand: true, flatten: true, src: ['.tmp/concat/scripts/*'], dest: 'build/scripts/' }
                 ]
             }
         },
@@ -33,7 +59,7 @@ module.exports = function(grunt) {
         usemin: {
             html: 'build/index.html',
             options: {
-                assetsDirs: ['scripts', 'styles'],
+                assetsDirs: ['scripts', 'styles', '.tmp'],
                 dest: 'build'
             }
         },
@@ -75,24 +101,27 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-usemin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-open');
+    grunt.loadNpmTasks('grunt-angular-templates');
 
     grunt.registerTask('default', [
         'jshint'
     ]);
     
     grunt.registerTask('build', [
-        'clean',
-        'copy',
+        'clean:beforeBuild',
+        'copy:beforeBuild',
         'useminPrepare',
+        'concat:generated',
+        'cssmin',
         'usemin',
-        'concat',
-        'uglify',
-        'cssmin'
+        'ngtemplates',
+        'concat:addTemplates',
+        'copy:afterBuild',
+        'clean:afterBuild'
     ]);
     
     grunt.registerTask('server', [

@@ -31,6 +31,7 @@
     padding: 20px 16px;
     float: left;
     
+    text-align: center;
     border: 1px solid #ebebeb;
     border-radius: 2px;
     font-size: 32px;
@@ -67,7 +68,7 @@
             width: 109px;
         }
         
-        .rating.r4 span {
+        .rating.r40 span {
             width: 94px;
         }
         
@@ -75,7 +76,7 @@
             width: 84px;
         }
         
-        .rating.r3 span {
+        .rating.r30 span {
             width: 74px;
         }
 
@@ -83,7 +84,7 @@
             width: 60px;
         }
         
-        .rating.r2 span {
+        .rating.r20 span {
             width: 48px;
         }
 
@@ -91,7 +92,7 @@
             width: 35px;
         }
         
-        .rating.r1 span {
+        .rating.r10 span {
             width: 24px;
         }
         
@@ -99,10 +100,88 @@
             width: 10px;
         }
         
-        .rating.r0 span {
+        .rating.r00 span {
             width: 0px;
         }
     
         .rating span span {
             display: none;
         }
+
+@media (min-width: 960px) {
+    .tabs li a {
+        padding: 21px 0 17px 0;
+        width: 240px;
+
+        font-size: 14px;
+        line-height: 14px;
+        text-align: center;
+    }
+        
+        .tabs li.active a {
+            border-bottom: 3px solid #00aeef;
+        }
+
+    .button,
+    .button:hover,
+    .button:active,
+    .button:visited,
+    .button.add {
+        padding: 8px 16px;
+       
+        font-size: 14px;
+    }
+
+        .button.add {
+             background: url('../images/xdpi.button.add.png') no-repeat 8px center transparent;
+             padding-left: 28px;
+        }
+
+    .rating {
+        background: url('../images/xdpi.rating.bad.png') no-repeat 0 0 transparent;
+        height: 10px;
+        width: 60px;
+    }
+
+        .rating span {
+            height: 10px;
+            width: 60px;
+            background: url('../images/xdpi.rating.png') no-repeat 0 0 transparent;
+        }
+    
+            .rating.r45 span {
+                width: 55px;
+            }
+        
+            .rating.r40 span {
+                width: 47px;
+            }
+        
+            .rating.r35 span {
+                width: 42px;
+            }
+        
+            .rating.r30 span {
+                width: 37px;
+            }
+
+            .rating.r25 span {
+                width: 30px;
+            }
+        
+            .rating.r20 span {
+                width: 24px;
+            }
+
+            .rating.r15 span {
+                width: 17px;
+            }
+        
+            .rating.r10 span {
+                width: 12px;
+            }
+        
+            .rating.r05 span {
+                width: 5px;
+            }
+}
