@@ -122,6 +122,21 @@
     });
 
 }).call(this.Crosscut, this.angular);
+(function (undefined) {
+    'use strict';
+
+    function NewsArticle(data) {
+        this.image = data.image || '';
+        this.title = data.title || '';
+        this.description = data.description || '';
+        this.date = data.date || '';
+    }
+
+    this.exports(this.Models, {
+        NewsArticle: NewsArticle
+    });
+
+}).call(this.Crosscut, this.angular);
 (function(undefined) {
     'use strict';
    
@@ -378,11 +393,106 @@
 }).call(this.Crosscut, this.angular);
 (function(undefined) {
     'use strict';
+
+    var NewsArticle = this.Models.NewsArticle;
    
     this.Main.controller('NewsCtrl', [
         '$scope', 
         
-        function($scope) {
+        function ($scope) {
+            $scope.getNewsArticleImage = function (src) {
+                if (src === '') {
+                    return 'images/news.placeholder.png';
+                }
+
+                return src;
+            };
+
+            $scope.news = [
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: '',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: '',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: 'images/dynamic/place1.png',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               }),
+
+               new NewsArticle({
+                   image: '',
+                   title: 'Lorem ipsum dolor sit amet...',
+                   description: 'Lorem ipsum dolor sit amet, consectet. Ut nec elit ac felis ullamcorper rhonc...',
+                   date: '27 Oct 2013'
+               })
+            ];
         }
     ]);
         
@@ -647,7 +757,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        </li>\r" +
     "\n" +
-    "        \r" +
+    "\r" +
     "\n" +
     "        <li class=\"jobs\">\r" +
     "\n" +
@@ -655,7 +765,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        </li>\r" +
     "\n" +
-    "        \r" +
+    "\r" +
     "\n" +
     "        <li class=\"news\">\r" +
     "\n" +
@@ -663,7 +773,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        </li>\r" +
     "\n" +
-    "        \r" +
+    "\r" +
     "\n" +
     "        <li class=\"about\">\r" +
     "\n" +
@@ -673,9 +783,49 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "    </ul>\r" +
     "\n" +
-    "    \r" +
+    "\r" +
     "\n" +
     "    <div class=\"active news\">&nbsp;</div>\r" +
+    "\n" +
+    "</div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "<div id=\"news\" class=\"container\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "    <div class=\"list\">\r" +
+    "\n" +
+    "        <div class=\"header\">\r" +
+    "\n" +
+    "            <h2 class=\"title\"><strong>News</strong> (26)</h2>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"container\">\r" +
+    "\n" +
+    "            <a href=\"\" class=\"item\" ng-repeat=\"newsArticle in news\">\r" +
+    "\n" +
+    "                <img ng-src=\"{{getNewsArticleImage(newsArticle.image)}}\" alt=\"\" />\r" +
+    "\n" +
+    "                <span class=\"date\">{{newsArticle.date}}</span>\r" +
+    "\n" +
+    "                <h3 class=\"title\">{{newsArticle.title}}</h3>\r" +
+    "\n" +
+    "                <span class=\"description\">{{newsArticle.description}}</span>\r" +
+    "\n" +
+    "            </a>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <a class=\"button more\">Load more</a>\r" +
+    "\n" +
+    "    </div>\r" +
     "\n" +
     "</div>"
   );

@@ -69,6 +69,18 @@
             line-height: 36px;
         }
 
+        .list .item .description {
+            display: block;
+            float: left;
+            overflow: hidden;
+            height: 36px;
+            width: 402px;
+            margin-top: 4px;
+            
+            font-size: 24px;
+            line-height: 36px;
+        }
+
         .list .item .rating {
             display: block;
             float: left;
@@ -127,6 +139,15 @@
             .list .item .address {
                 width: 364px;
                 height: 18px;
+                margin-top: 1px;
+
+                font-size: 14px;
+                line-height: 18px;
+            }
+
+            .list .item .description {
+                width: 364px;
+                height: 36px;
                 margin-top: 1px;
 
                 font-size: 14px;
