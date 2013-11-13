@@ -1,0 +1,110 @@
+.input input:-moz-placeholder {
+    color: #777777;
+    font-size: 28px;
+    line-height: 28px;
+    font-style: italic;
+}
+
+.input input::-moz-placeholder {
+    color: #777777;
+    font-size: 28px;
+    line-height: 28px;
+    font-style: italic;
+}
+
+.input input:-ms-input-placeholder {
+    color: #777777;
+    font-size: 28px;
+    line-height: 28px;
+    font-style: italic;
+}
+
+.input input::-webkit-input-placeholder {
+    color: #777777;
+    font-size: 28px;
+    line-height: 28px;
+    font-style: italic;
+}
+
+.input.text {
+    margin: 32px 0 10px 0;
+    overflow: hidden;
+    position: relative;
+}
+
+    .input.text .clear {
+        display: none;
+        width: 56px;
+        height: 56px;
+        overflow: hidden;
+        background: url('../images/form.input.text.clear.png') no-repeat 0 0 transparent;
+    }
+
+        .input.text .clear span {
+            display: none;
+        }
+
+    .input.text.notempty.focused input {
+        padding-right: 80px;
+    }
+
+        .input.text.notempty.focused .clear {
+            display: block;
+            position: absolute;
+            top: 20px;
+            right: 15px;
+        }
+
+.input.text input {    
+    display: block;
+    padding: 29px 26px 23px 26px;
+    width: 576px;
+    border: 2px solid #e1e1e1;
+
+    font-size: 28px;
+    line-height: 28px;
+    color: #777777;
+}
+
+@media (min-width: 960px) {
+   .input input:-moz-placeholder {
+        font-size: 14px;
+        line-height: 16px;
+    }
+
+    .input input::-moz-placeholder {
+        font-size: 14px;
+        line-height: 16px;
+    }
+
+    .input input:-ms-input-placeholder {
+        font-size: 14px;
+        line-height: 16px;
+    }
+
+    .input input::-webkit-input-placeholder {
+        font-size: 14px;
+        line-height: 16px;
+    }
+
+    .input.text {
+        margin: 14px 0 5px 0;
+    }
+
+        .input.text.notempty .clear {
+            display: none;
+        }
+
+        .input.text.notempty input {
+            padding-right: 14px;
+        }
+
+    .input.text input {    
+        padding: 14px 14px 14px 14px;
+        width: 380px;
+        border: 1px solid #e1e1e1;
+
+        font-size: 14px;
+        line-height: 14px;
+    }
+}

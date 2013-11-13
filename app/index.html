@@ -18,11 +18,14 @@
         <link rel="stylesheet" href="styles/smallmenu.css" />
         <link rel="stylesheet" href="styles/footer.css" />
         <link rel="stylesheet" href="styles/components.css" />
+        <link rel="stylesheet" href="styles/modal.css" />
+        <link rel="stylesheet" href="styles/form.css" />
         <link rel="stylesheet" href="styles/lists.css" />
         <link rel="stylesheet" href="styles/places.css" />
         <link rel="stylesheet" href="styles/place.css" />
         <link rel="stylesheet" href="styles/jobs.css" />
         <link rel="stylesheet" href="styles/news.css" />
+        <link href="styles/addplace.css" rel="stylesheet" />
         <!-- endbuild -->
 
         <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false"></script>
@@ -65,7 +68,8 @@
             </div>
         </header>
         
-        <div ui-view="content"></div>
+        <div ui-view="content" class="contentparent" ng-class="{'hideme': modalIsVisible}"></div>
+        <div ui-view="addPlace" class="modalparent" ng-class="{'hideme': !modalIsVisible}"></div>
         
         <footer id="footer">
             <div class="container">
@@ -86,13 +90,11 @@
                 </ul>
             </div>
         </footer>
-                
+
         <!-- build:js scripts/lib.js -->
         <script src="components/jquery/jquery.js"></script>
         <script src="components/angular/angular.js"></script>
         <script src="components/angular-ui-router/release/angular-ui-router.js"></script>
-        <script src="components/angular-ui-bootstrap/dist/ui-bootstrap-0.6.0.js"></script>
-        <script src="components/angular-ui-bootstrap/dist/ui-bootstrap-tpls-0.6.0.js"></script>
         <!-- endbuild -->
         
         <!-- build:js scripts/app.js -->
@@ -102,6 +104,7 @@
 
         <script src="scripts/directives/rating.js"></script>
         <script src="scripts/directives/map.js"></script>
+        <script src="scripts/directives/isfocused.js"></script>
 
         <script src="scripts/models/place.js"></script>
         <script src="scripts/models/job.js"></script>
@@ -111,6 +114,7 @@
         <script src="scripts/controllers/home.js"></script>
         <script src="scripts/controllers/places.js"></script>
         <script src="scripts/controllers/place.js"></script>
+        <script src="scripts/controllers/addplace.js"></script>
         <script src="scripts/controllers/jobs.js"></script>
         <script src="scripts/controllers/news.js"></script>
         <!-- endbuild -->

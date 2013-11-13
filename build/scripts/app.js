@@ -38,6 +38,10 @@
                     'content': {
                         templateUrl: 'views/places.html',
                         controller: 'PlacesCtrl'
+                    },
+                    'addPlace': {
+                        templateUrl: 'views/addplace.html',
+                        controller: 'AddPlaceCtrl'
                     }
                 }    
             })
@@ -131,6 +135,34 @@
     ]);
 
 }).call(this.Crosscut, this.google.maps);
+(function ($, undefined) {
+    'use strict';
+
+    this.Main.directive('isFocused', [
+        function () {
+            return {
+                restrict: 'A',
+
+                controller: function ($scope, $element) {
+                    $element.focus(function () {
+                        $(this).parent().delay(100).queue(function(next){
+                            $(this).addClass('focused');
+                            next();
+                        });
+                    });
+
+                    $element.blur(function () {
+                        $(this).parent().delay(500).queue(function (next) {
+                            $(this).removeClass('focused');
+                            next();
+                        });
+                    });
+                }
+            };
+        }
+    ]);
+
+}).call(this.Crosscut, this.jQuery);
 (function (undefined) {
     'use strict';
 
@@ -186,6 +218,7 @@
         function($scope) {
             $scope.mainMenuIsClosed = true;
             $scope.accountMenuIsClosed = true;
+            $scope.modalIsVisible = false;
             
             $scope.toggleMainMenu = function() {
                 $scope.mainMenuIsClosed = !$scope.mainMenuIsClosed;
@@ -194,6 +227,14 @@
             $scope.toggleAccountMenu = function() {
                 $scope.accountMenuIsClosed = !$scope.accountMenuIsClosed;
             };
+
+            $scope.$on('showModal', function () {
+                $scope.modalIsVisible = true;
+            });
+
+            $scope.$on('hideModal', function () {
+                $scope.modalIsVisible = false;
+            });
         }
     ]);
         
@@ -215,15 +256,20 @@
     var Place = this.Models.Place;
    
     this.Main.controller('PlacesCtrl', [
-        '$scope', 
+        '$scope',
+        '$rootScope',
         
-        function ($scope) {
+        function ($scope, $rootScope) {
             $scope.getPlaceImage = function (src) {
                 if (src === '') {
                     return 'images/places.placeholder.png';
                 }
 
                 return src;
+            };
+
+            $scope.addPlace = function () {
+                $rootScope.$broadcast('addPlace', {});
             };
 
             $scope.places = [
@@ -331,6 +377,37 @@
 
         function ($scope, $stateParams) {
             
+        }
+    ]);
+        
+}).call(this.Crosscut, this.angular);
+(function(undefined) {
+    'use strict';
+   
+    this.Main.controller('AddPlaceCtrl', [
+        '$scope', 
+        '$rootScope',
+
+        function ($scope, $rootScope) {
+            $scope.visible = false;
+
+            $scope.name = '';
+            $scope.description = '';
+            $scope.address = '';
+
+            $scope.$on('addPlace', function (e, config) {
+                $rootScope.$broadcast('showModal');
+                $scope.visible = true;
+            });
+
+            $scope.clear = function (fieldName) {
+                $scope[fieldName] = '';
+            };
+
+            $scope.cancel = function () {
+                $rootScope.$broadcast('hideModal');
+                $scope.visible = false;
+            };
         }
     ]);
         
@@ -565,6 +642,67 @@
 }).call(this.Crosscut, this.angular);
 angular.module('Crosscut').run(['$templateCache', function($templateCache) {
 
+  $templateCache.put('views/addplace.html',
+    "<div class=\"background\" ng-show=\"visible\">&nbsp;</div>\r" +
+    "\n" +
+    "<div class=\"modalwrap\" ng-show=\"visible\">\r" +
+    "\n" +
+    "    <div class=\"modalview container\" id=\"addplace\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <h1 class=\"title add\"><strong>Add new shelter</strong></h1>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <form>\r" +
+    "\n" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': name != ''}\">\r" +
+    "\n" +
+    "                <input type=\"text\" ng-model=\"name\" placeholder=\"Name\" is-focused />\r" +
+    "\n" +
+    "                <a href=\"\" class=\"clear\" ng-click=\"clear('name')\"><span>Clear</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': description != ''}\">\r" +
+    "\n" +
+    "                <input type=\"text\" ng-model=\"description\" placeholder=\"Description\" is-focused />\r" +
+    "\n" +
+    "                <a href=\"\" class=\"clear\" ng-click=\"clear('description')\"><span>Clear</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': address != ''}\">\r" +
+    "\n" +
+    "                <input type=\"text\" ng-model=\"address\" placeholder=\"Address\" is-focused />\r" +
+    "\n" +
+    "                <a href=\"\" class=\"clear\" ng-click=\"clear('address')\"><span>Clear</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "        </form>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"actions\">\r" +
+    "\n" +
+    "            <a href=\"\" class=\"button save\"><span>Save</span></a>\r" +
+    "\n" +
+    "            <a href=\"\" class=\"button cancel\" ng-click=\"cancel()\"><span>Cancel</span></a>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('views/directives/map.html',
     "<div class=\"map\">&nbsp;</div>"
   );
@@ -721,95 +859,99 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "<div id=\"jobs\" class=\"container\">\r" +
+    "<div id=\"jobs\">\r" +
     "\n" +
-    "    <ul class=\"tabs\">\r" +
+    "    <div class=\"container\">\r" +
     "\n" +
-    "        <li class=\"active\">\r" +
+    "        <ul class=\"tabs\">\r" +
     "\n" +
-    "            <a href=\"\">All jobs</a>\r" +
+    "            <li class=\"active\">\r" +
     "\n" +
-    "        </li>\r" +
+    "                <a href=\"\">All jobs</a>\r" +
     "\n" +
-    "\r" +
-    "\n" +
-    "        <li>\r" +
-    "\n" +
-    "            <a href=\"\">Announcements</a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "    </ul>\r" +
+    "            </li>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "    <div class=\"list\">\r" +
+    "            <li>\r" +
     "\n" +
-    "        <div class=\"header\">\r" +
+    "                <a href=\"\">Announcements</a>\r" +
     "\n" +
-    "            <h2 class=\"title\"><strong>Paid jobs</strong> (74)</h2>\r" +
+    "            </li>\r" +
     "\n" +
-    "            <a href=\"\" class=\"button add\">Add job</a>\r" +
+    "        </ul>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"list\">\r" +
+    "\n" +
+    "            <div class=\"header\">\r" +
+    "\n" +
+    "                <h2 class=\"title\"><strong>Paid jobs</strong> (74)</h2>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"button add\">Add job</a>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"container\">\r" +
+    "\n" +
+    "                <a href=\"\" class=\"item\" ng-repeat=\"job in jobs\" ng-class=\"job.icon\">\r" +
+    "\n" +
+    "                    <span class=\"date\">{{job.date}}</span>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                    <h3 class=\"title\">{{job.title}}</h3>\r" +
+    "\n" +
+    "                    <span class=\"address\">{{job.address}}</span>\r" +
+    "\n" +
+    "                </a>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <a class=\"button more\">Load more</a>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "        <div class=\"container\">\r" +
+    "        <div class=\"list\">\r" +
     "\n" +
-    "            <a href=\"\" class=\"item\" ng-repeat=\"job in jobs\" ng-class=\"job.icon\">\r" +
+    "            <div class=\"header\">\r" +
     "\n" +
-    "                <span class=\"date\">{{job.date}}</span>\r" +
+    "                <h2 class=\"title\"><strong>Volunteering</strong> (4)</h2>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"button add\">Add job</a>\r" +
+    "\n" +
+    "            </div>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                <h3 class=\"title\">{{job.title}}</h3>\r" +
+    "            <div class=\"container\">\r" +
     "\n" +
-    "                <span class=\"address\">{{job.address}}</span>\r" +
+    "                <a href=\"\" class=\"item\" ng-repeat=\"job in volunteeringJobs\" ng-class=\"job.icon\">\r" +
     "\n" +
-    "            </a>\r" +
+    "                    <span class=\"date\">{{job.date}}</span>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                    <h3 class=\"title\">{{job.title}}</h3>\r" +
+    "\n" +
+    "                    <span class=\"address\">{{job.address}}</span>\r" +
+    "\n" +
+    "                </a>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <a class=\"button more hidden\">Load more</a>\r" +
     "\n" +
     "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <a class=\"button more\">Load more</a>\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "    <div class=\"list\">\r" +
-    "\n" +
-    "        <div class=\"header\">\r" +
-    "\n" +
-    "            <h2 class=\"title\"><strong>Volunteering</strong> (4)</h2>\r" +
-    "\n" +
-    "            <a href=\"\" class=\"button add\">Add job</a>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <div class=\"container\">\r" +
-    "\n" +
-    "            <a href=\"\" class=\"item\" ng-repeat=\"job in volunteeringJobs\" ng-class=\"job.icon\">\r" +
-    "\n" +
-    "                <span class=\"date\">{{job.date}}</span>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <h3 class=\"title\">{{job.title}}</h3>\r" +
-    "\n" +
-    "                <span class=\"address\">{{job.address}}</span>\r" +
-    "\n" +
-    "            </a>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <a class=\"button more hidden\">Load more</a>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
@@ -862,39 +1004,41 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "<div id=\"news\" class=\"container\">\r" +
+    "<div id=\"news\">\r" +
+    "\n" +
+    "    <div class=\"container\">\r" +
+    "\n" +
+    "        <div class=\"list\">\r" +
+    "\n" +
+    "            <div class=\"header\">\r" +
+    "\n" +
+    "                <h2 class=\"title\"><strong>News</strong> (26)</h2>\r" +
+    "\n" +
+    "            </div>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "    <div class=\"list\">\r" +
+    "            <div class=\"container\">\r" +
     "\n" +
-    "        <div class=\"header\">\r" +
+    "                <a href=\"\" class=\"item\" ng-repeat=\"newsArticle in news\">\r" +
     "\n" +
-    "            <h2 class=\"title\"><strong>News</strong> (26)</h2>\r" +
+    "                    <img ng-src=\"{{getNewsArticleImage(newsArticle.image)}}\" alt=\"\" />\r" +
+    "\n" +
+    "                    <span class=\"date\">{{newsArticle.date}}</span>\r" +
+    "\n" +
+    "                    <h3 class=\"title\">{{newsArticle.title}}</h3>\r" +
+    "\n" +
+    "                    <span class=\"description\">{{newsArticle.description}}</span>\r" +
+    "\n" +
+    "                </a>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <a class=\"button more\">Load more</a>\r" +
     "\n" +
     "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <div class=\"container\">\r" +
-    "\n" +
-    "            <a href=\"\" class=\"item\" ng-repeat=\"newsArticle in news\">\r" +
-    "\n" +
-    "                <img ng-src=\"{{getNewsArticleImage(newsArticle.image)}}\" alt=\"\" />\r" +
-    "\n" +
-    "                <span class=\"date\">{{newsArticle.date}}</span>\r" +
-    "\n" +
-    "                <h3 class=\"title\">{{newsArticle.title}}</h3>\r" +
-    "\n" +
-    "                <span class=\"description\">{{newsArticle.description}}</span>\r" +
-    "\n" +
-    "            </a>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <a class=\"button more\">Load more</a>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
@@ -947,77 +1091,31 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "<div class=\"container\">\r" +
-    "\n" +
-    "    <ul class=\"tabs\">\r" +
-    "\n" +
-    "        <li class=\"active\">\r" +
-    "\n" +
-    "            <a href=\"\">Shelters</a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li>\r" +
-    "\n" +
-    "            <a href=\"\">Food Pantries</a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li>\r" +
-    "\n" +
-    "            <a href=\"\">Food Banks</a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "    </ul>\r" +
-    "\n" +
-    "</div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "<div id=\"place\">\r" +
+    "<div id=\"placewrap\">\r" +
     "\n" +
     "    <div class=\"container\">\r" +
     "\n" +
-    "        <div class=\"header\">\r" +
+    "        <ul class=\"tabs\">\r" +
     "\n" +
-    "            <h1 class=\"title\"><strong>HELP Women's Shelter</strong></h1>\r" +
+    "            <li class=\"active\">\r" +
     "\n" +
-    "            <rating data-value=\"4.35\" class=\"inline\"></rating>\r" +
-    "\n" +
-    "            <span class=\"address\">Brooklyn, NY 11216</span>\r" +
-    "\n" +
-    "            <rating data-value=\"4.35\" class=\"end\"></rating>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <ul class=\"actions\">\r" +
-    "\n" +
-    "            <li>\r" +
-    "\n" +
-    "                <a href=\"\" class=\"button directions notext\"><span>Directions</span></a>\r" +
+    "                <a href=\"\">Shelters</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
-    "\r" +
+    "        \r" +
     "\n" +
     "            <li>\r" +
     "\n" +
-    "                <a href=\"\" class=\"button phone notext\"><span>Call phone</span></a>\r" +
+    "                <a href=\"\">Food Pantries</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
-    "\r" +
+    "        \r" +
     "\n" +
     "            <li>\r" +
     "\n" +
-    "                <a href=\"\" class=\"button alarm notext\"><span>Set alarm</span></a>\r" +
+    "                <a href=\"\">Food Banks</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -1027,101 +1125,151 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "    <map></map>\r" +
+    "    <div id=\"place\">\r" +
     "\n" +
-    "\r" +
-    "\n" +
-    "    <div class=\"container\">\r" +
-    "\n" +
-    "        <div class=\"section\">\r" +
-    "\n" +
-    "            <h2 class=\"title\"><strong>About this shelter</strong></h2>\r" +
-    "\n" +
-    "            <div class=\"description\">Emergency Shelter Families/Singles. Regular Beds 150, Upper Bunks 136, Total Beds 286. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed vestibulum libero, consequat aliquam erat. Nulla in euismod massa, vel vestibulum orci. Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam.</div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <div class=\"section\">\r" +
-    "\n" +
-    "            <h2 class=\"title\"><strong>Photos</strong> (4)</h2>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "            <div class=\"gallery\">\r" +
-    "\n" +
-    "                <img class=\"photo\" src=\"images/dynamic/photo1.png\" alt=\"\" />\r" +
-    "\n" +
-    "                <img class=\"photo\" src=\"images/dynamic/photo2.png\" alt=\"\" />\r" +
-    "\n" +
-    "                <img class=\"photo\" src=\"images/dynamic/photo3.png\" alt=\"\" />\r" +
-    "\n" +
-    "                <img class=\"photo\" src=\"images/dynamic/photo4.png\" alt=\"\" />\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <div class=\"section reviews\">\r" +
+    "        <div class=\"container\">\r" +
     "\n" +
     "            <div class=\"header\">\r" +
     "\n" +
-    "                <h2 class=\"title\"><strong>Reviews</strong> (3)</h2>\r" +
+    "                <h1 class=\"title\"><strong>HELP Women's Shelter</strong></h1>\r" +
     "\n" +
-    "                <a href=\"\" class=\"button notext add\"><span>&nbsp;</span></a>\r" +
+    "                <rating data-value=\"4.35\" class=\"inline\"></rating>\r" +
     "\n" +
-    "            </div>\r" +
+    "                <span class=\"address\">Brooklyn, NY 11216</span>\r" +
     "\n" +
-    "\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "            <div class=\"review\">\r" +
-    "\n" +
-    "                <rating data-value=\"3.5\"></rating>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <h3 class=\"username\">A google user</h3>\r" +
-    "\n" +
-    "                <span class=\"date\">27 Oct 2013</span>\r" +
-    "\n" +
-    "                <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "                <rating data-value=\"4.35\" class=\"end\"></rating>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "            <div class=\"review\">\r" +
+    "            <ul class=\"actions\">\r" +
     "\n" +
-    "                <rating data-value=\"2.5\"></rating>\r" +
+    "                <li>\r" +
+    "\n" +
+    "                    <a href=\"\" class=\"button directions notext\"><span>Directions</span></a>\r" +
+    "\n" +
+    "                </li>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                <h3 class=\"username\">A google user</h3>\r" +
+    "                <li>\r" +
     "\n" +
-    "                <span class=\"date\">27 Oct 2013</span>\r" +
+    "                    <a href=\"\" class=\"button phone notext\"><span>Call phone</span></a>\r" +
     "\n" +
-    "                <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "                </li>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <li>\r" +
+    "\n" +
+    "                    <a href=\"\" class=\"button alarm notext\"><span>Set alarm</span></a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "            </ul>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <map></map>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"container\">\r" +
+    "\n" +
+    "            <div class=\"section\">\r" +
+    "\n" +
+    "                <h2 class=\"title\"><strong>About this shelter</strong></h2>\r" +
+    "\n" +
+    "                <div class=\"description\">Emergency Shelter Families/Singles. Regular Beds 150, Upper Bunks 136, Total Beds 286. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed vestibulum libero, consequat aliquam erat. Nulla in euismod massa, vel vestibulum orci. Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam.</div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "            <div class=\"review\">\r" +
+    "            <div class=\"section\">\r" +
     "\n" +
-    "                <rating data-value=\"1\"></rating>\r" +
+    "                <h2 class=\"title\"><strong>Photos</strong> (4)</h2>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                <h3 class=\"username\">A google user</h3>\r" +
+    "                <div class=\"gallery\">\r" +
     "\n" +
-    "                <span class=\"date\">27 Oct 2013</span>\r" +
+    "                    <img class=\"photo\" src=\"images/dynamic/photo1.png\" alt=\"\" />\r" +
     "\n" +
-    "                <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "                    <img class=\"photo\" src=\"images/dynamic/photo2.png\" alt=\"\" />\r" +
+    "\n" +
+    "                    <img class=\"photo\" src=\"images/dynamic/photo3.png\" alt=\"\" />\r" +
+    "\n" +
+    "                    <img class=\"photo\" src=\"images/dynamic/photo4.png\" alt=\"\" />\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"section reviews\">\r" +
+    "\n" +
+    "                <div class=\"header\">\r" +
+    "\n" +
+    "                    <h2 class=\"title\"><strong>Reviews</strong> (3)</h2>\r" +
+    "\n" +
+    "                    <a href=\"\" class=\"button notext add\"><span>&nbsp;</span></a>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <div class=\"review\">\r" +
+    "\n" +
+    "                    <rating data-value=\"3.5\"></rating>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                    <h3 class=\"username\">A google user</h3>\r" +
+    "\n" +
+    "                    <span class=\"date\">27 Oct 2013</span>\r" +
+    "\n" +
+    "                    <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <div class=\"review\">\r" +
+    "\n" +
+    "                    <rating data-value=\"2.5\"></rating>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                    <h3 class=\"username\">A google user</h3>\r" +
+    "\n" +
+    "                    <span class=\"date\">27 Oct 2013</span>\r" +
+    "\n" +
+    "                    <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <div class=\"review\">\r" +
+    "\n" +
+    "                    <rating data-value=\"1\"></rating>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                    <h3 class=\"username\">A google user</h3>\r" +
+    "\n" +
+    "                    <span class=\"date\">27 Oct 2013</span>\r" +
+    "\n" +
+    "                    <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "\n" +
+    "                </div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -1178,69 +1326,73 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "<div id=\"places\" class=\"container\">\r" +
+    "<div id=\"places\">\r" +
     "\n" +
-    "    <ul class=\"tabs\">\r" +
+    "    <div class=\"container\">\r" +
     "\n" +
-    "        <li class=\"active\">\r" +
+    "        <ul class=\"tabs\">\r" +
     "\n" +
-    "            <a href=\"\">Shelters</a>\r" +
+    "            <li class=\"active\">\r" +
     "\n" +
-    "        </li>\r" +
+    "                <a href=\"\">Shelters</a>\r" +
     "\n" +
-    "        \r" +
-    "\n" +
-    "        <li>\r" +
-    "\n" +
-    "            <a href=\"\">Food Pantries</a>\r" +
-    "\n" +
-    "        </li>\r" +
+    "            </li>\r" +
     "\n" +
     "        \r" +
     "\n" +
-    "        <li>\r" +
+    "            <li>\r" +
     "\n" +
-    "            <a href=\"\">Food Banks</a>\r" +
+    "                <a href=\"\">Food Pantries</a>\r" +
     "\n" +
-    "        </li>\r" +
+    "            </li>\r" +
     "\n" +
-    "    </ul>\r" +
+    "        \r" +
+    "\n" +
+    "            <li>\r" +
+    "\n" +
+    "                <a href=\"\">Food Banks</a>\r" +
+    "\n" +
+    "            </li>\r" +
+    "\n" +
+    "        </ul>\r" +
     "\n" +
     "    \r" +
     "\n" +
-    "    <div class=\"list\">\r" +
+    "        <div class=\"list\">\r" +
     "\n" +
-    "        <div class=\"header\">\r" +
+    "            <div class=\"header\">\r" +
     "\n" +
-    "            <h2 class=\"title\"><strong>Shelters</strong> (87)</h2>\r" +
+    "                <h2 class=\"title\"><strong>Shelters</strong> (87)</h2>\r" +
     "\n" +
-    "            <a href=\"\" class=\"button add\">Add shelter</a>\r" +
+    "                <a href=\"\" class=\"button add\" ng-click=\"addPlace()\">Add shelter</a>\r" +
     "\n" +
-    "        </div>\r" +
+    "            </div>\r" +
     "\n" +
     "        \r" +
     "\n" +
-    "        <div class=\"container\">\r" +
+    "            <div class=\"container\">\r" +
     "\n" +
-    "            <a class=\"item\" ng-repeat=\"place in places\" ui-sref=\"place({id: place.id})\">\r" +
+    "                <a class=\"item\" ng-repeat=\"place in places\" ui-sref=\"place({id: place.id})\">\r" +
     "\n" +
-    "                <img ng-src=\"{{getPlaceImage(place.image)}}\" alt=\"\" />\r" +
+    "                    <img ng-src=\"{{getPlaceImage(place.image)}}\" alt=\"\" />\r" +
     "\n" +
-    "                <h3 class=\"title\">{{place.title}}</h3>\r" +
+    "                    <h3 class=\"title\">{{place.title}}</h3>\r" +
     "\n" +
-    "                <span class=\"address\">{{place.address}}</span>\r" +
+    "                    <span class=\"address\">{{place.address}}</span>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                <rating data-value=\"place.rating\"></rating>\r" +
+    "                    <rating data-value=\"place.rating\"></rating>\r" +
     "\n" +
-    "            </a>\r" +
+    "                </a>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <a class=\"button more\">Load more</a>\r" +
     "\n" +
     "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <a class=\"button more\">Load more</a>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +

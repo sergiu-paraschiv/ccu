@@ -76,6 +76,21 @@
         
         background: url('../images/button.alarm.png') no-repeat center center transparent;
     }
+
+    .button.save {
+        background: #0099cc;
+        border-color: #0099cc;
+        color: #ffffff;
+    }
+
+.actions {
+    overflow: hidden;
+    margin: 50px auto 0 auto;
+}
+
+    .actions .button {
+        margin-right: 32px;
+    }
     
 .rating {
     display: block;
@@ -189,6 +204,14 @@
             background: url('../images/xdpi.button.alarm.png') no-repeat center center transparent;
         }
 
+    .actions {
+        margin-top: 25px;
+    }
+
+    .actions .button {
+        margin-right: 16px;
+    }
+   
     .rating {
         background: url('../images/xdpi.rating.bad.png') no-repeat 0 0 transparent;
         height: 10px;

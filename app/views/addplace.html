@@ -1,0 +1,29 @@
+﻿<div class="background" ng-show="visible">&nbsp;</div>
+<div class="modalwrap" ng-show="visible">
+    <div class="modalview container" id="addplace">
+
+        <h1 class="title add"><strong>Add new shelter</strong></h1>
+        
+        <form>
+            <p class="input text" ng-class="{'notempty': name != ''}">
+                <input type="text" ng-model="name" placeholder="Name" is-focused />
+                <a href="" class="clear" ng-click="clear('name')"><span>Clear</span></a>
+            </p>
+
+            <p class="input text" ng-class="{'notempty': description != ''}">
+                <input type="text" ng-model="description" placeholder="Description" is-focused />
+                <a href="" class="clear" ng-click="clear('description')"><span>Clear</span></a>
+            </p>
+
+            <p class="input text" ng-class="{'notempty': address != ''}">
+                <input type="text" ng-model="address" placeholder="Address" is-focused />
+                <a href="" class="clear" ng-click="clear('address')"><span>Clear</span></a>
+            </p>
+        </form>
+
+        <div class="actions">
+            <a href="" class="button save"><span>Save</span></a>
+            <a href="" class="button cancel" ng-click="cancel()"><span>Cancel</span></a>
+        </div>
+    </div>
+</div>

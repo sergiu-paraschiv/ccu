@@ -51,7 +51,8 @@
             </div>
         </header>
         
-        <div ui-view="content"></div>
+        <div ui-view="content" class="contentparent" ng-class="{'hideme': modalIsVisible}"></div>
+        <div ui-view="addPlace" class="modalparent" ng-class="{'hideme': !modalIsVisible}"></div>
         
         <footer id="footer">
             <div class="container">
@@ -72,7 +73,7 @@
                 </ul>
             </div>
         </footer>
-                
+
         <script src="scripts/lib.js"></script>
         
         <script src="scripts/app.js"></script>

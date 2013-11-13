@@ -4,9 +4,10 @@
     var Place = this.Models.Place;
    
     this.Main.controller('PlacesCtrl', [
-        '$scope', 
+        '$scope',
+        '$rootScope',
         
-        function ($scope) {
+        function ($scope, $rootScope) {
             $scope.getPlaceImage = function (src) {
                 if (src === '') {
                     return 'images/places.placeholder.png';
@@ -16,6 +17,7 @@
             };
 
             $scope.addPlace = function () {
+                $rootScope.$broadcast('addPlace', {});
             };
 
             $scope.places = [

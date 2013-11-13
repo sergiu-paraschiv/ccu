@@ -1,0 +1,18 @@
+#addplace .actions {
+    width: 464px;
+}
+
+    #addplace .actions .button {
+        width: 200px;
+    }
+
+@media (min-width: 960px) {
+    #addplace .actions {
+        width: 232px;
+    }
+
+        #addplace .actions .button {
+            width: 100px;
+        }
+    
+}

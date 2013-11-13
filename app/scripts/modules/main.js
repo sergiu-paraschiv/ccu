@@ -26,6 +26,10 @@
                     'content': {
                         templateUrl: 'views/places.html',
                         controller: 'PlacesCtrl'
+                    },
+                    'addPlace': {
+                        templateUrl: 'views/addplace.html',
+                        controller: 'AddPlaceCtrl'
                     }
                 }    
             })
