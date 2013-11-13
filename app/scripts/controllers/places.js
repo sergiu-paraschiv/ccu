@@ -15,6 +15,9 @@
                 return src;
             };
 
+            $scope.addPlace = function () {
+            };
+
             $scope.places = [
                 new Place({
                     id: 1,

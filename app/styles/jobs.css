@@ -1,3 +1,7 @@
+#jobs {
+    background: url('../images/content.background.png') repeat-x 0 80px transparent;
+}
+
 #jobs .list {
     padding: 24px 24px 10px 32px;
 }
@@ -32,6 +36,9 @@
     }
 
 @media (min-width: 960px) {
+    #jobs {
+        background-position: 0 55px;
+    }
 
     #jobs .list {
         padding: 18px 5px 10px 10px;

@@ -1,5 +1,9 @@
+#places {
+    background: url('../images/content.background.png') repeat-x 0 80px transparent;
+}
+
 #places .list {
-    padding: 24px 24px 10px 32px;
+    padding: 24px 24px 10px 32px;    
 }
 
     #places .list .item img {
@@ -11,6 +15,10 @@
     }
 
 @media (min-width: 960px) {
+    #places {
+        background-position: 0 55px;
+    }
+
     #places .list {
         padding: 18px 5px 10px 10px;
     }

@@ -20,50 +20,52 @@
     <div class="container active jobs">&nbsp;</div>
 </div>
 
-<div id="jobs" class="container">
-    <ul class="tabs">
-        <li class="active">
-            <a href="">All jobs</a>
-        </li>
+<div id="jobs">
+    <div class="container">
+        <ul class="tabs">
+            <li class="active">
+                <a href="">All jobs</a>
+            </li>
 
-        <li>
-            <a href="">Announcements</a>
-        </li>
-    </ul>
+            <li>
+                <a href="">Announcements</a>
+            </li>
+        </ul>
 
-    <div class="list">
-        <div class="header">
-            <h2 class="title"><strong>Paid jobs</strong> (74)</h2>
-            <a href="" class="button add">Add job</a>
+        <div class="list">
+            <div class="header">
+                <h2 class="title"><strong>Paid jobs</strong> (74)</h2>
+                <a href="" class="button add">Add job</a>
+            </div>
+
+            <div class="container">
+                <a href="" class="item" ng-repeat="job in jobs" ng-class="job.icon">
+                    <span class="date">{{job.date}}</span>
+
+                    <h3 class="title">{{job.title}}</h3>
+                    <span class="address">{{job.address}}</span>
+                </a>
+            </div>
+
+            <a class="button more">Load more</a>
         </div>
 
-        <div class="container">
-            <a href="" class="item" ng-repeat="job in jobs" ng-class="job.icon">
-                <span class="date">{{job.date}}</span>
+        <div class="list">
+            <div class="header">
+                <h2 class="title"><strong>Volunteering</strong> (4)</h2>
+                <a href="" class="button add">Add job</a>
+            </div>
 
-                <h3 class="title">{{job.title}}</h3>
-                <span class="address">{{job.address}}</span>
-            </a>
+            <div class="container">
+                <a href="" class="item" ng-repeat="job in volunteeringJobs" ng-class="job.icon">
+                    <span class="date">{{job.date}}</span>
+
+                    <h3 class="title">{{job.title}}</h3>
+                    <span class="address">{{job.address}}</span>
+                </a>
+            </div>
+
+            <a class="button more hidden">Load more</a>
         </div>
-
-        <a class="button more">Load more</a>
-    </div>
-
-    <div class="list">
-        <div class="header">
-            <h2 class="title"><strong>Volunteering</strong> (4)</h2>
-            <a href="" class="button add">Add job</a>
-        </div>
-
-        <div class="container">
-            <a href="" class="item" ng-repeat="job in volunteeringJobs" ng-class="job.icon">
-                <span class="date">{{job.date}}</span>
-
-                <h3 class="title">{{job.title}}</h3>
-                <span class="address">{{job.address}}</span>
-            </a>
-        </div>
-
-        <a class="button more hidden">Load more</a>
     </div>
 </div>

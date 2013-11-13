@@ -20,37 +20,39 @@
     <div class="container active places">&nbsp;</div>
 </div>
 
-<div id="places" class="container">
-    <ul class="tabs">
-        <li class="active">
-            <a href="">Shelters</a>
-        </li>
+<div id="places">
+    <div class="container">
+        <ul class="tabs">
+            <li class="active">
+                <a href="">Shelters</a>
+            </li>
         
-        <li>
-            <a href="">Food Pantries</a>
-        </li>
+            <li>
+                <a href="">Food Pantries</a>
+            </li>
         
-        <li>
-            <a href="">Food Banks</a>
-        </li>
-    </ul>
+            <li>
+                <a href="">Food Banks</a>
+            </li>
+        </ul>
     
-    <div class="list">
-        <div class="header">
-            <h2 class="title"><strong>Shelters</strong> (87)</h2>
-            <a href="" class="button add">Add shelter</a>
-        </div>
+        <div class="list">
+            <div class="header">
+                <h2 class="title"><strong>Shelters</strong> (87)</h2>
+                <a href="" class="button add" ng-click="addPlace()">Add shelter</a>
+            </div>
         
-        <div class="container">
-            <a class="item" ng-repeat="place in places" ui-sref="place({id: place.id})">
-                <img ng-src="{{getPlaceImage(place.image)}}" alt="" />
-                <h3 class="title">{{place.title}}</h3>
-                <span class="address">{{place.address}}</span>
+            <div class="container">
+                <a class="item" ng-repeat="place in places" ui-sref="place({id: place.id})">
+                    <img ng-src="{{getPlaceImage(place.image)}}" alt="" />
+                    <h3 class="title">{{place.title}}</h3>
+                    <span class="address">{{place.address}}</span>
 
-                <rating data-value="place.rating"></rating>
-            </a>
+                    <rating data-value="place.rating"></rating>
+                </a>
+            </div>
+
+            <a class="button more">Load more</a>
         </div>
-
-        <a class="button more">Load more</a>
     </div>
 </div>

@@ -1,3 +1,8 @@
+#placewrap {
+    background: url('../images/content.background.png') repeat-x 0 80px transparent;
+}
+
+
 #place .header {
     padding: 32px;
 }
@@ -130,6 +135,10 @@
     }
     
 @media (min-width: 960px) {
+    #placewrap {
+        background-position: 0 55px;
+    }
+
     #place .header {
         padding: 22px 0 11px 0;
         float: left;

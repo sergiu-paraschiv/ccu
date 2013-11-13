@@ -352,7 +352,6 @@
                 return 'images/jobs.icon.' + type + '.png';
             };
 
-
             $scope.jobs = [
                 new Job({
                     icon: 'up',

@@ -20,22 +20,23 @@
     <div class="container active news">&nbsp;</div>
 </div>
 
-<div id="news" class="container">
+<div id="news">
+    <div class="container">
+        <div class="list">
+            <div class="header">
+                <h2 class="title"><strong>News</strong> (26)</h2>
+            </div>
 
-    <div class="list">
-        <div class="header">
-            <h2 class="title"><strong>News</strong> (26)</h2>
+            <div class="container">
+                <a href="" class="item" ng-repeat="newsArticle in news">
+                    <img ng-src="{{getNewsArticleImage(newsArticle.image)}}" alt="" />
+                    <span class="date">{{newsArticle.date}}</span>
+                    <h3 class="title">{{newsArticle.title}}</h3>
+                    <span class="description">{{newsArticle.description}}</span>
+                </a>
+            </div>
+
+            <a class="button more">Load more</a>
         </div>
-
-        <div class="container">
-            <a href="" class="item" ng-repeat="newsArticle in news">
-                <img ng-src="{{getNewsArticleImage(newsArticle.image)}}" alt="" />
-                <span class="date">{{newsArticle.date}}</span>
-                <h3 class="title">{{newsArticle.title}}</h3>
-                <span class="description">{{newsArticle.description}}</span>
-            </a>
-        </div>
-
-        <a class="button more">Load more</a>
     </div>
 </div>
