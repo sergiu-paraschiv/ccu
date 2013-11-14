@@ -18,17 +18,21 @@
     padding: 10px 32px 10px 32px;
 }
 
-.modalview .title {
-    padding: 44px 0 22px 0;
-
-    color: #2e2e2e;
-    font-size: 34px;
-}
-
-    .modalview .title.add {
-        padding-left: 60px;
-        background: url('../images/button.notext.add.png') no-repeat 0 44px transparent;
+    .modalview .modalclose {
+        display: none;
     }
+
+    .modalview .title {
+        padding: 44px 0 22px 0;
+
+        color: #2e2e2e;
+        font-size: 34px;
+    }
+
+        .modalview .title.add {
+            padding-left: 60px;
+            background: url('../images/button.notext.add.png') no-repeat 0 44px transparent;
+        }
 
 @media (min-width: 960px) {
     .contentparent.hideme {
@@ -68,6 +72,21 @@
         border: 2px solid #e9e9e9;
         background: #ffffff; 
     }
+
+        .modalview .modalclose {
+            display: block;
+            width: 16px;
+            height: 16px;
+            position: absolute;
+            top: 24px;
+            right: 22px;
+
+            background: url('../images/xdpi.icon.close.png') no-repeat 0 0 transparent;
+        }
+
+            .modalview .modalclose span {
+                display: none;
+            }
 
         .modalview .title {
             padding: 7px 0 23px 0;

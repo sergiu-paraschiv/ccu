@@ -653,6 +653,8 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <h1 class=\"title add\"><strong>Add new shelter</strong></h1>\r" +
     "\n" +
+    "        <a href=\"\" class=\"modalclose\" ng-click=\"cancel()\"><span>Close</span></a>\r" +
+    "\n" +
     "        \r" +
     "\n" +
     "        <form>\r" +
