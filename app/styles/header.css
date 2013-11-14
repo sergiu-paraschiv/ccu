@@ -43,11 +43,18 @@
         
         #header .main .handle {
             display: block;            
-            width: 86px;
-            height: 80px;
+            width: 88px;
+            height: 81px;
+            position: absolute;
+            top: 0;
+            left: 0;
             
-            background: url('../images/header.menu.handle.png') no-repeat 0 0 transparent;
+            background: url('../images/header.menu.handle.active.png') no-repeat 0 0 transparent;
         }
+
+            #header .main.closed .handle {
+                background: url('../images/header.menu.handle.png') no-repeat 0 0 transparent;
+            }
     
     #header .account {
         position: absolute;
@@ -59,10 +66,19 @@
         #header .account .handle {
             display: block;            
             width: 88px;
-            height: 80px;
+            height: 81px;
+            position: absolute;
+            top: 0;
+            left: 0;
             
-            background: url('../images/header.account.handle.png') no-repeat 0 0 transparent;
+            background: url('../images/header.account.handle.active.png') no-repeat 0 0 transparent;
         }
+
+            #header .account.closed .handle {               
+                height: 80px;
+
+                background: url('../images/header.account.handle.png') no-repeat 0 0 transparent;
+            }
         
             #header .account .handle span {
                 display: none;
@@ -70,7 +86,7 @@
                
     #header .menu .content {
         display: block;
-        margin: 0;
+        margin: 80px 0 0 0;
         padding: 10px 0;
         width: 183px;
         float: right;
