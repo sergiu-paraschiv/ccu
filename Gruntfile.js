@@ -39,7 +39,8 @@ module.exports = function(grunt) {
                 files: [
                     { expand: true, flatten: true, src: ['app/images/*'], dest: 'build/images/' },
                     { expand: true, flatten: true, src: ['app/images/dynamic/*'], dest: 'build/images/dynamic/' },
-                    { expand: true, flatten: true, src: ['.tmp/concat/scripts/*'], dest: 'build/scripts/' }
+                    { expand: true, flatten: true, src: ['.tmp/concat/scripts/*'], dest: 'build/scripts/' },
+                    { expand: true, flatten: true, src: ['.tmp/concat/styles/*'], dest: 'build/styles/' }
                 ]
             }
         },
@@ -116,7 +117,6 @@ module.exports = function(grunt) {
         'copy:beforeBuild',
         'useminPrepare',
         'concat:generated',
-        'cssmin',
         'usemin',
         'ngtemplates',
         'concat:addTemplates',

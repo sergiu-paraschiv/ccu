@@ -2,7 +2,11 @@ body,
 h1, h2, h3, h4, h5, h6 {
     font-family: Verdana, Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 0;    
+}
+
+body {
+    min-width: 640px;
 }
 
 a,
@@ -20,12 +24,37 @@ ul {
 
 .container {
     width: 640px;
-    padding: 0;
+    padding-left: 0;
+    padding-right: 0;
     position: relative;
 }
 
-@media (min-width: 960px) {
+@-ms-viewport {
+    width: 640px;
+}
+
+@-o-viewport {
+    width: 640px;
+}
+
+@viewport {
+    width: 640px;
+}
+
+@media (min-width: 960px) {    
     .container {
         width: 960px;
+    }
+
+    @-ms-viewport {
+        width: auto;
+    }
+
+    @-o-viewport {
+        width: auto;
+    }
+
+    @viewport {
+        width: auto;
     }
 }
