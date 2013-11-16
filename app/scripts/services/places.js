@@ -8,15 +8,18 @@
         '$http',
         'LocationSrvc',
         'PlacesMapper',
+        'ReviewsMapper',
 
-        function ($rootScope, $http, location, placesMapper) {
+        function ($rootScope, $http, location, placesMapper, reviewsMapper) {
             
             function get(type, id, callback) {
                 var url = C.PLACE.URL.GET
                                 .replace('{guid}', id);
 
                 $http.get(url).success(function (data) {
-                    callback.call(undefined, placesMapper.mapOne(data, type));
+                    var place = placesMapper.mapOne(data, type);
+                    place.reviews = reviewsMapper.map(data.reviews);
+                    callback.call(undefined, place);
                 });
             }
 

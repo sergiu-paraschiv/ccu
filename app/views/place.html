@@ -82,33 +82,17 @@
 
             <div class="section reviews">
                 <div class="header">
-                    <h2 class="title"><strong>Reviews</strong> (3)</h2>
+                    <h2 class="title"><strong>Reviews</strong> ({{place.reviews.length}})</h2>
                     <a href="" class="button notext add"><span>&nbsp;</span></a>
                 </div>
 
 
-                <div class="review">
-                    <rating data-value="3.5"></rating>
+                <div class="review" ng-repeat="review in place.reviews">
+                    <rating data-value="review.rating"></rating>
 
-                    <h3 class="username">A google user</h3>
-                    <span class="date">27 Oct 2013</span>
-                    <div class="description">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>
-                </div>
-
-                <div class="review">
-                    <rating data-value="2.5"></rating>
-
-                    <h3 class="username">A google user</h3>
-                    <span class="date">27 Oct 2013</span>
-                    <div class="description">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>
-                </div>
-
-                <div class="review">
-                    <rating data-value="1"></rating>
-
-                    <h3 class="username">A google user</h3>
-                    <span class="date">27 Oct 2013</span>
-                    <div class="description">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>
+                    <h3 class="username">{{review.author}}</h3>
+                    <span class="date">{{review.date | date:'dd MMM yyyy'}}</span>
+                    <div class="description">{{review.comment}}</div>
                 </div>
             </div>
         </div>

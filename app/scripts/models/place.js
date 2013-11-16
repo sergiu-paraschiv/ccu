@@ -14,6 +14,7 @@
             lng: data.address.longitude || 0
         };
         this.type = type || '';
+        this.reviews = [];
     }
 
     this.exports(this.Models, {

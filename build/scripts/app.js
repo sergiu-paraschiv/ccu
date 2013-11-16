@@ -224,6 +224,7 @@
             lng: data.address.longitude || 0
         };
         this.type = type || '';
+        this.reviews = [];
     }
 
     this.exports(this.Models, {
@@ -258,6 +259,21 @@
 
     this.exports(this.Models, {
         NewsArticle: NewsArticle
+    });
+
+}).call(this.Crosscut);
+(function (undefined) {
+    'use strict';
+
+    function Review(data) {
+        this.author = data.author || '';
+        this.comment = data.comment || '';
+        this.date = data.date || '';
+        this.rating = data.rating || 0;
+    }
+
+    this.exports(this.Models, {
+        Review: Review
     });
 
 }).call(this.Crosscut);
@@ -327,15 +343,18 @@
         '$http',
         'LocationSrvc',
         'PlacesMapper',
+        'ReviewsMapper',
 
-        function ($rootScope, $http, location, placesMapper) {
+        function ($rootScope, $http, location, placesMapper, reviewsMapper) {
             
             function get(type, id, callback) {
                 var url = C.PLACE.URL.GET
                                 .replace('{guid}', id);
 
                 $http.get(url).success(function (data) {
-                    callback.call(undefined, placesMapper.mapOne(data, type));
+                    var place = placesMapper.mapOne(data, type);
+                    place.reviews = reviewsMapper.map(data.reviews);
+                    callback.call(undefined, place);
                 });
             }
 
@@ -402,6 +421,40 @@
                        longitude: place.location.lng,
                        latitude: place.location.lat
                    }
+               };
+           }
+
+           return {
+               map: map,
+               mapOne: mapOne,
+               unmapOne: unmapOne
+           };
+       }
+    ]);
+
+}).call(this.Crosscut, this._);
+(function (_, undefined) {
+    'use strict';
+
+    var Review = this.Models.Review;
+
+    this.Main.factory('ReviewsMapper', [
+       '$rootScope',
+
+       function ($rootScope) {
+
+           function map(data) {
+               return _.map(data, function (item) {
+                   return mapOne(item);
+               });
+           }
+
+           function mapOne(data) {
+               return new Review(data);
+           }
+
+           function unmapOne(review) {
+               return {
                };
            }
 
@@ -1415,7 +1468,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "                <div class=\"header\">\r" +
     "\n" +
-    "                    <h2 class=\"title\"><strong>Reviews</strong> (3)</h2>\r" +
+    "                    <h2 class=\"title\"><strong>Reviews</strong> ({{place.reviews.length}})</h2>\r" +
     "\n" +
     "                    <a href=\"\" class=\"button notext add\"><span>&nbsp;</span></a>\r" +
     "\n" +
@@ -1425,49 +1478,17 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "                <div class=\"review\">\r" +
+    "                <div class=\"review\" ng-repeat=\"review in place.reviews\">\r" +
     "\n" +
-    "                    <rating data-value=\"3.5\"></rating>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                    <h3 class=\"username\">A google user</h3>\r" +
-    "\n" +
-    "                    <span class=\"date\">27 Oct 2013</span>\r" +
-    "\n" +
-    "                    <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
-    "\n" +
-    "                </div>\r" +
+    "                    <rating data-value=\"review.rating\"></rating>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                <div class=\"review\">\r" +
+    "                    <h3 class=\"username\">{{review.author}}</h3>\r" +
     "\n" +
-    "                    <rating data-value=\"2.5\"></rating>\r" +
+    "                    <span class=\"date\">{{review.date | date:'dd MMM yyyy'}}</span>\r" +
     "\n" +
-    "\r" +
-    "\n" +
-    "                    <h3 class=\"username\">A google user</h3>\r" +
-    "\n" +
-    "                    <span class=\"date\">27 Oct 2013</span>\r" +
-    "\n" +
-    "                    <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <div class=\"review\">\r" +
-    "\n" +
-    "                    <rating data-value=\"1\"></rating>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                    <h3 class=\"username\">A google user</h3>\r" +
-    "\n" +
-    "                    <span class=\"date\">27 Oct 2013</span>\r" +
-    "\n" +
-    "                    <div class=\"description\">Donec vehicula risus rutrum laoreet semper. Fusce tincidunt bibendum massa ut fringilla. Suspendisse sed odio vel orci egestas tristique at placerat diam. </div>\r" +
+    "                    <div class=\"description\">{{review.comment}}</div>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
