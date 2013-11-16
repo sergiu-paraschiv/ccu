@@ -12,4 +12,4 @@
         NewsArticle: NewsArticle
     });
 
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);

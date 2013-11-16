@@ -1,16 +1,23 @@
 ﻿(function (undefined) {
     'use strict';
 
-    function Place(data) {
-        this.id = data.id;
-        this.image = data.image || '';
-        this.title = data.title || '';
-        this.address = data.address || '';
-        this.rating = data.rating || 0;
+    function Place(data, type) {
+        this.id = data.gReference;
+        this.image = '';
+        this.title = data.name || '';
+        this.description = data.description || '';
+        this.address = data.address.formatedAddress || '';
+        this.phone = data.address.formatedPhone || '';
+        this.rating = data.averageRating || 0;
+        this.location = {
+            lat: data.address.latitude || 0,
+            lng: data.address.longitude || 0
+        };
+        this.type = type || '';
     }
 
     this.exports(this.Models, {
         Place: Place
     });
 
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);

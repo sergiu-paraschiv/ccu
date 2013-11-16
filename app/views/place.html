@@ -1,7 +1,7 @@
 <div id="smallmenu">
     <ul class="container">
         <li class="places">
-            <a ui-sref="places"><span>Places</span></a>
+            <a ui-sref="places({type: 'SHELTER'})"><span>Places</span></a>
         </li>
         
         <li class="jobs">
@@ -23,16 +23,16 @@
 <div id="placewrap">
     <div class="container">
         <ul class="tabs">
-            <li class="active">
-                <a href="">Shelters</a>
+            <li ng-class="{'active': currentTab('SHELTER')}">
+                <a ui-sref="places({type: 'SHELTER'})">Shelters</a>
             </li>
-        
-            <li>
-                <a href="">Food Pantries</a>
+
+            <li ng-class="{'active': currentTab('FOOD_PANTRIES')}">
+                <a ui-sref="places({type: 'FOOD_PANTRIES'})">Food Pantries</a>
             </li>
-        
-            <li>
-                <a href="">Food Banks</a>
+
+            <li ng-class="{'active': currentTab('FOOD_BANK')}">
+                <a ui-sref="places({type: 'FOOD_BANK'})">Food Banks</a>
             </li>
         </ul>
     </div>
@@ -40,10 +40,10 @@
     <div id="place">
         <div class="container">
             <div class="header">
-                <h1 class="title"><strong>HELP Women's Shelter</strong></h1>
-                <rating data-value="4.35" class="inline"></rating>
-                <span class="address">Brooklyn, NY 11216</span>
-                <rating data-value="4.35" class="end"></rating>
+                <h1 class="title"><strong>{{place.title}}</strong></h1>
+                <rating data-value="place.rating" class="inline"></rating>
+                <span class="address">{{place.address}}</span>
+                <rating data-value="place.rating" class="end"></rating>
             </div>
 
             <ul class="actions">
@@ -52,7 +52,7 @@
                 </li>
 
                 <li>
-                    <a href="" class="button phone notext"><span>Call phone</span></a>
+                    <a href="tel:{{place.phone}}" class="button phone notext"><span>Call phone</span></a>
                 </li>
 
                 <li>
@@ -61,7 +61,7 @@
             </ul>
         </div>
 
-        <map></map>
+        <map data-location="place.location" data-title="place.title"></map>
 
         <div class="container">
             <div class="section">

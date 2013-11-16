@@ -27,4 +27,4 @@
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);

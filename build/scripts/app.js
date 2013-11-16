@@ -10,11 +10,34 @@
     };
 
 }).call(this, this.jQuery);
+(function(undefined) {
+    'use strict';
+    
+    this.Constants = {
+        PLACE: {
+            URL: {
+                SEARCH: 'https://gcdc2013-crosscut.appspot.com/_ah/api/places/v1/places?lat={lat}&long={lng}&type={type}',
+                GET: 'https://gcdc2013-crosscut.appspot.com/_ah/api/places/v1/places/{guid}',
+                ADD: 'https://gcdc2013-crosscut.appspot.com/_ah/api/places/v1/add/{type}'
+            },
+
+            TYPE: {
+                SHELTER: 'SHELTER',
+                FOOD_PANTRIES: 'FOOD_PANTRIES',
+                FOOD_BANK: 'FOOD_BANK',
+                TRANSITIONAL_HOUSING: 'TRANSITIONAL_HOUSING',
+                HEALTH: 'HEALTH'
+            }
+        }
+    };
+
+}).call(this.Crosscut);
 (function(ng, undefined) {
     'use strict';
    
     var module = ng.module('Crosscut', [
-        'ui.router'
+        'ui.router',
+        'geolocation'
     ]);
     
     module.config(function($stateProvider, $urlRouterProvider) {
@@ -33,7 +56,7 @@
             })
             
             .state('places', {
-                url: '/places',
+                url: '/places/{type}',
                 views: {
                     'content': {
                         templateUrl: 'views/places.html',
@@ -47,7 +70,7 @@
             })
 
             .state('place', {
-                url: '/place/{id}',
+                url: '/places/{type}/place/{id}',
                 views: {
                     'content': {
                         templateUrl: 'views/place.html',
@@ -105,7 +128,7 @@
         }
     ]);
 
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function (maps, undefined) {
     'use strict';
 
@@ -116,19 +139,35 @@
                 transclude: false,
                 replace: true,
                 scope: {
+                    location: '=',
+                    title: '='
                 },
                 templateUrl: 'views/directives/map.html',
 
                 controller: function ($scope, $element) {
-                    var map;
+                    var map, marker, center;
 
                     var mapOptions = {
                         zoom: 8,
-                        center: new maps.LatLng(-34.397, 150.644),
                         mapTypeId: maps.MapTypeId.ROADMAP
                     };
 
                     map = new maps.Map($element[0], mapOptions);
+
+                    $scope.$watch('location', function (newData, oldData) {
+                        if (oldData === undefined && newData !== undefined) {
+                            center = new maps.LatLng($scope.location.lat, $scope.location.lng);
+
+                            map.panTo(center);
+
+                            marker = new maps.Marker({
+                                position: center,
+                                map: map,
+                                title: $scope.title
+                            });
+
+                        }
+                    }, true);
                 }
             };
         }
@@ -166,19 +205,26 @@
 (function (undefined) {
     'use strict';
 
-    function Place(data) {
-        this.id = data.id;
-        this.image = data.image || '';
-        this.title = data.title || '';
-        this.address = data.address || '';
-        this.rating = data.rating || 0;
+    function Place(data, type) {
+        this.id = data.gReference;
+        this.image = '';
+        this.title = data.name || '';
+        this.description = data.description || '';
+        this.address = data.address.formatedAddress || '';
+        this.phone = data.address.formatedPhone || '';
+        this.rating = data.averageRating || 0;
+        this.location = {
+            lat: data.address.latitude || 0,
+            lng: data.address.longitude || 0
+        };
+        this.type = type || '';
     }
 
     this.exports(this.Models, {
         Place: Place
     });
 
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function (undefined) {
     'use strict';
 
@@ -193,7 +239,7 @@
         Job: Job
     });
 
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function (undefined) {
     'use strict';
 
@@ -208,7 +254,156 @@
         NewsArticle: NewsArticle
     });
 
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
+(function(undefined) {
+    'use strict';
+
+    var C = this.Constants;
+   
+    this.Main.factory('LocationSrvc', [
+        '$rootScope',
+        'geolocation',
+
+        function ($rootScope, geolocation) {
+            var self = this;
+
+            this.location = null;
+
+            function get(callback) {
+                if (self.location === null) {
+                    geolocation.getLocation()
+                        .then(
+                            function (data) {
+                                self.location = {
+                                    lat: data.coords.latitude,
+                                    lng: data.coords.longitude
+                                };
+
+                                /*
+                                self.location = {
+                                    lat: 34.158442,
+                                    lng: -118.133423
+                                };
+                                */
+
+                                callback.call(undefined, self.location);
+                            },
+
+                            function (error) {
+                                // TODO: handle this
+                            }
+                        );
+                }
+                else {
+                    callback.call(undefined, self.location);
+                }
+            }
+
+            return {
+                get: get
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut);
+(function(undefined) {
+    'use strict';
+   
+    var C = this.Constants;
+
+    this.Main.factory('PlacesSrvc', [
+        '$rootScope',
+        '$http',
+        'LocationSrvc',
+        'PlacesMapper',
+
+        function ($rootScope, $http, location, placesMapper) {
+            
+            function get(type, id, callback) {
+                var url = C.PLACE.URL.GET
+                                .replace('{guid}', id);
+
+                $http.get(url).success(function (data) {
+                    callback.call(undefined, placesMapper.mapOne(data, type));
+                });
+            }
+
+            function search(type, callback) {
+                location.get(function (latLng) {
+                    var url = C.PLACE.URL.SEARCH
+                                .replace('{lat}', latLng.lat)
+                                .replace('{lng}', latLng.lng)
+                                .replace('{type}', type);
+
+                    $http.get(url).success(function (data) {
+                        callback.call(undefined, placesMapper.map(data.items, type));
+                    });
+                });
+            }
+
+            function add(place, callback) {
+                var url = C.PLACE.URL.ADD
+                                .replace('{type}', place.type);
+
+                var data = placesMapper.unmapOne(place);
+
+                $http.post(url, data).success(function (data) {
+                    console.log(data);
+                    callback.call(undefined);
+                });
+            }
+
+            return {
+                get: get,
+                add: add,
+                search: search
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut);
+(function (_, undefined) {
+    'use strict';
+
+    var Place = this.Models.Place;
+
+    this.Main.factory('PlacesMapper', [
+       '$rootScope',
+
+       function ($rootScope) {
+
+           function map(data, type) {
+               return _.map(data, function (item) {
+                   return mapOne(item, type);
+               });
+           }
+
+           function mapOne(data, type) {
+               return new Place(data, type);
+           }
+
+           function unmapOne(place) {
+               return {
+                   name: place.title,
+                   description: place.description,
+                   address: {
+                       formatedAddress: place.address,
+                       formatedPhone: '',
+                       longitude: place.location.lng,
+                       latitude: place.location.lat
+                   }
+               };
+           }
+
+           return {
+               map: map,
+               mapOne: mapOne,
+               unmapOne: unmapOne
+           };
+       }
+    ]);
+
+}).call(this.Crosscut, this._);
 (function(undefined) {
     'use strict';
    
@@ -238,7 +433,7 @@
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function(undefined) {
     'use strict';
    
@@ -249,17 +444,35 @@
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function(undefined) {
     'use strict';
 
     var Place = this.Models.Place;
    
+    var C = this.Constants;
+
     this.Main.controller('PlacesCtrl', [
         '$scope',
+        '$stateParams',
         '$rootScope',
+        'PlacesSrvc',
         
-        function ($scope, $rootScope) {
+        function ($scope, $stateParams, $rootScope, places) {
+            $scope.C = C;
+
+            $scope.places = [];
+
+            function init() {
+                places.search($stateParams.type, function (placesList) {
+                    $scope.places = placesList;
+                });
+            }
+
+            $scope.currentTab = function (tab) {
+                return $stateParams.type === tab;
+            };
+
             $scope.getPlaceImage = function (src) {
                 if (src === '') {
                     return 'images/places.placeholder.png';
@@ -268,104 +481,19 @@
                 return src;
             };
 
+            $scope.$on('placeAdded', function () {
+                init();
+            });
+
             $scope.addPlace = function () {
-                $rootScope.$broadcast('addPlace', {});
+                $rootScope.$broadcast('addPlace', { type: $stateParams.type });
             };
 
-            $scope.places = [
-                new Place({
-                    id: 1,
-                    image: 'images/dynamic/place1.png',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608',
-                    rating: 5
-                }),
-
-                new Place({
-                    id: 2,
-                    image: 'images/dynamic/place2.png',
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 4.5
-                }),
-
-                new Place({
-                    id: 3,
-                    image: 'images/dynamic/place3.png',
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 4
-                }),
-
-                new Place({
-                    id: 4,
-                    image: 'images/dynamic/place4.png',
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 3.5
-                }),
-
-                new Place({
-                    id: 5,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 3
-                }),
-
-                new Place({
-                    id: 6,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 2.5
-                }),
-
-                new Place({
-                    id: 7,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 2
-                }),
-
-                new Place({
-                    id: 8,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 1.5
-                }),
-
-                new Place({
-                    id: 9,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 1
-                }),
-
-                new Place({
-                    id: 10,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 0.5
-                }),
-
-                new Place({
-                    id: 11,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 0
-                }),
-
-                new Place({
-                    id: 12,
-                    image: 'images/dynamic/place1.png',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608',
-                    rating: 3.65
-                })
-            ];
+            init();
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function(undefined) {
     'use strict';
 
@@ -374,44 +502,78 @@
     this.Main.controller('PlaceCtrl', [
         '$scope', 
         '$stateParams',
+        'PlacesSrvc',
 
-        function ($scope, $stateParams) {
-            
+        function ($scope, $stateParams, places) {
+            $scope.place = {};
+
+            $scope.currentTab = function (tab) {
+                return $stateParams.type === tab;
+            };
+
+            places.get($stateParams.type, $stateParams.id, function (place) {
+                $scope.place = place;
+            });
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function(undefined) {
     'use strict';
    
+    var Place = this.Models.Place;
+
     this.Main.controller('AddPlaceCtrl', [
         '$scope', 
         '$rootScope',
+        'PlacesSrvc',
+        'LocationSrvc',
 
-        function ($scope, $rootScope) {
+        function ($scope, $rootScope, places, location) {
             $scope.visible = false;
 
-            $scope.name = '';
-            $scope.description = '';
-            $scope.address = '';
+            $scope.place = null;
+
+            $scope.currentTab = function (tab) {
+                if (!$scope.place) {
+                    return false;
+                }
+
+                return $scope.place.type === tab;
+            };
 
             $scope.$on('addPlace', function (e, config) {
+                $scope.place = new Place({ address: {} }, config.type);                
+
                 $rootScope.$broadcast('showModal');
                 $scope.visible = true;
             });
 
-            $scope.clear = function (fieldName) {
-                $scope[fieldName] = '';
+            $scope.setLocation = function () {
+
             };
 
-            $scope.cancel = function () {
+            $scope.clear = function (fieldName) {
+                $scope.place[fieldName] = '';
+            };
+
+            function hide() {
                 $rootScope.$broadcast('hideModal');
                 $scope.visible = false;
+            }
+
+            $scope.cancel = hide;
+
+            $scope.save = function () {
+                places.add($scope.place, function () {
+                    $rootScope.$broadcast('placeAdded');
+                    hide();
+                })
             };
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function(undefined) {
     'use strict';
    
@@ -533,7 +695,7 @@
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 (function(undefined) {
     'use strict';
 
@@ -639,7 +801,7 @@
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
 angular.module('Crosscut').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('views/addplace.html',
@@ -651,7 +813,17 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "        <h1 class=\"title add\"><strong>Add new shelter</strong></h1>\r" +
+    "        <h1 class=\"title add\">\r" +
+    "\n" +
+    "            <strong ng-show=\"currentTab('SHELTER')\">Add new shelter</strong>\r" +
+    "\n" +
+    "            <strong ng-show=\"currentTab('FOOD_PANTRIES')\">Add new food pantry</strong>\r" +
+    "\n" +
+    "            <strong ng-show=\"currentTab('FOOD_BANK')\">Add new food bank</strong>\r" +
+    "\n" +
+    "        </h1>\r" +
+    "\n" +
+    "\r" +
     "\n" +
     "        <a href=\"\" class=\"modalclose\" ng-click=\"cancel()\"><span>Close</span></a>\r" +
     "\n" +
@@ -659,19 +831,19 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <form>\r" +
     "\n" +
-    "            <p class=\"input text\" ng-class=\"{'notempty': name != ''}\">\r" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': place.title != ''}\">\r" +
     "\n" +
-    "                <input type=\"text\" ng-model=\"name\" placeholder=\"Name\" is-focused />\r" +
+    "                <input type=\"text\" ng-model=\"place.title\" placeholder=\"Name\" is-focused />\r" +
     "\n" +
-    "                <a href=\"\" class=\"clear\" ng-click=\"clear('name')\"><span>Clear</span></a>\r" +
+    "                <a href=\"\" class=\"clear\" ng-click=\"clear('title')\"><span>Clear</span></a>\r" +
     "\n" +
     "            </p>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "            <p class=\"input text\" ng-class=\"{'notempty': description != ''}\">\r" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': place.description != ''}\">\r" +
     "\n" +
-    "                <input type=\"text\" ng-model=\"description\" placeholder=\"Description\" is-focused />\r" +
+    "                <input type=\"text\" ng-model=\"place.description\" placeholder=\"Description\" is-focused />\r" +
     "\n" +
     "                <a href=\"\" class=\"clear\" ng-click=\"clear('description')\"><span>Clear</span></a>\r" +
     "\n" +
@@ -679,11 +851,19 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "            <p class=\"input text\" ng-class=\"{'notempty': address != ''}\">\r" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': place.address != ''}\">\r" +
     "\n" +
-    "                <input type=\"text\" ng-model=\"address\" placeholder=\"Address\" is-focused />\r" +
+    "                <input type=\"text\" ng-model=\"place.address\" placeholder=\"Address\" is-focused />\r" +
     "\n" +
     "                <a href=\"\" class=\"clear\" ng-click=\"clear('address')\"><span>Clear</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"input\">\r" +
+    "\n" +
+    "                <a class=\"button location\" ng-click=\"setLocation()\"><span>Current location</span></a>\r" +
     "\n" +
     "            </p>\r" +
     "\n" +
@@ -693,7 +873,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"actions\">\r" +
     "\n" +
-    "            <a href=\"\" class=\"button save\"><span>Save</span></a>\r" +
+    "            <a href=\"\" class=\"button save\" ng-click=\"save()\"><span>Save</span></a>\r" +
     "\n" +
     "            <a href=\"\" class=\"button cancel\" ng-click=\"cancel()\"><span>Cancel</span></a>\r" +
     "\n" +
@@ -746,7 +926,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <li class=\"places\">\r" +
     "\n" +
-    "            <a ui-sref=\"places\">Places</a>\r" +
+    "            <a ui-sref=\"places({type: 'SHELTER'})\">Places</a>\r" +
     "\n" +
     "        </li>\r" +
     "\n" +
@@ -823,7 +1003,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <li class=\"places\">\r" +
     "\n" +
-    "            <a ui-sref=\"places\"><span>Places</span></a>\r" +
+    "            <a ui-sref=\"places({type: 'SHELTER'})\"><span>Places</span></a>\r" +
     "\n" +
     "        </li>\r" +
     "\n" +
@@ -968,7 +1148,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <li class=\"places\">\r" +
     "\n" +
-    "            <a ui-sref=\"places\"><span>Places</span></a>\r" +
+    "            <a ui-sref=\"places({type: 'SHELTER'})\"><span>Places</span></a>\r" +
     "\n" +
     "        </li>\r" +
     "\n" +
@@ -1055,7 +1235,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <li class=\"places\">\r" +
     "\n" +
-    "            <a ui-sref=\"places\"><span>Places</span></a>\r" +
+    "            <a ui-sref=\"places({type: 'SHELTER'})\"><span>Places</span></a>\r" +
     "\n" +
     "        </li>\r" +
     "\n" +
@@ -1099,25 +1279,25 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <ul class=\"tabs\">\r" +
     "\n" +
-    "            <li class=\"active\">\r" +
+    "            <li ng-class=\"{'active': currentTab('SHELTER')}\">\r" +
     "\n" +
-    "                <a href=\"\">Shelters</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "            <li>\r" +
-    "\n" +
-    "                <a href=\"\">Food Pantries</a>\r" +
+    "                <a ui-sref=\"places({type: 'SHELTER'})\">Shelters</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
-    "        \r" +
+    "\r" +
     "\n" +
-    "            <li>\r" +
+    "            <li ng-class=\"{'active': currentTab('FOOD_PANTRIES')}\">\r" +
     "\n" +
-    "                <a href=\"\">Food Banks</a>\r" +
+    "                <a ui-sref=\"places({type: 'FOOD_PANTRIES'})\">Food Pantries</a>\r" +
+    "\n" +
+    "            </li>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <li ng-class=\"{'active': currentTab('FOOD_BANK')}\">\r" +
+    "\n" +
+    "                <a ui-sref=\"places({type: 'FOOD_BANK'})\">Food Banks</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -1133,13 +1313,13 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"header\">\r" +
     "\n" +
-    "                <h1 class=\"title\"><strong>HELP Women's Shelter</strong></h1>\r" +
+    "                <h1 class=\"title\"><strong>{{place.title}}</strong></h1>\r" +
     "\n" +
-    "                <rating data-value=\"4.35\" class=\"inline\"></rating>\r" +
+    "                <rating data-value=\"place.rating\" class=\"inline\"></rating>\r" +
     "\n" +
-    "                <span class=\"address\">Brooklyn, NY 11216</span>\r" +
+    "                <span class=\"address\">{{place.address}}</span>\r" +
     "\n" +
-    "                <rating data-value=\"4.35\" class=\"end\"></rating>\r" +
+    "                <rating data-value=\"place.rating\" class=\"end\"></rating>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -1157,7 +1337,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "                <li>\r" +
     "\n" +
-    "                    <a href=\"\" class=\"button phone notext\"><span>Call phone</span></a>\r" +
+    "                    <a href=\"tel:{{place.phone}}\" class=\"button phone notext\"><span>Call phone</span></a>\r" +
     "\n" +
     "                </li>\r" +
     "\n" +
@@ -1175,7 +1355,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "        <map></map>\r" +
+    "        <map data-location=\"place.location\" data-title=\"place.title\"></map>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1290,7 +1470,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <li class=\"places\">\r" +
     "\n" +
-    "            <a ui-sref=\"places\"><span>Places</span></a>\r" +
+    "            <a ui-sref=\"places({type: 'SHELTER'})\"><span>Places</span></a>\r" +
     "\n" +
     "        </li>\r" +
     "\n" +
@@ -1334,25 +1514,25 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <ul class=\"tabs\">\r" +
     "\n" +
-    "            <li class=\"active\">\r" +
+    "            <li ng-class=\"{'active': currentTab('SHELTER')}\">\r" +
     "\n" +
-    "                <a href=\"\">Shelters</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "            <li>\r" +
-    "\n" +
-    "                <a href=\"\">Food Pantries</a>\r" +
+    "                <a ui-sref=\"places({type: 'SHELTER'})\">Shelters</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
     "        \r" +
     "\n" +
-    "            <li>\r" +
+    "            <li ng-class=\"{'active': currentTab('FOOD_PANTRIES')}\">\r" +
     "\n" +
-    "                <a href=\"\">Food Banks</a>\r" +
+    "                <a ui-sref=\"places({type: 'FOOD_PANTRIES'})\">Food Pantries</a>\r" +
+    "\n" +
+    "            </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "            <li ng-class=\"{'active': currentTab('FOOD_BANK')}\">\r" +
+    "\n" +
+    "                <a ui-sref=\"places({type: 'FOOD_BANK'})\">Food Banks</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -1364,9 +1544,27 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"header\">\r" +
     "\n" +
-    "                <h2 class=\"title\"><strong>Shelters</strong> (87)</h2>\r" +
+    "                <h2 class=\"title\">\r" +
     "\n" +
-    "                <a href=\"\" class=\"button add\" ng-click=\"addPlace()\">Add shelter</a>\r" +
+    "                    <strong ng-show=\"currentTab('SHELTER')\">Shelters</strong>\r" +
+    "\n" +
+    "                    <strong ng-show=\"currentTab('FOOD_PANTRIES')\">Food Pantries</strong>\r" +
+    "\n" +
+    "                    <strong ng-show=\"currentTab('FOOD_BANK')\">Food Banks</strong>\r" +
+    "\n" +
+    "                    ({{places.length}})\r" +
+    "\n" +
+    "                </h2>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"button add\" ng-click=\"addPlace()\">\r" +
+    "\n" +
+    "                    <span ng-show=\"currentTab('SHELTER')\">Add shelter</span>\r" +
+    "\n" +
+    "                    <span ng-show=\"currentTab('FOOD_PANTRIES')\">Add food pantry</span>\r" +
+    "\n" +
+    "                    <span ng-show=\"currentTab('FOOD_BANK')\">Add food bank</span>\r" +
+    "\n" +
+    "                </a>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -1374,7 +1572,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"container\">\r" +
     "\n" +
-    "                <a class=\"item\" ng-repeat=\"place in places\" ui-sref=\"place({id: place.id})\">\r" +
+    "                <a class=\"item\" ng-repeat=\"place in places\" ui-sref=\"place({type: place.type, id: place.id})\">\r" +
     "\n" +
     "                    <img ng-src=\"{{getPlaceImage(place.image)}}\" alt=\"\" />\r" +
     "\n" +

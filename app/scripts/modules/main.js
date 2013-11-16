@@ -2,7 +2,8 @@
     'use strict';
    
     var module = ng.module('Crosscut', [
-        'ui.router'
+        'ui.router',
+        'geolocation'
     ]);
     
     module.config(function($stateProvider, $urlRouterProvider) {
@@ -21,7 +22,7 @@
             })
             
             .state('places', {
-                url: '/places',
+                url: '/places/{type}',
                 views: {
                     'content': {
                         templateUrl: 'views/places.html',
@@ -35,7 +36,7 @@
             })
 
             .state('place', {
-                url: '/place/{id}',
+                url: '/places/{type}/place/{id}',
                 views: {
                     'content': {
                         templateUrl: 'views/place.html',

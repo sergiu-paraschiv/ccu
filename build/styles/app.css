@@ -7796,6 +7796,14 @@ ul {
         font-size: 28px;
     }
 
+    .button.location {
+        padding-left: 48px;
+        
+        background: url('../images/button.location.png') no-repeat 10px center transparent;
+        
+        color: #0099cc;
+    }
+
     .button.notext.add {
         padding: 44px 55px;
 
@@ -7920,6 +7928,11 @@ ul {
 
         .button.add {
              background: url('../images/xdpi.button.add.png') no-repeat 8px center transparent;
+             padding-left: 28px;
+        }
+
+        .button.location {
+             background: url('../images/xdpi.button.location.png') no-repeat 8px center transparent;
              padding-left: 28px;
         }
 
@@ -8135,34 +8148,34 @@ ul {
     font-style: italic;
 }
 
-.input.text {
-    margin: 32px 0 10px 0;
+.input {
     overflow: hidden;
     position: relative;
+    margin: 32px 0 10px 0;
 }
 
-    .input.text .clear {
+.input.text .clear {
+    display: none;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    background: url('../images/form.input.text.clear.png') no-repeat 0 0 transparent;
+}
+
+    .input.text .clear span {
         display: none;
-        width: 56px;
-        height: 56px;
-        overflow: hidden;
-        background: url('../images/form.input.text.clear.png') no-repeat 0 0 transparent;
     }
 
-        .input.text .clear span {
-            display: none;
-        }
+.input.text.notempty.focused input {
+    padding-right: 80px;
+}
 
-    .input.text.notempty.focused input {
-        padding-right: 80px;
+    .input.text.notempty.focused .clear {
+        display: block;
+        position: absolute;
+        top: 20px;
+        right: 15px;
     }
-
-        .input.text.notempty.focused .clear {
-            display: block;
-            position: absolute;
-            top: 20px;
-            right: 15px;
-        }
 
 .input.text input {    
     display: block;
@@ -8173,6 +8186,12 @@ ul {
     font-size: 28px;
     line-height: 28px;
     color: #777777;
+}
+
+.input .button {
+    margin: 0 auto;
+    width: 400px;
+    float: none;
 }
 
 @media (min-width: 960px) {
@@ -8200,7 +8219,8 @@ ul {
         margin: 14px 0 5px 0;
     }
 
-        .input.text.notempty .clear {
+        .input.text.notempty .clear,
+        .input.text.notempty.focused .clear {
             display: none;
         }
 
@@ -8215,6 +8235,10 @@ ul {
 
         font-size: 14px;
         line-height: 14px;
+    }
+
+    .input .button {
+        width: 200px;
     }
 }
 .list .header {

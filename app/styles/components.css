@@ -53,6 +53,14 @@
         font-size: 28px;
     }
 
+    .button.location {
+        padding-left: 48px;
+        
+        background: url('../images/button.location.png') no-repeat 10px center transparent;
+        
+        color: #0099cc;
+    }
+
     .button.notext.add {
         padding: 44px 55px;
 
@@ -177,6 +185,11 @@
 
         .button.add {
              background: url('../images/xdpi.button.add.png') no-repeat 8px center transparent;
+             padding-left: 28px;
+        }
+
+        .button.location {
+             background: url('../images/xdpi.button.location.png') no-repeat 8px center transparent;
              padding-left: 28px;
         }
 

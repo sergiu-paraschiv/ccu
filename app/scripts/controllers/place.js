@@ -6,10 +6,19 @@
     this.Main.controller('PlaceCtrl', [
         '$scope', 
         '$stateParams',
+        'PlacesSrvc',
 
-        function ($scope, $stateParams) {
-            
+        function ($scope, $stateParams, places) {
+            $scope.place = {};
+
+            $scope.currentTab = function (tab) {
+                return $stateParams.type === tab;
+            };
+
+            places.get($stateParams.type, $stateParams.id, function (place) {
+                $scope.place = place;
+            });
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut);
