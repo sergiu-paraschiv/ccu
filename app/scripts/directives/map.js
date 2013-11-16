@@ -14,14 +14,20 @@
                 templateUrl: 'views/directives/map.html',
 
                 controller: function ($scope, $element) {
-                    var map, marker, center;
+                    var map, marker, center, directionsService, directionsDisplay;
 
+                    
                     var mapOptions = {
                         zoom: 8,
                         mapTypeId: maps.MapTypeId.ROADMAP
                     };
 
+                    directionsService = new maps.DirectionsService();
+                    directionsDisplay = new maps.DirectionsRenderer();
+
                     map = new maps.Map($element[0], mapOptions);
+
+                    directionsDisplay.setMap(map);
 
                     $scope.$watch('location', function (newData, oldData) {
                         if (oldData === undefined && newData !== undefined) {
@@ -37,6 +43,20 @@
 
                         }
                     }, true);
+
+                    $scope.$on('showDirections', function (e, latLng) {
+                        var request = {
+                            origin: new maps.LatLng(latLng.lat, latLng.lng),
+                            destination: center,
+                            travelMode: maps.TravelMode.DRIVING
+                        };
+
+                        directionsService.route(request, function (response, status) {
+                            if (status === maps.DirectionsStatus.OK) {
+                                directionsDisplay.setDirections(response);
+                            }
+                        });
+                    });
                 }
             };
         }
