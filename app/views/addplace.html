@@ -10,9 +10,9 @@
 
         <a href="" class="modalclose" ng-click="cancel()"><span>Close</span></a>
         
-        <form>
+        <form name="addplace">
             <p class="input text" ng-class="{'notempty': place.title != ''}">
-                <input type="text" ng-model="place.title" placeholder="Name" is-focused />
+                <input type="text" ng-model="place.title" placeholder="Name" is-focused required />
                 <a href="" class="clear" ng-click="clear('title')"><span>Clear</span></a>
             </p>
 
@@ -32,7 +32,7 @@
         </form>
 
         <div class="actions">
-            <a href="" class="button save" ng-click="save()"><span>Save</span></a>
+            <a href="" class="button save" ng-click="save()" ng-class="{'disabled': addplace.$invalid}"><span>Save</span></a>
             <a href="" class="button cancel" ng-click="cancel()"><span>Cancel</span></a>
         </div>
     </div>

@@ -7787,6 +7787,12 @@ ul {
         display: none;
     }
 
+    .button.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+        cursor: default;
+    }
+
     .button.add {
         padding-left: 48px;
         

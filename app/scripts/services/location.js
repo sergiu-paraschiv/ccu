@@ -5,9 +5,10 @@
    
     this.Main.factory('LocationSrvc', [
         '$rootScope',
+        '$http',
         'geolocation',
 
-        function ($rootScope, geolocation) {
+        function ($rootScope, $http, geolocation) {
             var self = this;
 
             this.location = null;
@@ -22,13 +23,6 @@
                                     lng: data.coords.longitude
                                 };
 
-                                /*
-                                self.location = {
-                                    lat: 34.158442,
-                                    lng: -118.133423
-                                };
-                                */
-
                                 callback.call(undefined, self.location);
                             },
 
@@ -42,8 +36,19 @@
                 }
             }
 
+            function geocode(latLng, callback) {
+                var url = C.LOCATION.URL.GEOCODE
+                            .replace('{lat}', latLng.lat)
+                            .replace('{lng}', latLng.lng);
+
+                $http.get(url).success(function (data) {
+                    callback.call(undefined, data.formatedAddress);
+                });
+            }
+
             return {
-                get: get
+                get: get,
+                geocode: geocode
             };
         }
     ]);

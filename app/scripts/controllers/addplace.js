@@ -30,7 +30,15 @@
             });
 
             $scope.setLocation = function () {
-
+                location.get(function (latLng) {
+                    $scope.place.location = latLng;
+                    if ($scope.place.address === '') {
+                        location.geocode(latLng, function (address) {
+                            $scope.place.address = address;
+                        });
+                    }
+                });
+                
             };
 
             $scope.clear = function (fieldName) {

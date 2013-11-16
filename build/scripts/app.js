@@ -28,6 +28,12 @@
                 TRANSITIONAL_HOUSING: 'TRANSITIONAL_HOUSING',
                 HEALTH: 'HEALTH'
             }
+        },
+
+        LOCATION: {
+            URL: {
+                GEOCODE: 'https://gcdc2013-crosscut.appspot.com/_ah/api/location/v1/locations?lat={lat}&long={lng}'
+            }
         }
     };
 
@@ -262,9 +268,10 @@
    
     this.Main.factory('LocationSrvc', [
         '$rootScope',
+        '$http',
         'geolocation',
 
-        function ($rootScope, geolocation) {
+        function ($rootScope, $http, geolocation) {
             var self = this;
 
             this.location = null;
@@ -279,13 +286,6 @@
                                     lng: data.coords.longitude
                                 };
 
-                                /*
-                                self.location = {
-                                    lat: 34.158442,
-                                    lng: -118.133423
-                                };
-                                */
-
                                 callback.call(undefined, self.location);
                             },
 
@@ -299,8 +299,19 @@
                 }
             }
 
+            function geocode(latLng, callback) {
+                var url = C.LOCATION.URL.GEOCODE
+                            .replace('{lat}', latLng.lat)
+                            .replace('{lng}', latLng.lng);
+
+                $http.get(url).success(function (data) {
+                    callback.call(undefined, data.formatedAddress);
+                });
+            }
+
             return {
-                get: get
+                get: get,
+                geocode: geocode
             };
         }
     ]);
@@ -348,7 +359,6 @@
                 var data = placesMapper.unmapOne(place);
 
                 $http.post(url, data).success(function (data) {
-                    console.log(data);
                     callback.call(undefined);
                 });
             }
@@ -550,7 +560,15 @@
             });
 
             $scope.setLocation = function () {
-
+                location.get(function (latLng) {
+                    $scope.place.location = latLng;
+                    if ($scope.place.address === '') {
+                        location.geocode(latLng, function (address) {
+                            $scope.place.address = address;
+                        });
+                    }
+                });
+                
             };
 
             $scope.clear = function (fieldName) {
@@ -829,11 +847,11 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        \r" +
     "\n" +
-    "        <form>\r" +
+    "        <form name=\"addplace\">\r" +
     "\n" +
     "            <p class=\"input text\" ng-class=\"{'notempty': place.title != ''}\">\r" +
     "\n" +
-    "                <input type=\"text\" ng-model=\"place.title\" placeholder=\"Name\" is-focused />\r" +
+    "                <input type=\"text\" ng-model=\"place.title\" placeholder=\"Name\" is-focused required />\r" +
     "\n" +
     "                <a href=\"\" class=\"clear\" ng-click=\"clear('title')\"><span>Clear</span></a>\r" +
     "\n" +
@@ -873,7 +891,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"actions\">\r" +
     "\n" +
-    "            <a href=\"\" class=\"button save\" ng-click=\"save()\"><span>Save</span></a>\r" +
+    "            <a href=\"\" class=\"button save\" ng-click=\"save()\" ng-class=\"{'disabled': addplace.$invalid}\"><span>Save</span></a>\r" +
     "\n" +
     "            <a href=\"\" class=\"button cancel\" ng-click=\"cancel()\"><span>Cancel</span></a>\r" +
     "\n" +

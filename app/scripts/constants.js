@@ -16,6 +16,12 @@
                 TRANSITIONAL_HOUSING: 'TRANSITIONAL_HOUSING',
                 HEALTH: 'HEALTH'
             }
+        },
+
+        LOCATION: {
+            URL: {
+                GEOCODE: 'https://gcdc2013-crosscut.appspot.com/_ah/api/location/v1/locations?lat={lat}&long={lng}'
+            }
         }
     };
 

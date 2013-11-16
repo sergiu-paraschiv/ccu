@@ -40,7 +40,6 @@
                 var data = placesMapper.unmapOne(place);
 
                 $http.post(url, data).success(function (data) {
-                    console.log(data);
                     callback.call(undefined);
                 });
             }
