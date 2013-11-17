@@ -225,13 +225,13 @@
         }
 
     .rating.edit {
-        height: 14px;
-        width: 84px;
+        height: 16px;
+        width: 80px;
     }
 
         .rating.edit .star {
-            height: 14px;
-            width: 14px;
+            height: 16px;
+            width: 16px;
 
             background: url('../images/xdpi.rating.edit.bad.png') no-repeat 0 0 transparent;
         }

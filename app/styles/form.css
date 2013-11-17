@@ -76,11 +76,15 @@
 }
 
 .input.rating {
-    height: auto;
+    height: 90px;
     padding: 29px 26px 23px 26px;
 }
 
     .input.rating label {
+        margin-bottom: 0;
+        display: block;
+        float: left;
+
         color: #777777;
         font-size: 28px;
         line-height: 28px;
@@ -89,7 +93,8 @@
     }
 
     .input.rating .rating {
-        display: inline-block;
+        display: block;
+        float: left;
         margin-left: 28px;
     }
 
@@ -144,6 +149,7 @@
     }
 
     .input.rating {
+        height: 45px;
         padding: 14px;
     }
 
