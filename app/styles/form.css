@@ -30,6 +30,9 @@
     overflow: hidden;
     position: relative;
     margin: 32px 0 10px 0;
+    width: 100%;
+
+    border: 2px solid #e1e1e1;
 }
 
 .input.text .clear {
@@ -59,7 +62,7 @@
     display: block;
     padding: 29px 26px 23px 26px;
     width: 576px;
-    border: 2px solid #e1e1e1;
+    border: 0 solid #ffffff;
 
     font-size: 28px;
     line-height: 28px;
@@ -71,6 +74,24 @@
     width: 400px;
     float: none;
 }
+
+.input.rating {
+    height: auto;
+    padding: 29px 26px 23px 26px;
+}
+
+    .input.rating label {
+        color: #777777;
+        font-size: 28px;
+        line-height: 28px;
+        font-style: italic;
+        font-weight: normal;
+    }
+
+    .input.rating .rating {
+        display: inline-block;
+        margin-left: 28px;
+    }
 
 @media (min-width: 960px) {
    .input input:-moz-placeholder {
@@ -93,6 +114,10 @@
         line-height: 16px;
     }
 
+    .input {
+        border: 1px solid #e1e1e1;
+    }
+
     .input.text {
         margin: 14px 0 5px 0;
     }
@@ -109,7 +134,6 @@
     .input.text input {    
         padding: 14px 14px 14px 14px;
         width: 380px;
-        border: 1px solid #e1e1e1;
 
         font-size: 14px;
         line-height: 14px;
@@ -118,4 +142,17 @@
     .input .button {
         width: 200px;
     }
+
+    .input.rating {
+        padding: 14px;
+    }
+
+        .input.rating label {
+            font-size: 14px;
+            line-height: 16px;
+        }
+
+        .input.rating .rating {
+            margin-left: 14px;
+        }
 }

@@ -21,6 +21,17 @@
         LOCATION: {
             URL: {
                 GEOCODE: 'https://gcdc2013-crosscut.appspot.com/_ah/api/location/v1/locations?lat={lat}&long={lng}'
+            },
+
+            DEFAULT: {
+                lat: -118.2025121,
+                lng: 34.0483953
+            }
+        },
+
+        REVIEW: {
+            URL: {
+                ADD: 'https://gcdc2013-crosscut.appspot.com/_ah/api/reviews/v1/add/{type}'
             }
         }
     };

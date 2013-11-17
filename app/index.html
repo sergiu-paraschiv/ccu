@@ -25,7 +25,7 @@
         <link rel="stylesheet" href="styles/place.css" />
         <link rel="stylesheet" href="styles/jobs.css" />
         <link rel="stylesheet" href="styles/news.css" />
-        <link href="styles/addplace.css" rel="stylesheet" />
+        <link rel="stylesheet" href="styles/addplace.css" />
         <!-- endbuild -->
 
         <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false"></script>
@@ -69,7 +69,12 @@
         </header>
         
         <div ui-view="content" class="contentparent" ng-class="{'hideme': modalIsVisible}"></div>
-        <div ui-view="addPlace" class="modalparent" ng-class="{'hideme': !modalIsVisible}"></div>
+
+        <div  class="modalparent" ng-class="{'hideme': !modalIsVisible}">
+            <div class="background">&nbsp;</div>
+            <div ui-view="addPlace"></div>
+            <div ui-view="addReview"></div>
+        </div>
         
         <footer id="footer">
             <div class="container">
@@ -95,8 +100,8 @@
         <script src="components/lodash/dist/lodash.js"></script>
         <script src="components/jquery/jquery.js"></script>
         <script src="components/angular/angular.js"></script>
+        <script src="components/angular-sanitize/angular-sanitize.js"></script>
         <script src="components/angular-ui-router/release/angular-ui-router.js"></script>
-        <script src="components/angularjs-geolocation/src/geolocation.js"></script>
         <!-- endbuild -->
         
         <!-- build:js scripts/app.js -->
@@ -104,6 +109,8 @@
         <script src="scripts/constants.js"></script>
 
         <script src="scripts/modules/main.js"></script>
+
+        <script src="scripts/filters.js"></script>
 
         <script src="scripts/directives/rating.js"></script>
         <script src="scripts/directives/map.js"></script>
@@ -113,9 +120,12 @@
         <script src="scripts/models/job.js"></script>
         <script src="scripts/models/newsarticle.js"></script>
         <script src="scripts/models/review.js"></script>
+        <script src="scripts/models/user.js"></script>
 
         <script src="scripts/services/location.js"></script>
         <script src="scripts/services/places.js"></script>
+        <script src="scripts/services/reviews.js"></script>
+        <script src="scripts/services/user.js"></script>
 
         <script src="scripts/services/mappers/places.js"></script>
         <script src="scripts/services/mappers/reviews.js"></script>
@@ -125,6 +135,7 @@
         <script src="scripts/controllers/places.js"></script>
         <script src="scripts/controllers/place.js"></script>
         <script src="scripts/controllers/addplace.js"></script>
+        <script src="scripts/controllers/addreview.js"></script>
         <script src="scripts/controllers/jobs.js"></script>
         <script src="scripts/controllers/news.js"></script>
         <!-- endbuild -->

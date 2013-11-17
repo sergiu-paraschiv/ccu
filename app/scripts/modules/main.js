@@ -3,7 +3,7 @@
    
     var module = ng.module('Crosscut', [
         'ui.router',
-        'geolocation'
+        'ngSanitize'
     ]);
     
     module.config(function($stateProvider, $urlRouterProvider) {
@@ -28,6 +28,7 @@
                         templateUrl: 'views/places.html',
                         controller: 'PlacesCtrl'
                     },
+
                     'addPlace': {
                         templateUrl: 'views/addplace.html',
                         controller: 'AddPlaceCtrl'
@@ -41,6 +42,11 @@
                     'content': {
                         templateUrl: 'views/place.html',
                         controller: 'PlaceCtrl'
+                    },
+
+                    'addReview': {
+                        templateUrl: 'views/addreview.html',
+                        controller: 'AddReviewCtrl'
                     }
                 }
             })

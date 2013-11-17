@@ -1,8 +1,11 @@
 ﻿(function (undefined) {
     'use strict';
 
+    var C = this.Constants;
+
     function Place(data, type) {
         this.id = data.gReference;
+        this.reference = data.id;
         this.image = '';
         this.title = data.name || '';
         this.description = data.description || '';
@@ -10,8 +13,8 @@
         this.phone = data.address.formatedPhone || '';
         this.rating = data.averageRating || 0;
         this.location = {
-            lat: data.address.latitude || 0,
-            lng: data.address.longitude || 0
+            lat: data.address.latitude || C.LOCATION.DEFAULT.lat,
+            lng: data.address.longitude || C.LOCATION.DEFAULT.lng
         };
         this.type = type || '';
         this.reviews = [];

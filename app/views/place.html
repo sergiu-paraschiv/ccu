@@ -41,9 +41,9 @@
         <div class="container">
             <div class="header">
                 <h1 class="title"><strong>{{place.title}}</strong></h1>
-                <rating data-value="place.rating" class="inline"></rating>
+                <rating data-value="place.rating" data-read-only="true" class="inline"></rating>
                 <span class="address">{{place.address}}</span>
-                <rating data-value="place.rating" class="end"></rating>
+                <rating data-value="place.rating" data-read-only="true" class="end"></rating>
             </div>
 
             <ul class="actions">
@@ -83,16 +83,16 @@
             <div class="section reviews">
                 <div class="header">
                     <h2 class="title"><strong>Reviews</strong> ({{place.reviews.length}})</h2>
-                    <a href="" class="button notext add"><span>&nbsp;</span></a>
+                    <a href="" class="button notext add" ng-click="addReview()"><span>&nbsp;</span></a>
                 </div>
 
 
                 <div class="review" ng-repeat="review in place.reviews">
-                    <rating data-value="review.rating"></rating>
+                    <rating data-value="review.rating" data-read-only="true"></rating>
 
                     <h3 class="username">{{review.author}}</h3>
                     <span class="date">{{review.date | date:'dd MMM yyyy'}}</span>
-                    <div class="description">{{review.comment}}</div>
+                    <div class="description" ng-bind-html="review.comment | unsafe"></div>
                 </div>
             </div>
         </div>

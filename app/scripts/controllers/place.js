@@ -23,9 +23,21 @@
                 })                
             };
 
-            places.get($stateParams.type, $stateParams.id, function (place) {
-                $scope.place = place;
+            $scope.$on('reviewAdded', function () {
+                init();
             });
+
+            $scope.addReview = function () {
+                $rootScope.$broadcast('addReview', { reference: $scope.place.reference });
+            };
+
+            function init() {
+                places.get($stateParams.type, $stateParams.id, function (place) {
+                    $scope.place = place;
+                });
+            }
+
+            init();
         }
     ]);
         

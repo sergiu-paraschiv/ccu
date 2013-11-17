@@ -6,30 +6,38 @@
     this.Main.factory('LocationSrvc', [
         '$rootScope',
         '$http',
-        'geolocation',
+        '$window',
 
-        function ($rootScope, $http, geolocation) {
+        function ($rootScope, $http, $window) {
             var self = this;
 
             this.location = null;
 
+            function getLocation(successCallback, errorCallback) {
+                if ($window.navigator && $window.navigator.geolocation) {
+                    $window.navigator.geolocation.getCurrentPosition(successCallback, errorCallback, { timeout: 10000 });
+                }
+                else {
+                    errorCallback.call(undefined);
+                }
+            }
+
             function get(callback) {
                 if (self.location === null) {
-                    geolocation.getLocation()
-                        .then(
-                            function (data) {
-                                self.location = {
-                                    lat: data.coords.latitude,
-                                    lng: data.coords.longitude
-                                };
+                    getLocation(
+                        function (position) {
+                            self.location = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
 
-                                callback.call(undefined, self.location);
-                            },
+                            callback.call(undefined, self.location);
+                        },
 
-                            function (error) {
-                                // TODO: handle this
-                            }
-                        );
+                        function () {
+                            self.location = C.LOCATION.DEFAULT;
+                        }
+                    );
                 }
                 else {
                     callback.call(undefined, self.location);

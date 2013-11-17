@@ -20,6 +20,8 @@
 
            function unmapOne(review) {
                return {
+                   rating: review.rating,
+                   comment: review.comment
                };
            }
 

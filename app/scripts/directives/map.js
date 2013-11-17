@@ -18,8 +18,9 @@
 
                     
                     var mapOptions = {
-                        zoom: 8,
-                        mapTypeId: maps.MapTypeId.ROADMAP
+                        zoom: 14,
+                        mapTypeId: maps.MapTypeId.ROADMAP,
+                        scrollwheel: false
                     };
 
                     directionsService = new maps.DirectionsService();
@@ -39,6 +40,10 @@
                                 position: center,
                                 map: map,
                                 title: $scope.title
+                            });
+
+                            maps.event.addDomListener(window, 'resize', function () {
+                                map.setCenter(center);
                             });
 
                         }

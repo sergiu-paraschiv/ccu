@@ -33,6 +33,17 @@
         LOCATION: {
             URL: {
                 GEOCODE: 'https://gcdc2013-crosscut.appspot.com/_ah/api/location/v1/locations?lat={lat}&long={lng}'
+            },
+
+            DEFAULT: {
+                lat: -118.2025121,
+                lng: 34.0483953
+            }
+        },
+
+        REVIEW: {
+            URL: {
+                ADD: 'https://gcdc2013-crosscut.appspot.com/_ah/api/reviews/v1/add/{type}'
             }
         }
     };
@@ -43,7 +54,7 @@
    
     var module = ng.module('Crosscut', [
         'ui.router',
-        'geolocation'
+        'ngSanitize'
     ]);
     
     module.config(function($stateProvider, $urlRouterProvider) {
@@ -68,6 +79,7 @@
                         templateUrl: 'views/places.html',
                         controller: 'PlacesCtrl'
                     },
+
                     'addPlace': {
                         templateUrl: 'views/addplace.html',
                         controller: 'AddPlaceCtrl'
@@ -81,6 +93,11 @@
                     'content': {
                         templateUrl: 'views/place.html',
                         controller: 'PlaceCtrl'
+                    },
+
+                    'addReview': {
+                        templateUrl: 'views/addreview.html',
+                        controller: 'AddReviewCtrl'
                     }
                 }
             })
@@ -111,7 +128,17 @@
     });
     
 }).call(this.Crosscut, this.angular);
-(function (undefined) {
+(function(undefined) {
+    'use strict';
+    
+    this.Main.filter('unsafe', function ($sce) {
+        return function (val) {
+            return $sce.trustAsHtml(val);
+        };
+    });
+
+}).call(this.Crosscut);
+(function (ng, undefined) {
     'use strict';
 
     this.Main.directive('rating', [
@@ -121,20 +148,56 @@
                 transclude: false,
                 replace: true,
                 scope: {
-                    value: '='
+                    value: '=',
+                    readOnly: '='
                 },
                 templateUrl: 'views/directives/rating.html',
 
                 controller: function ($scope) {
-                    $scope.getRatingClass = function () {
-                        return ('r' + (Math.ceil($scope.value * 2) / 2).toFixed(1)).replace('.', '');
+
+                    var maxRange = 5;
+
+                    function createRateObjects(states) {
+                        var states = [];
+
+                        for (var i = 0, n = maxRange; i < n; i++) {
+                            states[i] = {
+                                index: i
+                            };
+                        }
+
+                        return states;
                     };
+
+                    $scope.range = createRateObjects();
+
+                    $scope.rate = function (value) {
+                        if ($scope.readOnly || $scope.value === value) {
+                            return;
+                        }
+
+                        $scope.value = value;
+                    };
+
+                    $scope.enter = function (value) {
+                        if (!$scope.readOnly) {
+                            $scope.val = value;
+                        }
+                    };
+
+                    $scope.reset = function () {
+                        $scope.val = ng.copy($scope.value);
+                    };
+
+                    $scope.$watch('value', function (value) {
+                        $scope.val = value;
+                    });
                 }
             };
         }
     ]);
 
-}).call(this.Crosscut);
+}).call(this.Crosscut, this.angular);
 (function (maps, undefined) {
     'use strict';
 
@@ -155,8 +218,9 @@
 
                     
                     var mapOptions = {
-                        zoom: 8,
-                        mapTypeId: maps.MapTypeId.ROADMAP
+                        zoom: 14,
+                        mapTypeId: maps.MapTypeId.ROADMAP,
+                        scrollwheel: false
                     };
 
                     directionsService = new maps.DirectionsService();
@@ -176,6 +240,10 @@
                                 position: center,
                                 map: map,
                                 title: $scope.title
+                            });
+
+                            maps.event.addDomListener(window, 'resize', function () {
+                                map.setCenter(center);
                             });
 
                         }
@@ -231,8 +299,11 @@
 (function (undefined) {
     'use strict';
 
+    var C = this.Constants;
+
     function Place(data, type) {
         this.id = data.gReference;
+        this.reference = data.id;
         this.image = '';
         this.title = data.name || '';
         this.description = data.description || '';
@@ -240,8 +311,8 @@
         this.phone = data.address.formatedPhone || '';
         this.rating = data.averageRating || 0;
         this.location = {
-            lat: data.address.latitude || 0,
-            lng: data.address.longitude || 0
+            lat: data.address.latitude || C.LOCATION.DEFAULT.lat,
+            lng: data.address.longitude || C.LOCATION.DEFAULT.lng
         };
         this.type = type || '';
         this.reviews = [];
@@ -297,6 +368,19 @@
     });
 
 }).call(this.Crosscut);
+(function (undefined) {
+    'use strict';
+
+    function User(data) {
+        this.id = data.id || 123456;
+        this.name = data.name || 'Sergiu Paraschiv';
+    }
+
+    this.exports(this.Models, {
+        User: User
+    });
+
+}).call(this.Crosscut);
 (function(undefined) {
     'use strict';
 
@@ -305,30 +389,38 @@
     this.Main.factory('LocationSrvc', [
         '$rootScope',
         '$http',
-        'geolocation',
+        '$window',
 
-        function ($rootScope, $http, geolocation) {
+        function ($rootScope, $http, $window) {
             var self = this;
 
             this.location = null;
 
+            function getLocation(successCallback, errorCallback) {
+                if ($window.navigator && $window.navigator.geolocation) {
+                    $window.navigator.geolocation.getCurrentPosition(successCallback, errorCallback, { timeout: 10000 });
+                }
+                else {
+                    errorCallback.call(undefined);
+                }
+            }
+
             function get(callback) {
                 if (self.location === null) {
-                    geolocation.getLocation()
-                        .then(
-                            function (data) {
-                                self.location = {
-                                    lat: data.coords.latitude,
-                                    lng: data.coords.longitude
-                                };
+                    getLocation(
+                        function (position) {
+                            self.location = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
 
-                                callback.call(undefined, self.location);
-                            },
+                            callback.call(undefined, self.location);
+                        },
 
-                            function (error) {
-                                // TODO: handle this
-                            }
-                        );
+                        function () {
+                            self.location = C.LOCATION.DEFAULT;
+                        }
+                    );
                 }
                 else {
                     callback.call(undefined, self.location);
@@ -411,6 +503,70 @@
     ]);
         
 }).call(this.Crosscut);
+(function(undefined) {
+    'use strict';
+   
+    var C = this.Constants;
+
+    this.Main.factory('ReviewsSrvc', [
+        '$rootScope',
+        '$http',
+        'UserSrvc',
+        'ReviewsMapper',
+
+        function ($rootScope, $http, user, reviewsMapper) {
+            
+            function add(review, reference, type, callback) {
+                var url = C.REVIEW.URL.ADD
+                                .replace('{type}', type);
+
+                var data = reviewsMapper.unmapOne(review);
+
+                user.get(function (author) {
+                    data.author = author.name;
+                    data.authorId = author.id;
+                    data.reference = reference;
+
+                    $http.post(url, data).success(function (data) {
+                        callback.call(undefined);
+                    });
+                });
+            }
+
+            return {
+                add: add
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut);
+(function(undefined) {
+    'use strict';
+
+    var User = this.Models.User;
+
+    var C = this.Constants;
+   
+    this.Main.factory('UserSrvc', [
+        '$rootScope',
+        '$http',
+
+        function ($rootScope, $http) {
+            var self = this;
+
+            this.user = new User({});
+
+            function get(callback) {
+                callback.call(undefined, self.user);
+            }
+
+            return {
+                get: get
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut);
 (function (_, undefined) {
     'use strict';
 
@@ -475,6 +631,8 @@
 
            function unmapOne(review) {
                return {
+                   rating: review.rating,
+                   comment: review.comment
                };
            }
 
@@ -602,9 +760,21 @@
                 })                
             };
 
-            places.get($stateParams.type, $stateParams.id, function (place) {
-                $scope.place = place;
+            $scope.$on('reviewAdded', function () {
+                init();
             });
+
+            $scope.addReview = function () {
+                $rootScope.$broadcast('addReview', { reference: $scope.place.reference });
+            };
+
+            function init() {
+                places.get($stateParams.type, $stateParams.id, function (place) {
+                    $scope.place = place;
+                });
+            }
+
+            init();
         }
     ]);
         
@@ -666,6 +836,51 @@
             $scope.save = function () {
                 places.add($scope.place, function () {
                     $rootScope.$broadcast('placeAdded');
+                    hide();
+                })
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut);
+(function(undefined) {
+    'use strict';
+   
+    var Review = this.Models.Review;
+
+    this.Main.controller('AddReviewCtrl', [
+        '$scope', 
+        '$rootScope',
+        'ReviewsSrvc',
+
+        function ($scope, $rootScope, reviews) {
+            $scope.visible = false;
+
+            $scope.review = null;
+            $scope.reference = null;
+
+            $scope.$on('addReview', function (e, config) {
+                $scope.review = new Review({});
+                $scope.reference = config.reference;
+
+                $rootScope.$broadcast('showModal');
+                $scope.visible = true;
+            });
+
+            $scope.clear = function (fieldName) {
+                $scope.review[fieldName] = '';
+            };
+
+            function hide() {
+                $rootScope.$broadcast('hideModal');
+                $scope.visible = false;
+            }
+
+            $scope.cancel = hide;
+
+            $scope.save = function () {
+                reviews.add($scope.review, $scope.reference, 'PLACE', function () {
+                    $rootScope.$broadcast('reviewAdded');
                     hide();
                 })
             };
@@ -904,8 +1119,6 @@
 angular.module('Crosscut').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('views/addplace.html',
-    "<div class=\"background\" ng-show=\"visible\">&nbsp;</div>\r" +
-    "\n" +
     "<div class=\"modalwrap\" ng-show=\"visible\">\r" +
     "\n" +
     "    <div class=\"modalview container\" id=\"addplace\">\r" +
@@ -984,19 +1197,72 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('views/addreview.html',
+    "<div class=\"modalwrap\" ng-show=\"visible\">\r" +
+    "\n" +
+    "    <div class=\"modalview container\" id=\"addreview\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <h1 class=\"title add\">\r" +
+    "\n" +
+    "            <strong>Add new review</strong>\r" +
+    "\n" +
+    "        </h1>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <a href=\"\" class=\"modalclose\" ng-click=\"cancel()\"><span>Close</span></a>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <form name=\"addreview\">\r" +
+    "\n" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': review.comment != ''}\">\r" +
+    "\n" +
+    "                <input type=\"text\" ng-model=\"review.comment\" placeholder=\"Comment\" is-focused required />\r" +
+    "\n" +
+    "                <a href=\"\" class=\"clear\" ng-click=\"clear('comment')\"><span>Clear</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"input rating\">\r" +
+    "\n" +
+    "                <label>Rating</label>\r" +
+    "\n" +
+    "                <rating data-value=\"review.rating\" data-read-only=\"false\"></rating>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "        </form>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"actions\">\r" +
+    "\n" +
+    "            <a href=\"\" class=\"button save\" ng-click=\"save()\" ng-class=\"{'disabled': addreview.$invalid}\"><span>Save</span></a>\r" +
+    "\n" +
+    "            <a href=\"\" class=\"button cancel\" ng-click=\"cancel()\"><span>Cancel</span></a>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('views/directives/map.html',
     "<div class=\"map\">&nbsp;</div>"
   );
 
 
   $templateCache.put('views/directives/rating.html',
-    "<span class=\"rating\" ng-class=\"getRatingClass()\">\r" +
+    "<span ng-mouseleave=\"reset()\" class=\"rating\" ng-class=\"{'edit': !readOnly}\">\r" +
     "\n" +
-    "    <span>\r" +
-    "\n" +
-    "        <span>{{value}}</span>\r" +
-    "\n" +
-    "    </span>\r" +
+    "    <i ng-repeat=\"r in range track by $index\" ng-mouseenter=\"enter($index + 1)\" ng-click=\"rate($index + 1)\" class=\"star\" ng-class=\"$index < val && (r.stateOn || 'full') || (r.stateOff || 'empty')\"></i>\r" +
     "\n" +
     "</span>"
   );
@@ -1414,11 +1680,11 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "                <h1 class=\"title\"><strong>{{place.title}}</strong></h1>\r" +
     "\n" +
-    "                <rating data-value=\"place.rating\" class=\"inline\"></rating>\r" +
+    "                <rating data-value=\"place.rating\" data-read-only=\"true\" class=\"inline\"></rating>\r" +
     "\n" +
     "                <span class=\"address\">{{place.address}}</span>\r" +
     "\n" +
-    "                <rating data-value=\"place.rating\" class=\"end\"></rating>\r" +
+    "                <rating data-value=\"place.rating\" data-read-only=\"true\" class=\"end\"></rating>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -1498,7 +1764,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    <h2 class=\"title\"><strong>Reviews</strong> ({{place.reviews.length}})</h2>\r" +
     "\n" +
-    "                    <a href=\"\" class=\"button notext add\"><span>&nbsp;</span></a>\r" +
+    "                    <a href=\"\" class=\"button notext add\" ng-click=\"addReview()\"><span>&nbsp;</span></a>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
@@ -1508,7 +1774,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "                <div class=\"review\" ng-repeat=\"review in place.reviews\">\r" +
     "\n" +
-    "                    <rating data-value=\"review.rating\"></rating>\r" +
+    "                    <rating data-value=\"review.rating\" data-read-only=\"true\"></rating>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1516,7 +1782,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    <span class=\"date\">{{review.date | date:'dd MMM yyyy'}}</span>\r" +
     "\n" +
-    "                    <div class=\"description\">{{review.comment}}</div>\r" +
+    "                    <div class=\"description\" ng-bind-html=\"review.comment | unsafe\"></div>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
@@ -1649,7 +1915,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "                    <rating data-value=\"place.rating\"></rating>\r" +
+    "                    <rating data-value=\"place.rating\" data-read-only=\"true\"></rating>\r" +
     "\n" +
     "                </a>\r" +
     "\n" +
