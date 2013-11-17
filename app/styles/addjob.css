@@ -1,27 +1,26 @@
-#addplace .actions {
+#addjob .actions {
     width: 464px;
 }
 
-    #addplace .actions .button {
+    #addjob .actions .button {
         width: 200px;
     }
 
-#addplace .button.location {
+#addjob .button.location {
     margin: 0 auto;
     width: 400px;
     float: none;
 }
-
 @media (min-width: 960px) {
-    #addplace .actions {
+    #addjob .actions {
         width: 232px;
     }
 
-        #addplace .actions .button {
+        #addjob .actions .button {
             width: 100px;
         }
 
-    #addplace .button.location {
+    #addjob .button.location {
         width: 200px;
     }
     

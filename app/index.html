@@ -27,6 +27,7 @@
         <link href="styles/news.css" rel="stylesheet" />
         <link href="styles/addplace.css" rel="stylesheet" />
         <link href="styles/addreview.css" rel="stylesheet" />
+        <link href="styles/addjob.css" rel="stylesheet" />
         <!-- endbuild -->
 
         <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false"></script>
@@ -75,6 +76,7 @@
             <div class="background">&nbsp;</div>
             <div ui-view="addPlace"></div>
             <div ui-view="addReview"></div>
+            <div ui-view="addJob"></div>
         </div>
         
         <footer id="footer">
@@ -126,11 +128,13 @@
         <script src="scripts/services/location.js"></script>
         <script src="scripts/services/responsive.js"></script>
         <script src="scripts/services/places.js"></script>
+        <script src="scripts/services/jobs.js"></script>
         <script src="scripts/services/reviews.js"></script>
         <script src="scripts/services/user.js"></script>
 
         <script src="scripts/services/mappers/places.js"></script>
         <script src="scripts/services/mappers/reviews.js"></script>
+        <script src="scripts/services/mappers/jobs.js"></script>
 
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/home.js"></script>
@@ -138,6 +142,7 @@
         <script src="scripts/controllers/place.js"></script>
         <script src="scripts/controllers/addplace.js"></script>
         <script src="scripts/controllers/addreview.js"></script>
+        <script src="scripts/controllers/addjob.js"></script>
         <script src="scripts/controllers/jobs.js"></script>
         <script src="scripts/controllers/news.js"></script>
         <!-- endbuild -->

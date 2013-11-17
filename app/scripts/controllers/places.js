@@ -1,8 +1,6 @@
 (function(undefined) {
     'use strict';
 
-    var Place = this.Models.Place;
-   
     var C = this.Constants;
 
     this.Main.controller('PlacesCtrl', [
@@ -20,13 +18,16 @@
             $scope.perPage = C.PLACE.PER_PAGE;
             $scope.endAt = C.PLACE.PER_PAGE;
 
-            function setLayout() {
+            function getPerPage() {
                 if (responsive.isXDPI()) {
-                    $scope.perPage = C.PLACE.PER_PAGE_XDPI;
+                    return C.PLACE.PER_PAGE_XDPI;
                 }
-                else {
-                    $scope.perPage = C.PLACE.PER_PAGE;
-                }
+
+                return C.PLACE.PER_PAGE;
+            }
+
+            function setLayout() {
+                $scope.perPage = getPerPage();
             }
 
             function init() {
@@ -34,7 +35,7 @@
 
                 places.search($stateParams.type, function (placesList) {
                     $scope.places = placesList;
-                    $scope.page = 1;
+                    $scope.endAt = getPerPage();
                     $scope.haveMore = true;
                 });
             }

@@ -21,6 +21,21 @@
             PER_PAGE_XDPI: 10
         },
 
+        JOB: {
+            URL: {
+                SEARCH: 'https://gcdc2013-crosscut.appspot.com/_ah/api/jobs/v1/jobs?lat={lat}&long={lng}&type={type}',
+                ADD: 'https://gcdc2013-crosscut.appspot.com/_ah/api/jobs/v1/add/{due}/{type}'
+            },
+
+            TYPE: {
+                PAID: 'PAID',
+                VOLUNTEERING: 'VOLUNTEERING'
+            },
+
+            PER_PAGE: 5,
+            PER_PAGE_XDPI: 10
+        },
+
         LOCATION: {
             URL: {
                 GEOCODE: 'https://gcdc2013-crosscut.appspot.com/_ah/api/location/v1/locations?lat={lat}&long={lng}'

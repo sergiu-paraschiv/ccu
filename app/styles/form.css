@@ -1,29 +1,52 @@
-.input input:-moz-placeholder {
+.input :-moz-placeholder {
     color: #777777;
     font-size: 28px;
     line-height: 28px;
     font-style: italic;
 }
 
-.input input::-moz-placeholder {
+.input ::-moz-placeholder {
     color: #777777;
     font-size: 28px;
     line-height: 28px;
     font-style: italic;
 }
 
-.input input:-ms-input-placeholder {
+.input :-ms-input-placeholder {
     color: #777777;
     font-size: 28px;
     line-height: 28px;
     font-style: italic;
 }
 
-.input input::-webkit-input-placeholder {
+.input ::-webkit-input-placeholder {
     color: #777777;
     font-size: 28px;
     line-height: 28px;
     font-style: italic;
+}
+
+.input textarea:-moz-placeholder {
+    line-height: 36px;
+}
+
+.input textarea::-moz-placeholder {
+    line-height: 36px;
+}
+
+.input textarea:-ms-input-placeholder {
+    line-height: 36px;
+}
+
+.input textarea::-webkit-input-placeholder {
+    line-height: 36px;
+}
+
+.spaced {
+    overflow: hidden;
+    position: relative;
+    margin: 32px 0 10px 0;
+    width: 100%;
 }
 
 .input {
@@ -35,7 +58,7 @@
     border: 2px solid #e1e1e1;
 }
 
-.input.text .clear {
+.input .clear {
     display: none;
     width: 56px;
     height: 56px;
@@ -43,15 +66,19 @@
     background: url('../images/form.input.text.clear.png') no-repeat 0 0 transparent;
 }
 
-    .input.text .clear span {
+    .input .clear span {
         display: none;
     }
 
-.input.text.notempty.focused input {
+.input.notempty.focused input {
     padding-right: 80px;
 }
 
-    .input.text.notempty.focused .clear {
+.input.notempty.focused textarea {
+    padding-right: 80px;
+}
+
+    .input.notempty.focused .clear {
         display: block;
         position: absolute;
         top: 20px;
@@ -68,6 +95,40 @@
     line-height: 28px;
     color: #777777;
 }
+
+.input.textarea textarea {    
+    display: block;
+    padding: 25px 26px 19px 26px;
+    width: 576px;
+    height: 174px;
+    border: 0 solid #ffffff;
+    resize: vertical;
+
+    font-size: 28px;
+    line-height: 36px;
+    color: #777777;
+}
+
+.radiogroup {
+    overflow: hidden;
+}
+
+    .radiogroup .option {
+        display: block;
+        float: left;
+        padding-left: 110px;
+        margin-right: 28px;
+
+        background: url('../images/radio.png') no-repeat 26px center transparent;
+
+        font-size: 28px;
+        line-height: 60px;
+        color: #777777;
+    }
+
+        .radiogroup .option.active {
+            background: url('../images/radio.active.png') no-repeat 26px center transparent;
+        }
 
 .input .button {
     margin: 0 auto;
@@ -99,40 +160,61 @@
     }
 
 @media (min-width: 960px) {
-   .input input:-moz-placeholder {
+   .input :-moz-placeholder {
         font-size: 14px;
         line-height: 16px;
     }
 
-    .input input::-moz-placeholder {
+    .input ::-moz-placeholder {
         font-size: 14px;
         line-height: 16px;
     }
 
-    .input input:-ms-input-placeholder {
+    .input :-ms-input-placeholder {
         font-size: 14px;
         line-height: 16px;
     }
 
-    .input input::-webkit-input-placeholder {
+    .input ::-webkit-input-placeholder {
         font-size: 14px;
         line-height: 16px;
+    }
+
+    .input textarea:-moz-placeholder {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input textarea::-moz-placeholder {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input textarea:-ms-input-placeholder {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input textarea::-webkit-input-placeholder {
+        font-size: 14px;
+        line-height: 18px;
     }
 
     .input {
         border: 1px solid #e1e1e1;
+        margin: 16px 0 5px 0;
     }
 
     .input.text {
         margin: 14px 0 5px 0;
     }
 
-        .input.text.notempty .clear,
-        .input.text.notempty.focused .clear {
+        .input.notempty .clear,
+        .input.notempty.focused .clear {
             display: none;
         }
 
-        .input.text.notempty input {
+        .input.notempty input {
             padding-right: 14px;
         }
 
@@ -143,6 +225,38 @@
         font-size: 14px;
         line-height: 14px;
     }
+
+    .input.textarea textarea {    
+        padding: 14px 14px 14px 14px;
+        width: 380px;
+        height: 90px;
+
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input.notempty.focused input {
+        padding-right: 14px;
+    }
+
+    .input.notempty.focused textarea {
+        padding-right: 14px;
+    }
+
+    .radiogroup .option {
+        padding-left: 55px;
+        margin-right: 0;
+        width: 50%;
+
+        background: url('../images/xdpi.radio.png') no-repeat 13px center transparent;
+
+        font-size: 14px;
+        line-height: 30px;
+    }
+
+        .radiogroup .option.active {
+            background: url('../images/xdpi.radio.active.png') no-repeat 13px center transparent;
+        }
 
     .input .button {
         width: 200px;

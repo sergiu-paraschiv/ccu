@@ -33,6 +33,21 @@
             PER_PAGE_XDPI: 10
         },
 
+        JOB: {
+            URL: {
+                SEARCH: 'https://gcdc2013-crosscut.appspot.com/_ah/api/jobs/v1/jobs?lat={lat}&long={lng}&type={type}',
+                ADD: 'https://gcdc2013-crosscut.appspot.com/_ah/api/jobs/v1/add/{due}/{type}'
+            },
+
+            TYPE: {
+                PAID: 'PAID',
+                VOLUNTEERING: 'VOLUNTEERING'
+            },
+
+            PER_PAGE: 5,
+            PER_PAGE_XDPI: 10
+        },
+
         LOCATION: {
             URL: {
                 GEOCODE: 'https://gcdc2013-crosscut.appspot.com/_ah/api/location/v1/locations?lat={lat}&long={lng}'
@@ -113,6 +128,11 @@
                     'content': {
                         templateUrl: 'views/jobs.html',
                         controller: 'JobsCtrl'
+                    },
+
+                    'addJob': {
+                        templateUrl: 'views/addjob.html',
+                        controller: 'AddJobCtrl'
                     }
                 }    
             })
@@ -331,11 +351,21 @@
 (function (undefined) {
     'use strict';
 
-    function Job(data) {
-        this.icon = data.icon || '';
-        this.date = data.date || '';
+    var C = this.Constants;
+
+    function Job(data, type) {
+        this.reference = data.id;
+        this.icon = '';
+        this.date = data.dueDate || '';
         this.title = data.title || '';
-        this.address = data.address || '';
+        this.description = data.description || '';
+        this.address = data.address.formatedAddress || '';
+        this.phone = data.address.formatedPhone || '';
+        this.location = {
+            lat: data.address.latitude || C.LOCATION.DEFAULT.lat,
+            lng: data.address.longitude || C.LOCATION.DEFAULT.lng
+        };
+        this.type = type || '';
     }
 
     this.exports(this.Models, {
@@ -539,6 +569,58 @@
    
     var C = this.Constants;
 
+    this.Main.factory('JobsSrvc', [
+        '$rootScope',
+        '$http',
+        'LocationSrvc',
+        'UserSrvc',
+        'JobsMapper',
+
+        function ($rootScope, $http, location, user, jobsMapper) {
+
+            function search(type, callback) {
+                location.get(function (latLng) {
+                    var url = C.JOB.URL.SEARCH
+                                .replace('{lat}', latLng.lat)
+                                .replace('{lng}', latLng.lng)
+                                .replace('{type}', type);
+
+                    $http.get(url).success(function (data) {
+                        callback.call(undefined, jobsMapper.map(data.items, type));
+                    });
+                });
+            }
+
+            function add(job, callback) {
+                var url = C.JOB.URL.ADD
+                                .replace('{due}', '12.12.2014')
+                                .replace('{type}', job.type);
+
+                var data = jobsMapper.unmapOne(job);
+
+                user.get(function (publisher) {
+                    data.publisherId = publisher.id;
+
+                    $http.post(url, data).success(function (data) {
+                        callback.call(undefined);
+                    });
+                });
+                
+            }
+
+            return {
+                add: add,
+                search: search
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut);
+(function(undefined) {
+    'use strict';
+   
+    var C = this.Constants;
+
     this.Main.factory('ReviewsSrvc', [
         '$rootScope',
         '$http',
@@ -676,6 +758,48 @@
     ]);
 
 }).call(this.Crosscut, this._);
+(function (_, undefined) {
+    'use strict';
+
+    var Job = this.Models.Job;
+
+    this.Main.factory('JobsMapper', [
+       '$rootScope',
+
+       function ($rootScope) {
+
+           function map(data, type) {
+               return _.map(data, function (item) {
+                   return mapOne(item, type);
+               });
+           }
+
+           function mapOne(data, type) {
+               return new Job(data, type);
+           }
+
+           function unmapOne(place) {
+               return {
+                   title: place.title,
+                   description: place.description,
+                   address: {
+                       formatedAddress: place.address,
+                       formatedPhone: '',
+                       longitude: place.location.lng,
+                       latitude: place.location.lat
+                   }
+               };
+           }
+
+           return {
+               map: map,
+               mapOne: mapOne,
+               unmapOne: unmapOne
+           };
+       }
+    ]);
+
+}).call(this.Crosscut, this._);
 (function(undefined) {
     'use strict';
    
@@ -720,8 +844,6 @@
 (function(undefined) {
     'use strict';
 
-    var Place = this.Models.Place;
-   
     var C = this.Constants;
 
     this.Main.controller('PlacesCtrl', [
@@ -739,13 +861,16 @@
             $scope.perPage = C.PLACE.PER_PAGE;
             $scope.endAt = C.PLACE.PER_PAGE;
 
-            function setLayout() {
+            function getPerPage() {
                 if (responsive.isXDPI()) {
-                    $scope.perPage = C.PLACE.PER_PAGE_XDPI;
+                    return C.PLACE.PER_PAGE_XDPI;
                 }
-                else {
-                    $scope.perPage = C.PLACE.PER_PAGE;
-                }
+
+                return C.PLACE.PER_PAGE;
+            }
+
+            function setLayout() {
+                $scope.perPage = getPerPage();
             }
 
             function init() {
@@ -753,7 +878,7 @@
 
                 places.search($stateParams.type, function (placesList) {
                     $scope.places = placesList;
-                    $scope.page = 1;
+                    $scope.endAt = getPerPage();
                     $scope.haveMore = true;
                 });
             }
@@ -957,10 +1082,160 @@
    
     var Job = this.Models.Job;
 
+    this.Main.controller('AddJobCtrl', [
+        '$scope', 
+        '$rootScope',
+        'JobsSrvc',
+        'LocationSrvc',
+
+        function ($scope, $rootScope, jobs, location) {
+            $scope.visible = false;
+
+            $scope.job = null;
+
+            $scope.currentType = function (type) {
+                if (!$scope.job) {
+                    return false;
+                }
+
+                return $scope.job.type === type;
+            };
+
+            $scope.selectType = function (type) {
+                if (!$scope.job) {
+                    return false;
+                }
+
+                $scope.job.type = type;
+            };
+
+            $scope.$on('addJob', function (e, config) {
+                $scope.job = new Job({ address: {} }, config.type);
+
+                $rootScope.$broadcast('showModal');
+                $scope.visible = true;
+            });
+
+            $scope.setLocation = function () {
+                location.get(function (latLng) {
+                    $scope.job.location = latLng;
+                    if ($scope.job.address === '') {
+                        location.geocode(latLng, function (address) {
+                            $scope.job.address = address;
+                        });
+                    }
+                });
+                
+            };
+
+            $scope.clear = function (fieldName) {
+                $scope.job[fieldName] = '';
+            };
+
+            function hide() {
+                $rootScope.$broadcast('hideModal');
+                $scope.visible = false;
+            }
+
+            $scope.cancel = hide;
+
+            $scope.save = function () {
+                jobs.add($scope.job, function () {
+                    $rootScope.$broadcast('jobAdded');
+                    hide();
+                })
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut);
+(function(undefined) {
+    'use strict';
+   
+    var C = this.Constants;
+
     this.Main.controller('JobsCtrl', [
         '$scope', 
-        
-        function ($scope) {
+        '$rootScope',
+        'JobsSrvc',
+        'ResponsiveSrvc',
+
+        function ($scope, $rootScope, jobs, responsive) {
+            $scope.jobs = [];
+            $scope.haveMore = true;
+            $scope.perPage = C.JOB.PER_PAGE;
+            $scope.endAt = C.JOB.PER_PAGE;
+
+            $scope.volunteeringJobs = [];
+            $scope.haveMoreVolunteeringJobs = true;
+            $scope.endAtVolunteeringJobs = C.JOB.PER_PAGE;
+
+            function getPerPage() {
+                if (responsive.isXDPI()) {
+                    return C.JOB.PER_PAGE_XDPI;
+                }
+
+                return C.JOB.PER_PAGE;
+            }
+
+            function setLayout() {
+                $scope.perPage = getPerPage();
+            }
+
+            function init() {
+                setLayout();
+
+                jobs.search(C.JOB.TYPE.PAID, function (jobsList) {
+                    $scope.jobs = jobsList;
+                    $scope.endAt = getPerPage();
+                    $scope.haveMore = true;
+                });
+
+                jobs.search(C.JOB.TYPE.VOLUNTEERING, function (jobsList) {
+                    $scope.volunteeringJobs = jobsList;
+                    $scope.endAtVolunteeringJobs = getPerPage();
+                    $scope.haveMoreVolunteeringJobs = true;
+                });
+            }
+
+            $scope.$on('responsiveLayoutChanged', setLayout);
+
+            $scope.pagedJobs = function () {
+                var paged = $scope.jobs.slice(0, $scope.endAt);
+
+                if (paged.length === $scope.jobs.length) {
+                    $scope.haveMore = false;
+                }
+
+                return paged;
+            };
+
+            $scope.pagedVolunteeringJobs = function () {
+                var paged = $scope.volunteeringJobs.slice(0, $scope.endAtVolunteeringJobs);
+
+                if (paged.length === $scope.volunteeringJobs.length) {
+                    $scope.haveMoreVolunteeringJobs = false;
+                }
+
+                return paged;
+            };
+
+            $scope.loadMore = function () {
+                $scope.endAt += $scope.perPage;
+            };
+
+            $scope.loadMoreVolunteeringJobs = function () {
+                $scope.endAtVolunteeringJobs += $scope.perPage;
+            };
+
+            $scope.$on('jobAdded', function () {
+                init();
+            });
+
+            $scope.addJob = function (type) {
+                $rootScope.$broadcast('addJob', { type: type });
+            };
+
             $scope.getJobIcon = function (type) {
                 if (type === '') {
                     return 'images/blank.png';
@@ -969,107 +1244,7 @@
                 return 'images/jobs.icon.' + type + '.png';
             };
 
-            $scope.jobs = [
-                new Job({
-                    icon: 'up',
-                    date: '27 Oct 2013',
-                    title: 'Lorem ipsum dolor sit amet, conse...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'check',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'check',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'up',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: '',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'up',
-                    date: '27 Oct 2013',
-                    title: 'Lorem ipsum dolor sit amet, conse...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'check',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'check',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'up',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: '',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                })
-            ];
-
-            $scope.volunteeringJobs = [
-                new Job({
-                    icon: 'up',
-                    date: '27 Oct 2013',
-                    title: 'Lorem ipsum dolor sit amet, conse...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'check',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: 'up',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                }),
-
-                new Job({
-                    icon: '',
-                    date: '27 Oct 2013',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608'
-                })
-            ];
+            init();
         }
     ]);
         
@@ -1182,6 +1357,93 @@
 }).call(this.Crosscut);
 angular.module('Crosscut').run(['$templateCache', function($templateCache) {
 
+  $templateCache.put('views/addjob.html',
+    "<div class=\"modalwrap\" ng-show=\"visible\">\r" +
+    "\n" +
+    "    <div class=\"modalview container\" id=\"addjob\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <h1 class=\"title add\">\r" +
+    "\n" +
+    "            <strong>Add new job</strong>\r" +
+    "\n" +
+    "        </h1>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <a href=\"\" class=\"modalclose\" ng-click=\"cancel()\"><span>Close</span></a>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <form name=\"addjob\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"spaced radiogroup\">\r" +
+    "\n" +
+    "                <a href=\"\" class=\"option\" ng-class=\"{'active': currentType('PAID')}\" ng-click=\"selectType('PAID')\">Paid job</a>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"option\" ng-class=\"{'active': currentType('VOLUNTEERING')}\" ng-click=\"selectType('VOLUNTEERING')\">Volunteering</a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': job.title != ''}\">\r" +
+    "\n" +
+    "                <input type=\"text\" ng-model=\"job.title\" placeholder=\"Title\" is-focused required />\r" +
+    "\n" +
+    "                <a href=\"\" class=\"clear\" ng-click=\"clear('title')\"><span>Clear</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"input textarea\" ng-class=\"{'notempty': job.description != ''}\">\r" +
+    "\n" +
+    "                <textarea placeholder=\"Description\" ng-model=\"job.description\" is-focused></textarea>\r" +
+    "\n" +
+    "                <a href=\"\" class=\"clear\" ng-click=\"clear('description')\"><span>Clear</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"input text\" ng-class=\"{'notempty': job.address != ''}\">\r" +
+    "\n" +
+    "                <input type=\"text\" ng-model=\"job.address\" placeholder=\"Address\" is-focused />\r" +
+    "\n" +
+    "                <a href=\"\" class=\"clear\" ng-click=\"clear('address')\"><span>Clear</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"spaced\">\r" +
+    "\n" +
+    "                <a class=\"button location\" ng-click=\"setLocation()\"><span>Current location</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "        </form>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"actions\">\r" +
+    "\n" +
+    "            <a href=\"\" class=\"button save\" ng-click=\"save()\" ng-class=\"{'disabled': addjob.$invalid}\"><span>Save</span></a>\r" +
+    "\n" +
+    "            <a href=\"\" class=\"button cancel\" ng-click=\"cancel()\"><span>Cancel</span></a>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('views/addplace.html',
     "<div class=\"modalwrap\" ng-show=\"visible\">\r" +
     "\n" +
@@ -1237,7 +1499,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "            <p class=\"input\">\r" +
+    "            <p class=\"spaced\">\r" +
     "\n" +
     "                <a class=\"button location\" ng-click=\"setLocation()\"><span>Current location</span></a>\r" +
     "\n" +
@@ -1363,7 +1625,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <li class=\"jobs\">\r" +
     "\n" +
-    "            <a ui-sref=\"jobs\">Jobs</a>\r" +
+    "            <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
     "\n" +
     "        </li>\r" +
     "\n" +
@@ -1498,9 +1760,9 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"header\">\r" +
     "\n" +
-    "                <h2 class=\"title\"><strong>Paid jobs</strong> (74)</h2>\r" +
+    "                <h2 class=\"title\"><strong>Paid jobs</strong> ({{jobs.length}})</h2>\r" +
     "\n" +
-    "                <a href=\"\" class=\"button add\">Add job</a>\r" +
+    "                <a href=\"\" class=\"button add\" ng-click=\"addJob('PAID')\">Add job</a>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -1508,9 +1770,9 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"container\">\r" +
     "\n" +
-    "                <a href=\"\" class=\"item\" ng-repeat=\"job in jobs\" ng-class=\"job.icon\">\r" +
+    "                <a href=\"\" class=\"item\" ng-repeat=\"job in pagedJobs()\" ng-class=\"job.icon\">\r" +
     "\n" +
-    "                    <span class=\"date\">{{job.date}}</span>\r" +
+    "                    <span class=\"date\">{{job.date | date:'dd MMM yyyy'}}</span>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1524,7 +1786,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "            <a class=\"button more\">Load more</a>\r" +
+    "            <a class=\"button more\" ng-click=\"loadMoreJobs()\" ng-show=\"haveMore\">Load more</a>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +
@@ -1534,9 +1796,9 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"header\">\r" +
     "\n" +
-    "                <h2 class=\"title\"><strong>Volunteering</strong> (4)</h2>\r" +
+    "                <h2 class=\"title\"><strong>Volunteering</strong> ({{volunteeringJobs.length}})</h2>\r" +
     "\n" +
-    "                <a href=\"\" class=\"button add\">Add job</a>\r" +
+    "                <a href=\"\" class=\"button add\" ng-click=\"addJob('VOLUNTEERING')\">Add job</a>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -1544,9 +1806,9 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"container\">\r" +
     "\n" +
-    "                <a href=\"\" class=\"item\" ng-repeat=\"job in volunteeringJobs\" ng-class=\"job.icon\">\r" +
+    "                <a href=\"\" class=\"item\" ng-repeat=\"job in pagedVolunteeringJobs()\" ng-class=\"job.icon\">\r" +
     "\n" +
-    "                    <span class=\"date\">{{job.date}}</span>\r" +
+    "                    <span class=\"date\">{{job.date | date:'dd MMM yyyy'}}</span>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1560,7 +1822,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "            <a class=\"button more hidden\">Load more</a>\r" +
+    "            <a class=\"button more hidden\" ng-click=\"loadMoreVolunteeringJobs()\" ng-show=\"haveMoreVolunteeringJobs\">Load more</a>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +

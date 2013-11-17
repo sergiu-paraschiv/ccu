@@ -57,6 +57,11 @@
                     'content': {
                         templateUrl: 'views/jobs.html',
                         controller: 'JobsCtrl'
+                    },
+
+                    'addJob': {
+                        templateUrl: 'views/addjob.html',
+                        controller: 'AddJobCtrl'
                     }
                 }    
             })
