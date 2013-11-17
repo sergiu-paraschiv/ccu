@@ -52,7 +52,7 @@
             </div>
         
             <div class="container">
-                <a class="item" ng-repeat="place in places" ui-sref="place({type: place.type, id: place.id})">
+                <a class="item" ng-repeat="place in pagedPlaces()" ui-sref="place({type: place.type, id: place.id})">
                     <img ng-src="{{getPlaceImage(place.image)}}" alt="" />
                     <h3 class="title">{{place.title}}</h3>
                     <span class="address">{{place.address}}</span>
@@ -61,7 +61,7 @@
                 </a>
             </div>
 
-            <a class="button more">Load more</a>
+            <a class="button more" ng-click="loadMore()" ng-show="haveMore">Load more</a>
         </div>
     </div>
 </div>

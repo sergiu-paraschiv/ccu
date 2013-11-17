@@ -15,7 +15,10 @@
                 FOOD_BANK: 'FOOD_BANK',
                 TRANSITIONAL_HOUSING: 'TRANSITIONAL_HOUSING',
                 HEALTH: 'HEALTH'
-            }
+            },
+
+            PER_PAGE: 5,
+            PER_PAGE_XDPI: 10
         },
 
         LOCATION: {
@@ -33,7 +36,9 @@
             URL: {
                 ADD: 'https://gcdc2013-crosscut.appspot.com/_ah/api/reviews/v1/add/{type}'
             }
-        }
+        },
+
+        XDPI_WIDTH: 960
     };
 
 }).call(this.Crosscut);

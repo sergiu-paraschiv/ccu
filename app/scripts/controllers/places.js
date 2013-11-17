@@ -10,17 +10,50 @@
         '$stateParams',
         '$rootScope',
         'PlacesSrvc',
+        'ResponsiveSrvc',
         
-        function ($scope, $stateParams, $rootScope, places) {
+        function ($scope, $stateParams, $rootScope, places, responsive) {
             $scope.C = C;
 
             $scope.places = [];
+            $scope.haveMore = true;
+            $scope.perPage = C.PLACE.PER_PAGE;
+            $scope.endAt = C.PLACE.PER_PAGE;
+
+            function setLayout() {
+                if (responsive.isXDPI()) {
+                    $scope.perPage = C.PLACE.PER_PAGE_XDPI;
+                }
+                else {
+                    $scope.perPage = C.PLACE.PER_PAGE;
+                }
+            }
 
             function init() {
+                setLayout();
+
                 places.search($stateParams.type, function (placesList) {
                     $scope.places = placesList;
+                    $scope.page = 1;
+                    $scope.haveMore = true;
                 });
             }
+            
+            $scope.$on('responsiveLayoutChanged', setLayout);
+
+            $scope.pagedPlaces = function () {
+                var paged = $scope.places.slice(0, $scope.endAt);
+
+                if (paged.length === $scope.places.length) {
+                    $scope.haveMore = false;
+                }
+
+                return paged;
+            };
+
+            $scope.loadMore = function () {
+                $scope.endAt += $scope.perPage;
+            };
 
             $scope.currentTab = function (tab) {
                 return $stateParams.type === tab;

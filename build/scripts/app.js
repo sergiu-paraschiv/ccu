@@ -27,7 +27,10 @@
                 FOOD_BANK: 'FOOD_BANK',
                 TRANSITIONAL_HOUSING: 'TRANSITIONAL_HOUSING',
                 HEALTH: 'HEALTH'
-            }
+            },
+
+            PER_PAGE: 5,
+            PER_PAGE_XDPI: 10
         },
 
         LOCATION: {
@@ -45,7 +48,9 @@
             URL: {
                 ADD: 'https://gcdc2013-crosscut.appspot.com/_ah/api/reviews/v1/add/{type}'
             }
-        }
+        },
+
+        XDPI_WIDTH: 960
     };
 
 }).call(this.Crosscut);
@@ -445,6 +450,32 @@
     ]);
         
 }).call(this.Crosscut);
+(function(window, $, undefined) {
+    'use strict';
+
+    var C = this.Constants;
+   
+    this.Main.factory('ResponsiveSrvc', [
+        '$rootScope',
+
+        function ($rootScope) {
+            var self = this;
+
+            function isXDPI() {
+                return $(window).width() >= C.XDPI_WIDTH;
+            }
+
+            $(window).resize(function () {
+                $rootScope.$broadcast('responsiveLayoutChanged');
+            });
+
+            return {
+                isXDPI: isXDPI
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut, window, this.jQuery);
 (function(undefined) {
     'use strict';
    
@@ -698,17 +729,50 @@
         '$stateParams',
         '$rootScope',
         'PlacesSrvc',
+        'ResponsiveSrvc',
         
-        function ($scope, $stateParams, $rootScope, places) {
+        function ($scope, $stateParams, $rootScope, places, responsive) {
             $scope.C = C;
 
             $scope.places = [];
+            $scope.haveMore = true;
+            $scope.perPage = C.PLACE.PER_PAGE;
+            $scope.endAt = C.PLACE.PER_PAGE;
+
+            function setLayout() {
+                if (responsive.isXDPI()) {
+                    $scope.perPage = C.PLACE.PER_PAGE_XDPI;
+                }
+                else {
+                    $scope.perPage = C.PLACE.PER_PAGE;
+                }
+            }
 
             function init() {
+                setLayout();
+
                 places.search($stateParams.type, function (placesList) {
                     $scope.places = placesList;
+                    $scope.page = 1;
+                    $scope.haveMore = true;
                 });
             }
+            
+            $scope.$on('responsiveLayoutChanged', setLayout);
+
+            $scope.pagedPlaces = function () {
+                var paged = $scope.places.slice(0, $scope.endAt);
+
+                if (paged.length === $scope.places.length) {
+                    $scope.haveMore = false;
+                }
+
+                return paged;
+            };
+
+            $scope.loadMore = function () {
+                $scope.endAt += $scope.perPage;
+            };
 
             $scope.currentTab = function (tab) {
                 return $stateParams.type === tab;
@@ -1905,7 +1969,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"container\">\r" +
     "\n" +
-    "                <a class=\"item\" ng-repeat=\"place in places\" ui-sref=\"place({type: place.type, id: place.id})\">\r" +
+    "                <a class=\"item\" ng-repeat=\"place in pagedPlaces()\" ui-sref=\"place({type: place.type, id: place.id})\">\r" +
     "\n" +
     "                    <img ng-src=\"{{getPlaceImage(place.image)}}\" alt=\"\" />\r" +
     "\n" +
@@ -1923,7 +1987,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "            <a class=\"button more\">Load more</a>\r" +
+    "            <a class=\"button more\" ng-click=\"loadMore()\" ng-show=\"haveMore\">Load more</a>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +
