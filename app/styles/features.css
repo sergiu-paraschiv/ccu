@@ -11,7 +11,7 @@
 
         #mainfeature .feature .detail {
             display: block;
-            width: 320x;
+            width: 320px;
             height: 289px;
             
             background: url('../images/mainfeature.detail.png') no-repeat 0 0 transparent;
@@ -83,7 +83,7 @@
         }
         
             #mainfeature .feature .detail {
-                width: 320x;
+                width: 476px;
                 height: 289px;
                 margin-top: 90px;
             

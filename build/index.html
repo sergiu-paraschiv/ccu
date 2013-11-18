@@ -52,7 +52,13 @@
         </header>
         
         <div ui-view="content" class="contentparent" ng-class="{'hideme': modalIsVisible}"></div>
-        <div ui-view="addPlace" class="modalparent" ng-class="{'hideme': !modalIsVisible}"></div>
+
+        <div  class="modalparent" ng-class="{'hideme': !modalIsVisible}" ng-style="{'height': getFullHeight() + 'px'}">
+            <div class="background">&nbsp;</div>
+            <div ui-view="addPlace"></div>
+            <div ui-view="addReview"></div>
+            <div ui-view="addJob"></div>
+        </div>
         
         <footer id="footer">
             <div class="container">

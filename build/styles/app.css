@@ -7115,6 +7115,11 @@ a:active {
     text-decoration: none;
 }
 
+textarea:focus,
+input:focus {
+    outline: 0;
+}
+
 ul {
     margin: 0;
     padding: 0;
@@ -7365,7 +7370,7 @@ ul {
 
         #mainfeature .feature .detail {
             display: block;
-            width: 320x;
+            width: 320px;
             height: 289px;
             
             background: url('../images/mainfeature.detail.png') no-repeat 0 0 transparent;
@@ -7437,7 +7442,7 @@ ul {
         }
         
             #mainfeature .feature .detail {
-                width: 320x;
+                width: 476px;
                 height: 289px;
                 margin-top: 90px;
             
@@ -7753,7 +7758,7 @@ ul {
     
         .tabs li a {
             display: block;
-            padding: 21px 15px 29px 32px;
+            padding: 21px 25px 29px 25px;
             
             font-size: 24px;
             line-height: 24px;
@@ -7787,6 +7792,12 @@ ul {
         display: none;
     }
 
+    .button.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+        cursor: default;
+    }
+
     .button.add {
         padding-left: 48px;
         
@@ -7794,6 +7805,14 @@ ul {
         
         color: #0099cc;
         font-size: 28px;
+    }
+
+    .button.location {
+        padding-left: 48px;
+        
+        background: url('../images/button.location.png') no-repeat 10px center transparent;
+        
+        color: #0099cc;
     }
 
     .button.notext.add {
@@ -7837,62 +7856,40 @@ ul {
     
 .rating {
     display: block;
-    background: url('../images/rating.bad.png') no-repeat 0 0 transparent;
     height: 20px;
-    width: 119px;
+    width: 120px;
     overflow: hidden;
 }
 
-    .rating span {
+    .rating .star {
         display: block;
         height: 20px;
-        width: 119px;
+        width: 20px;
+        float: left;
+
+        background: url('../images/rating.bad.png') no-repeat 0 0 transparent;
+    }
+
+    .rating .star.full {
         background: url('../images/rating.png') no-repeat 0 0 transparent;
     }
-    
-        .rating.r45 span {
-            width: 109px;
-        }
-        
-        .rating.r40 span {
-            width: 94px;
-        }
-        
-        .rating.r35 span {
-            width: 84px;
-        }
-        
-        .rating.r30 span {
-            width: 74px;
-        }
 
-        .rating.r25 span {
-            width: 60px;
-        }
-        
-        .rating.r20 span {
-            width: 48px;
-        }
+.rating.edit {
+    height: 28px;
+    width: 168px;
+}
 
-        .rating.r15 span {
-            width: 35px;
-        }
-        
-        .rating.r10 span {
-            width: 24px;
-        }
-        
-        .rating.r05 span {
-            width: 10px;
-        }
-        
-        .rating.r00 span {
-            width: 0px;
-        }
+    .rating.edit .star {
+        height: 28px;
+        width: 28px;
+
+        background: url('../images/rating.edit.bad.png') no-repeat 0 0 transparent;
+    }
+
+    .rating.edit .star.full {
+        background: url('../images/rating.edit.png') no-repeat 0 0 transparent;
+    }
     
-        .rating span span {
-            display: none;
-        }
 
 @media (min-width: 960px) {
     .tabs li a {
@@ -7920,6 +7917,11 @@ ul {
 
         .button.add {
              background: url('../images/xdpi.button.add.png') no-repeat 8px center transparent;
+             padding-left: 28px;
+        }
+
+        .button.location {
+             background: url('../images/xdpi.button.location.png') no-repeat 8px center transparent;
              padding-left: 28px;
         }
 
@@ -7956,52 +7958,35 @@ ul {
     }
    
     .rating {
-        background: url('../images/xdpi.rating.bad.png') no-repeat 0 0 transparent;
         height: 10px;
         width: 60px;
     }
 
-        .rating span {
+        .rating .star {
             height: 10px;
-            width: 60px;
+            width: 10px;
+            background: url('../images/xdpi.rating.bad.png') no-repeat 0 0 transparent;
+        }
+
+        .rating .star.full {
             background: url('../images/xdpi.rating.png') no-repeat 0 0 transparent;
         }
-    
-            .rating.r45 span {
-                width: 55px;
-            }
-        
-            .rating.r40 span {
-                width: 47px;
-            }
-        
-            .rating.r35 span {
-                width: 42px;
-            }
-        
-            .rating.r30 span {
-                width: 37px;
-            }
 
-            .rating.r25 span {
-                width: 30px;
-            }
-        
-            .rating.r20 span {
-                width: 24px;
-            }
+    .rating.edit {
+        height: 16px;
+        width: 80px;
+    }
 
-            .rating.r15 span {
-                width: 17px;
-            }
-        
-            .rating.r10 span {
-                width: 12px;
-            }
-        
-            .rating.r05 span {
-                width: 5px;
-            }
+        .rating.edit .star {
+            height: 16px;
+            width: 16px;
+
+            background: url('../images/xdpi.rating.edit.bad.png') no-repeat 0 0 transparent;
+        }
+
+        .rating.edit .star.full {
+            background: url('../images/xdpi.rating.edit.png') no-repeat 0 0 transparent;
+        }
 }
 .contentparent.hideme {
     display: none;
@@ -8045,7 +8030,7 @@ ul {
     }
 
     .modalparent {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
@@ -8069,9 +8054,12 @@ ul {
             opacity: 0.9;
         }
 
+    .modalwrap {
+        background: none;
+    }
+
     .modalview {
         width: 436px;
-        margin-top: 300px;
         padding: 16px 26px 16px 26px;
 
         border: 2px solid #e9e9e9;
@@ -8107,115 +8095,283 @@ ul {
                 background: url('../images/xdpi.button.notext.add.png') no-repeat 7px 7px transparent;
             }
 }
-.input input:-moz-placeholder {
+.input :-moz-placeholder {
     color: #777777;
     font-size: 28px;
     line-height: 28px;
     font-style: italic;
 }
 
-.input input::-moz-placeholder {
+.input ::-moz-placeholder {
     color: #777777;
     font-size: 28px;
     line-height: 28px;
     font-style: italic;
 }
 
-.input input:-ms-input-placeholder {
+.input :-ms-input-placeholder {
     color: #777777;
     font-size: 28px;
     line-height: 28px;
     font-style: italic;
 }
 
-.input input::-webkit-input-placeholder {
+.input ::-webkit-input-placeholder {
     color: #777777;
     font-size: 28px;
     line-height: 28px;
     font-style: italic;
 }
 
-.input.text {
-    margin: 32px 0 10px 0;
+.input textarea:-moz-placeholder {
+    line-height: 36px;
+}
+
+.input textarea::-moz-placeholder {
+    line-height: 36px;
+}
+
+.input textarea:-ms-input-placeholder {
+    line-height: 36px;
+}
+
+.input textarea::-webkit-input-placeholder {
+    line-height: 36px;
+}
+
+.spaced {
     overflow: hidden;
     position: relative;
+    margin: 32px 0 10px 0;
+    width: 100%;
 }
 
-    .input.text .clear {
+.input {
+    overflow: hidden;
+    position: relative;
+    margin: 32px 0 10px 0;
+    width: 100%;
+
+    border: 2px solid #e1e1e1;
+}
+
+.input .clear {
+    display: none;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    background: url('../images/form.input.text.clear.png') no-repeat 0 0 transparent;
+}
+
+    .input .clear span {
         display: none;
-        width: 56px;
-        height: 56px;
-        overflow: hidden;
-        background: url('../images/form.input.text.clear.png') no-repeat 0 0 transparent;
     }
 
-        .input.text .clear span {
-            display: none;
-        }
+.input.notempty.focused input {
+    padding-right: 80px;
+}
 
-    .input.text.notempty.focused input {
-        padding-right: 80px;
+.input.notempty.focused textarea {
+    padding-right: 80px;
+}
+
+    .input.notempty.focused .clear {
+        display: block;
+        position: absolute;
+        top: 20px;
+        right: 15px;
     }
-
-        .input.text.notempty.focused .clear {
-            display: block;
-            position: absolute;
-            top: 20px;
-            right: 15px;
-        }
 
 .input.text input {    
     display: block;
     padding: 29px 26px 23px 26px;
     width: 576px;
-    border: 2px solid #e1e1e1;
+    border: 0 solid #ffffff;
 
     font-size: 28px;
     line-height: 28px;
     color: #777777;
 }
 
+.input.textarea textarea {    
+    display: block;
+    padding: 25px 26px 19px 26px;
+    width: 576px;
+    height: 174px;
+    border: 0 solid #ffffff;
+    resize: vertical;
+
+    font-size: 28px;
+    line-height: 36px;
+    color: #777777;
+}
+
+.radiogroup {
+    overflow: hidden;
+}
+
+    .radiogroup .option {
+        display: block;
+        float: left;
+        padding-left: 110px;
+        margin-right: 28px;
+
+        background: url('../images/radio.png') no-repeat 26px center transparent;
+
+        font-size: 28px;
+        line-height: 60px;
+        color: #777777;
+    }
+
+        .radiogroup .option.active {
+            background: url('../images/radio.active.png') no-repeat 26px center transparent;
+        }
+
+.input .button {
+    margin: 0 auto;
+    width: 400px;
+    float: none;
+}
+
+.input.rating {
+    height: 90px;
+    padding: 29px 26px 23px 26px;
+}
+
+    .input.rating label {
+        margin-bottom: 0;
+        display: block;
+        float: left;
+
+        color: #777777;
+        font-size: 28px;
+        line-height: 28px;
+        font-style: italic;
+        font-weight: normal;
+    }
+
+    .input.rating .rating {
+        display: block;
+        float: left;
+        margin-left: 28px;
+    }
+
 @media (min-width: 960px) {
-   .input input:-moz-placeholder {
+   .input :-moz-placeholder {
         font-size: 14px;
         line-height: 16px;
     }
 
-    .input input::-moz-placeholder {
+    .input ::-moz-placeholder {
         font-size: 14px;
         line-height: 16px;
     }
 
-    .input input:-ms-input-placeholder {
+    .input :-ms-input-placeholder {
         font-size: 14px;
         line-height: 16px;
     }
 
-    .input input::-webkit-input-placeholder {
+    .input ::-webkit-input-placeholder {
         font-size: 14px;
         line-height: 16px;
+    }
+
+    .input textarea:-moz-placeholder {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input textarea::-moz-placeholder {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input textarea:-ms-input-placeholder {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input textarea::-webkit-input-placeholder {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input {
+        border: 1px solid #e1e1e1;
+        margin: 16px 0 5px 0;
     }
 
     .input.text {
         margin: 14px 0 5px 0;
     }
 
-        .input.text.notempty .clear {
+        .input.notempty .clear,
+        .input.notempty.focused .clear {
             display: none;
         }
 
-        .input.text.notempty input {
+        .input.notempty input {
             padding-right: 14px;
         }
 
     .input.text input {    
         padding: 14px 14px 14px 14px;
         width: 380px;
-        border: 1px solid #e1e1e1;
 
         font-size: 14px;
         line-height: 14px;
     }
+
+    .input.textarea textarea {    
+        padding: 14px 14px 14px 14px;
+        width: 380px;
+        height: 90px;
+
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .input.notempty.focused input {
+        padding-right: 14px;
+    }
+
+    .input.notempty.focused textarea {
+        padding-right: 14px;
+    }
+
+    .radiogroup .option {
+        padding-left: 55px;
+        margin-right: 0;
+        width: 50%;
+
+        background: url('../images/xdpi.radio.png') no-repeat 13px center transparent;
+
+        font-size: 14px;
+        line-height: 30px;
+    }
+
+        .radiogroup .option.active {
+            background: url('../images/xdpi.radio.active.png') no-repeat 13px center transparent;
+        }
+
+    .input .button {
+        width: 200px;
+    }
+
+    .input.rating {
+        height: 45px;
+        padding: 14px;
+    }
+
+        .input.rating label {
+            font-size: 14px;
+            line-height: 16px;
+        }
+
+        .input.rating .rating {
+            margin-left: 14px;
+        }
 }
 .list .header {
     overflow: hidden;
@@ -8807,6 +8963,12 @@ ul {
         width: 200px;
     }
 
+#addplace .button.location {
+    margin: 0 auto;
+    width: 400px;
+    float: none;
+}
+
 @media (min-width: 960px) {
     #addplace .actions {
         width: 232px;
@@ -8815,5 +8977,54 @@ ul {
         #addplace .actions .button {
             width: 100px;
         }
+
+    #addplace .button.location {
+        width: 200px;
+    }
+    
+}
+#addreview .actions {
+    width: 464px;
+}
+
+    #addreview .actions .button {
+        width: 200px;
+    }
+
+@media (min-width: 960px) {
+    #addreview .actions {
+        width: 232px;
+    }
+
+        #addreview .actions .button {
+            width: 100px;
+        }
+    
+}
+#addjob .actions {
+    width: 464px;
+}
+
+    #addjob .actions .button {
+        width: 200px;
+    }
+
+#addjob .button.location {
+    margin: 0 auto;
+    width: 400px;
+    float: none;
+}
+@media (min-width: 960px) {
+    #addjob .actions {
+        width: 232px;
+    }
+
+        #addjob .actions .button {
+            width: 100px;
+        }
+
+    #addjob .button.location {
+        width: 200px;
+    }
     
 }

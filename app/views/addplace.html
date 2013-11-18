@@ -1,29 +1,37 @@
-﻿<div class="background" ng-show="visible">&nbsp;</div>
 <div class="modalwrap" ng-show="visible" ng-style="{'marginTop': getMarginTop() + 'px'}">
     <div class="modalview container" id="addplace">
 
-        <h1 class="title add"><strong>Add new shelter</strong></h1>
+        <h1 class="title add">
+            <strong ng-show="currentTab('SHELTER')">Add new shelter</strong>
+            <strong ng-show="currentTab('FOOD_PANTRIES')">Add new food pantry</strong>
+            <strong ng-show="currentTab('FOOD_BANK')">Add new food bank</strong>
+        </h1>
+
         <a href="" class="modalclose" ng-click="cancel()"><span>Close</span></a>
         
-        <form>
-            <p class="input text" ng-class="{'notempty': name != ''}">
-                <input type="text" ng-model="name" placeholder="Name" is-focused />
-                <a href="" class="clear" ng-click="clear('name')"><span>Clear</span></a>
+        <form name="addplace">
+            <p class="input text" ng-class="{'notempty': place.title != ''}">
+                <input type="text" ng-model="place.title" placeholder="Name" is-focused required />
+                <a href="" class="clear" ng-click="clear('title')"><span>Clear</span></a>
             </p>
 
-            <p class="input text" ng-class="{'notempty': description != ''}">
-                <input type="text" ng-model="description" placeholder="Description" is-focused />
+            <p class="input text" ng-class="{'notempty': place.description != ''}">
+                <input type="text" ng-model="place.description" placeholder="Description" is-focused />
                 <a href="" class="clear" ng-click="clear('description')"><span>Clear</span></a>
             </p>
 
-            <p class="input text" ng-class="{'notempty': address != ''}">
-                <input type="text" ng-model="address" placeholder="Address" is-focused />
+            <p class="input text" ng-class="{'notempty': place.address != ''}">
+                <input type="text" ng-model="place.address" placeholder="Address" is-focused />
                 <a href="" class="clear" ng-click="clear('address')"><span>Clear</span></a>
+            </p>
+
+            <p class="spaced">
+                <a class="button location" ng-click="setLocation()"><span>Current location</span></a>
             </p>
         </form>
 
         <div class="actions">
-            <a href="" class="button save"><span>Save</span></a>
+            <a href="" class="button save" ng-click="save()" ng-class="{'disabled': addplace.$invalid}"><span>Save</span></a>
             <a href="" class="button cancel" ng-click="cancel()"><span>Cancel</span></a>
         </div>
     </div>

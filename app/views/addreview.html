@@ -1,0 +1,27 @@
+﻿<div class="modalwrap" ng-show="visible" ng-style="{'marginTop': getMarginTop() + 'px'}">
+    <div class="modalview container" id="addreview">
+
+        <h1 class="title add">
+            <strong>Add new review</strong>
+        </h1>
+
+        <a href="" class="modalclose" ng-click="cancel()"><span>Close</span></a>
+        
+        <form name="addreview">
+            <p class="input text" ng-class="{'notempty': review.comment != ''}">
+                <input type="text" ng-model="review.comment" placeholder="Comment" is-focused required />
+                <a href="" class="clear" ng-click="clear('comment')"><span>Clear</span></a>
+            </p>
+
+            <p class="input rating">
+                <label>Rating</label>
+                <rating data-value="review.rating" data-read-only="false"></rating>
+            </p>
+        </form>
+
+        <div class="actions">
+            <a href="" class="button save" ng-click="save()" ng-class="{'disabled': addreview.$invalid}"><span>Save</span></a>
+            <a href="" class="button cancel" ng-click="cancel()"><span>Cancel</span></a>
+        </div>
+    </div>
+</div>

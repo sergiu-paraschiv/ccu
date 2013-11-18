@@ -1,0 +1,18 @@
+#addreview .actions {
+    width: 464px;
+}
+
+    #addreview .actions .button {
+        width: 200px;
+    }
+
+@media (min-width: 960px) {
+    #addreview .actions {
+        width: 232px;
+    }
+
+        #addreview .actions .button {
+            width: 100px;
+        }
+    
+}

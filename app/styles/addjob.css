@@ -1,0 +1,27 @@
+#addjob .actions {
+    width: 464px;
+}
+
+    #addjob .actions .button {
+        width: 200px;
+    }
+
+#addjob .button.location {
+    margin: 0 auto;
+    width: 400px;
+    float: none;
+}
+@media (min-width: 960px) {
+    #addjob .actions {
+        width: 232px;
+    }
+
+        #addjob .actions .button {
+            width: 100px;
+        }
+
+    #addjob .button.location {
+        width: 200px;
+    }
+    
+}

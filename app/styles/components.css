@@ -10,7 +10,7 @@
     
         .tabs li a {
             display: block;
-            padding: 21px 15px 29px 32px;
+            padding: 21px 25px 29px 25px;
             
             font-size: 24px;
             line-height: 24px;
@@ -44,6 +44,12 @@
         display: none;
     }
 
+    .button.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+        cursor: default;
+    }
+
     .button.add {
         padding-left: 48px;
         
@@ -51,6 +57,14 @@
         
         color: #0099cc;
         font-size: 28px;
+    }
+
+    .button.location {
+        padding-left: 48px;
+        
+        background: url('../images/button.location.png') no-repeat 10px center transparent;
+        
+        color: #0099cc;
     }
 
     .button.notext.add {
@@ -94,62 +108,40 @@
     
 .rating {
     display: block;
-    background: url('../images/rating.bad.png') no-repeat 0 0 transparent;
     height: 20px;
-    width: 119px;
+    width: 120px;
     overflow: hidden;
 }
 
-    .rating span {
+    .rating .star {
         display: block;
         height: 20px;
-        width: 119px;
+        width: 20px;
+        float: left;
+
+        background: url('../images/rating.bad.png') no-repeat 0 0 transparent;
+    }
+
+    .rating .star.full {
         background: url('../images/rating.png') no-repeat 0 0 transparent;
     }
-    
-        .rating.r45 span {
-            width: 109px;
-        }
-        
-        .rating.r40 span {
-            width: 94px;
-        }
-        
-        .rating.r35 span {
-            width: 84px;
-        }
-        
-        .rating.r30 span {
-            width: 74px;
-        }
 
-        .rating.r25 span {
-            width: 60px;
-        }
-        
-        .rating.r20 span {
-            width: 48px;
-        }
+.rating.edit {
+    height: 28px;
+    width: 168px;
+}
 
-        .rating.r15 span {
-            width: 35px;
-        }
-        
-        .rating.r10 span {
-            width: 24px;
-        }
-        
-        .rating.r05 span {
-            width: 10px;
-        }
-        
-        .rating.r00 span {
-            width: 0px;
-        }
+    .rating.edit .star {
+        height: 28px;
+        width: 28px;
+
+        background: url('../images/rating.edit.bad.png') no-repeat 0 0 transparent;
+    }
+
+    .rating.edit .star.full {
+        background: url('../images/rating.edit.png') no-repeat 0 0 transparent;
+    }
     
-        .rating span span {
-            display: none;
-        }
 
 @media (min-width: 960px) {
     .tabs li a {
@@ -177,6 +169,11 @@
 
         .button.add {
              background: url('../images/xdpi.button.add.png') no-repeat 8px center transparent;
+             padding-left: 28px;
+        }
+
+        .button.location {
+             background: url('../images/xdpi.button.location.png') no-repeat 8px center transparent;
              padding-left: 28px;
         }
 
@@ -213,50 +210,33 @@
     }
    
     .rating {
-        background: url('../images/xdpi.rating.bad.png') no-repeat 0 0 transparent;
         height: 10px;
         width: 60px;
     }
 
-        .rating span {
+        .rating .star {
             height: 10px;
-            width: 60px;
+            width: 10px;
+            background: url('../images/xdpi.rating.bad.png') no-repeat 0 0 transparent;
+        }
+
+        .rating .star.full {
             background: url('../images/xdpi.rating.png') no-repeat 0 0 transparent;
         }
-    
-            .rating.r45 span {
-                width: 55px;
-            }
-        
-            .rating.r40 span {
-                width: 47px;
-            }
-        
-            .rating.r35 span {
-                width: 42px;
-            }
-        
-            .rating.r30 span {
-                width: 37px;
-            }
 
-            .rating.r25 span {
-                width: 30px;
-            }
-        
-            .rating.r20 span {
-                width: 24px;
-            }
+    .rating.edit {
+        height: 16px;
+        width: 80px;
+    }
 
-            .rating.r15 span {
-                width: 17px;
-            }
-        
-            .rating.r10 span {
-                width: 12px;
-            }
-        
-            .rating.r05 span {
-                width: 5px;
-            }
+        .rating.edit .star {
+            height: 16px;
+            width: 16px;
+
+            background: url('../images/xdpi.rating.edit.bad.png') no-repeat 0 0 transparent;
+        }
+
+        .rating.edit .star.full {
+            background: url('../images/xdpi.rating.edit.png') no-repeat 0 0 transparent;
+        }
 }

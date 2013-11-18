@@ -1,13 +1,65 @@
 (function(undefined) {
     'use strict';
 
-    var Place = this.Models.Place;
-   
+    var C = this.Constants;
+
     this.Main.controller('PlacesCtrl', [
         '$scope',
+        '$stateParams',
         '$rootScope',
+        'PlacesSrvc',
+        'ResponsiveSrvc',
         
-        function ($scope, $rootScope) {
+        function ($scope, $stateParams, $rootScope, places, responsive) {
+            $scope.C = C;
+
+            $scope.places = [];
+            $scope.haveMore = true;
+            $scope.perPage = C.PLACE.PER_PAGE;
+            $scope.endAt = C.PLACE.PER_PAGE;
+
+            function getPerPage() {
+                if (responsive.isXDPI()) {
+                    return C.PLACE.PER_PAGE_XDPI;
+                }
+
+                return C.PLACE.PER_PAGE;
+            }
+
+            function setLayout() {
+                $scope.perPage = getPerPage();
+            }
+
+            function init() {
+                setLayout();
+
+                places.search($stateParams.type, function (placesList) {
+                    $scope.places = placesList;
+                    $scope.endAt = getPerPage();
+                    $scope.haveMore = true;
+                });
+            }
+            
+            $scope.$on('responsiveLayoutChanged', setLayout);
+
+            $scope.pagedPlaces = function () {
+                var paged = $scope.places.slice(0, $scope.endAt);
+
+                if (paged.length === $scope.places.length) {
+                    $scope.haveMore = false;
+                }
+
+                return paged;
+            };
+
+            $scope.loadMore = function () {
+                $scope.endAt += $scope.perPage;
+            };
+
+            $scope.currentTab = function (tab) {
+                return $stateParams.type === tab;
+            };
+
             $scope.getPlaceImage = function (src) {
                 if (src === '') {
                     return 'images/places.placeholder.png';
@@ -16,100 +68,15 @@
                 return src;
             };
 
+            $scope.$on('placeAdded', function () {
+                init();
+            });
+
             $scope.addPlace = function () {
-                $rootScope.$broadcast('addPlace', {});
+                $rootScope.$broadcast('addPlace', { type: $stateParams.type });
             };
 
-            $scope.places = [
-                new Place({
-                    id: 1,
-                    image: 'images/dynamic/place1.png',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608',
-                    rating: 5
-                }),
-
-                new Place({
-                    id: 2,
-                    image: 'images/dynamic/place2.png',
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 4.5
-                }),
-
-                new Place({
-                    id: 3,
-                    image: 'images/dynamic/place3.png',
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 4
-                }),
-
-                new Place({
-                    id: 4,
-                    image: 'images/dynamic/place4.png',
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 3.5
-                }),
-
-                new Place({
-                    id: 5,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 3
-                }),
-
-                new Place({
-                    id: 6,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 2.5
-                }),
-
-                new Place({
-                    id: 7,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 2
-                }),
-
-                new Place({
-                    id: 8,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 1.5
-                }),
-
-                new Place({
-                    id: 9,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 1
-                }),
-
-                new Place({
-                    id: 10,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 0.5
-                }),
-
-                new Place({
-                    id: 11,
-                    title: 'City of Portland, Oxfor...',
-                    address: 'St. Johns St, Right on Park Av...',
-                    rating: 0
-                }),
-
-                new Place({
-                    id: 12,
-                    image: 'images/dynamic/place1.png',
-                    title: 'Topeka Rescue Missio...',
-                    address: 'Topeka, KS 66608',
-                    rating: 3.65
-                })
-            ];
+            init();
         }
     ]);
         

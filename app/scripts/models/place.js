@@ -1,12 +1,23 @@
 ﻿(function (undefined) {
     'use strict';
 
-    function Place(data) {
-        this.id = data.id;
-        this.image = data.image || '';
-        this.title = data.title || '';
-        this.address = data.address || '';
-        this.rating = data.rating || 0;
+    var C = this.Constants;
+
+    function Place(data, type) {
+        this.id = data.gReference;
+        this.reference = data.id;
+        this.image = '';
+        this.title = data.name || '';
+        this.description = data.description || '';
+        this.address = data.address.formatedAddress || '';
+        this.phone = data.address.formatedPhone || '';
+        this.rating = data.averageRating || 0;
+        this.location = {
+            lat: data.address.latitude || C.LOCATION.DEFAULT.lat,
+            lng: data.address.longitude || C.LOCATION.DEFAULT.lng
+        };
+        this.type = type || '';
+        this.reviews = [];
     }
 
     this.exports(this.Models, {

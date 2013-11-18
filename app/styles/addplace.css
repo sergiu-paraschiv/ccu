@@ -6,6 +6,12 @@
         width: 200px;
     }
 
+#addplace .button.location {
+    margin: 0 auto;
+    width: 400px;
+    float: none;
+}
+
 @media (min-width: 960px) {
     #addplace .actions {
         width: 232px;
@@ -14,5 +20,9 @@
         #addplace .actions .button {
             width: 100px;
         }
+
+    #addplace .button.location {
+        width: 200px;
+    }
     
 }

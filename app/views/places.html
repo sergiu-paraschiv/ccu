@@ -1,7 +1,7 @@
 <div id="smallmenu">
     <ul class="container">
         <li class="places">
-            <a ui-sref="places"><span>Places</span></a>
+            <a ui-sref="places({type: 'SHELTER'})"><span>Places</span></a>
         </li>
         
         <li class="jobs">
@@ -23,36 +23,45 @@
 <div id="places">
     <div class="container">
         <ul class="tabs">
-            <li class="active">
-                <a href="">Shelters</a>
+            <li ng-class="{'active': currentTab('SHELTER')}">
+                <a ui-sref="places({type: 'SHELTER'})">Shelters</a>
             </li>
         
-            <li>
-                <a href="">Food Pantries</a>
+            <li ng-class="{'active': currentTab('FOOD_PANTRIES')}">
+                <a ui-sref="places({type: 'FOOD_PANTRIES'})">Food Pantries</a>
             </li>
         
-            <li>
-                <a href="">Food Banks</a>
+            <li ng-class="{'active': currentTab('FOOD_BANK')}">
+                <a ui-sref="places({type: 'FOOD_BANK'})">Food Banks</a>
             </li>
         </ul>
     
         <div class="list">
             <div class="header">
-                <h2 class="title"><strong>Shelters</strong> (87)</h2>
-                <a href="" class="button add" ng-click="addPlace()">Add shelter</a>
+                <h2 class="title">
+                    <strong ng-show="currentTab('SHELTER')">Shelters</strong>
+                    <strong ng-show="currentTab('FOOD_PANTRIES')">Food Pantries</strong>
+                    <strong ng-show="currentTab('FOOD_BANK')">Food Banks</strong>
+                    ({{places.length}})
+                </h2>
+                <a href="" class="button add" ng-click="addPlace()">
+                    <span ng-show="currentTab('SHELTER')">Add shelter</span>
+                    <span ng-show="currentTab('FOOD_PANTRIES')">Add food pantry</span>
+                    <span ng-show="currentTab('FOOD_BANK')">Add food bank</span>
+                </a>
             </div>
         
             <div class="container">
-                <a class="item" ng-repeat="place in places" ui-sref="place({id: place.id})">
+                <a class="item" ng-repeat="place in pagedPlaces()" ui-sref="place({type: place.type, id: place.id})">
                     <img ng-src="{{getPlaceImage(place.image)}}" alt="" />
                     <h3 class="title">{{place.title}}</h3>
                     <span class="address">{{place.address}}</span>
 
-                    <rating data-value="place.rating"></rating>
+                    <rating data-value="place.rating" data-read-only="true"></rating>
                 </a>
             </div>
 
-            <a class="button more">Load more</a>
+            <a class="button more" ng-click="loadMore()" ng-show="haveMore">Load more</a>
         </div>
     </div>
 </div>
