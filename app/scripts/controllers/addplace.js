@@ -1,4 +1,4 @@
-(function(undefined) {
+(function($, undefined) {
     'use strict';
    
     this.Main.controller('AddPlaceCtrl', [
@@ -25,7 +25,15 @@
                 $rootScope.$broadcast('hideModal');
                 $scope.visible = false;
             };
+
+            $scope.getMarginTop = function () {
+                if ($(window).width() < 960) {
+                    return 0;                    
+                }
+
+                return $scope.getFullHeight() / 2 - $('#addplace').height() / 2;
+            };
         }
     ]);
         
-}).call(this.Crosscut, this.angular);
+}).call(this.Crosscut, this.jQuery);

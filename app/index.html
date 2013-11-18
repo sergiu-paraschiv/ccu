@@ -25,7 +25,7 @@
         <link rel="stylesheet" href="styles/place.css" />
         <link rel="stylesheet" href="styles/jobs.css" />
         <link rel="stylesheet" href="styles/news.css" />
-        <link href="styles/addplace.css" rel="stylesheet" />
+        <link rel="stylesheet" href="styles/addplace.css" />
         <!-- endbuild -->
 
         <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false"></script>
@@ -69,7 +69,7 @@
         </header>
         
         <div ui-view="content" class="contentparent" ng-class="{'hideme': modalIsVisible}"></div>
-        <div ui-view="addPlace" class="modalparent" ng-class="{'hideme': !modalIsVisible}"></div>
+        <div ui-view="addPlace" class="modalparent" ng-class="{'hideme': !modalIsVisible}" ng-style="{'height': getFullHeight() + 'px'}"></div>
         
         <footer id="footer">
             <div class="container">
