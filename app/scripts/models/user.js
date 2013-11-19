@@ -3,7 +3,7 @@
 
     function User(data) {
         this.id = data.id || 123456;
-        this.name = data.name || 'Sergiu Paraschiv';
+        this.name = data.name || 'John Doe';
     }
 
     this.exports(this.Models, {

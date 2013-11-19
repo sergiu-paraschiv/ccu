@@ -4,7 +4,7 @@
         <title>crosscut USA</title>
         
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=1000" />
+        <meta name="viewport" content="width=640" />
         
         <meta name="description" content="" />
         <meta name="keywords" content="" />
@@ -53,7 +53,7 @@
         
         <div ui-view="content" class="contentparent" ng-class="{'hideme': modalIsVisible}"></div>
 
-        <div  class="modalparent" ng-class="{'hideme': !modalIsVisible}" ng-style="{'height': getFullHeight() + 'px'}">
+        <div  class="modalparent" ng-class="{'hideme': !modalIsVisible}" ng-style="{'height': getFullHeight()}">
             <div class="background">&nbsp;</div>
             <div ui-view="addPlace"></div>
             <div ui-view="addReview"></div>

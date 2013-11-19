@@ -409,7 +409,7 @@
 
     function User(data) {
         this.id = data.id || 123456;
-        this.name = data.name || 'Sergiu Paraschiv';
+        this.name = data.name || 'John Doe';
     }
 
     this.exports(this.Models, {
@@ -805,14 +805,20 @@
     'use strict';
    
     this.Main.controller('MainCtrl', [
-        '$scope', 
+        '$scope',
+        'ResponsiveSrvc',
         
-        function($scope) {
+        function ($scope, responsive) {
             $scope.mainMenuIsClosed = true;
             $scope.accountMenuIsClosed = true;
             $scope.modalIsVisible = false;
-            $scope.fullHeight = $(window).height();
-            
+
+            function setLayout() {
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+            }
+
             $scope.toggleMainMenu = function() {
                 $scope.mainMenuIsClosed = !$scope.mainMenuIsClosed;
             };
@@ -822,7 +828,11 @@
             };
 
             $scope.getFullHeight = function () {
-                return $scope.fullHeight;
+                if ($(window).width() >= 960) {
+                    return $(window).height() + 'px';
+                }
+
+                return 'auto';
             };
 
             $scope.$on('showModal', function () {
@@ -833,14 +843,7 @@
                 $scope.modalIsVisible = false;
             });
 
-            $(window).on('resize', function () {
-                if ($(window).width() >= 960) {
-                    $scope.fullHeight = $(this).height();
-                    if (!$scope.$$phase) {
-                        $scope.$apply();
-                    }
-                }
-            });
+            $scope.$on('responsiveLayoutChanged', setLayout);
         }
     ]);
         
@@ -1046,11 +1049,13 @@
             };
 
             $scope.getMarginTop = function () {
-                if ($(window).width() < 960) {
-                    return 0;                    
+                var fullHeight = $scope.getFullHeight();
+
+                if (fullHeight === 'auto') {
+                    return 0;
                 }
 
-                return $scope.getFullHeight() / 2 - $('#addplace').height() / 2;
+                return $scope.getFullHeight().replace('px', '') / 2 - $('#addplace').height() / 2;
             };
         }
     ]);        
@@ -1099,11 +1104,13 @@
             };
 
             $scope.getMarginTop = function () {
-                if ($(window).width() < 960) {
+                var fullHeight = $scope.getFullHeight();
+
+                if (fullHeight === 'auto') {
                     return 0;
                 }
 
-                return $scope.getFullHeight() / 2 - $('#addreview').height() / 2;
+                return $scope.getFullHeight().replace('px', '') / 2 - $('#addplace').height() / 2;
             };
         }
     ]);
@@ -1179,11 +1186,13 @@
             };
 
             $scope.getMarginTop = function () {
-                if ($(window).width() < 960) {
+                var fullHeight = $scope.getFullHeight();
+
+                if (fullHeight === 'auto') {
                     return 0;
                 }
 
-                return $scope.getFullHeight() / 2 - $('#addjob').height() / 2;
+                return $scope.getFullHeight().replace('px', '') / 2 - $('#addplace').height() / 2;
             };
         }
     ]);

@@ -2,14 +2,20 @@
     'use strict';
    
     this.Main.controller('MainCtrl', [
-        '$scope', 
+        '$scope',
+        'ResponsiveSrvc',
         
-        function($scope) {
+        function ($scope, responsive) {
             $scope.mainMenuIsClosed = true;
             $scope.accountMenuIsClosed = true;
             $scope.modalIsVisible = false;
-            $scope.fullHeight = $(window).height();
-            
+
+            function setLayout() {
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+            }
+
             $scope.toggleMainMenu = function() {
                 $scope.mainMenuIsClosed = !$scope.mainMenuIsClosed;
             };
@@ -19,7 +25,11 @@
             };
 
             $scope.getFullHeight = function () {
-                return $scope.fullHeight;
+                if ($(window).width() >= 960) {
+                    return $(window).height() + 'px';
+                }
+
+                return 'auto';
             };
 
             $scope.$on('showModal', function () {
@@ -30,14 +40,7 @@
                 $scope.modalIsVisible = false;
             });
 
-            $(window).on('resize', function () {
-                if ($(window).width() >= 960) {
-                    $scope.fullHeight = $(this).height();
-                    if (!$scope.$$phase) {
-                        $scope.$apply();
-                    }
-                }
-            });
+            $scope.$on('responsiveLayoutChanged', setLayout);
         }
     ]);
         

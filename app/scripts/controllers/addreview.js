@@ -41,11 +41,13 @@
             };
 
             $scope.getMarginTop = function () {
-                if ($(window).width() < 960) {
+                var fullHeight = $scope.getFullHeight();
+
+                if (fullHeight === 'auto') {
                     return 0;
                 }
 
-                return $scope.getFullHeight() / 2 - $('#addreview').height() / 2;
+                return $scope.getFullHeight().replace('px', '') / 2 - $('#addplace').height() / 2;
             };
         }
     ]);
