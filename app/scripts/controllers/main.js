@@ -25,6 +25,7 @@
             };
 
             $scope.changeLocation = function () {
+                $scope.mainMenuIsClosed = true;
                 $rootScope.$broadcast('changeLocation', {});
             };
             
