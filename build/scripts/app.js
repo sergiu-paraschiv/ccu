@@ -815,6 +815,9 @@
             $scope.modalIsVisible = false;
 
             function setLayout() {
+                $scope.mainMenuIsClosed = true;
+                $scope.accountMenuIsClosed = true;
+
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }
@@ -1663,39 +1666,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div id=\"mainmenu\">\r" +
     "\n" +
-    "    <ul class=\"container\">\r" +
-    "\n" +
-    "        <li class=\"places\">\r" +
-    "\n" +
-    "            <a ui-sref=\"places({type: 'SHELTER'})\">Places</a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"jobs\">\r" +
-    "\n" +
-    "            <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"news\">\r" +
-    "\n" +
-    "            <a ui-sref=\"news\">News</a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"about\">\r" +
-    "\n" +
-    "            <a href=\"\">About Crosscut</a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "    </ul>\r" +
+    "   <ng-include src=\"'views/mainmenu.html'\"></ng-include>\r" +
     "\n" +
     "</div>\r" +
     "\n" +
@@ -1740,39 +1711,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
   $templateCache.put('views/jobs.html',
     "<div id=\"smallmenu\">\r" +
     "\n" +
-    "    <ul class=\"container\">\r" +
-    "\n" +
-    "        <li class=\"places\">\r" +
-    "\n" +
-    "            <a ui-sref=\"places({type: 'SHELTER'})\"><span>Places</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"jobs\">\r" +
-    "\n" +
-    "            <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"news\">\r" +
-    "\n" +
-    "            <a ui-sref=\"news\"><span>News</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"about\">\r" +
-    "\n" +
-    "            <a href=\"\"><span>About Crosscut</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "    </ul>\r" +
+    "    <ng-include src=\"'views/mainmenu.html'\"></ng-include>\r" +
     "\n" +
     "    \r" +
     "\n" +
@@ -1882,42 +1821,47 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('views/mainmenu.html',
+    " <ul class=\"container\">\r" +
+    "\n" +
+    "    <li class=\"places\">\r" +
+    "\n" +
+    "        <a ui-sref=\"places({type: 'SHELTER'})\">Places</a>\r" +
+    "\n" +
+    "    </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "    <li class=\"jobs\">\r" +
+    "\n" +
+    "        <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
+    "\n" +
+    "    </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "    <li class=\"news\">\r" +
+    "\n" +
+    "        <a ui-sref=\"news\"><span>News</span></a>\r" +
+    "\n" +
+    "    </li>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "    <li class=\"about\">\r" +
+    "\n" +
+    "        <a href=\"\"><span>About Crosscut</span></a>\r" +
+    "\n" +
+    "    </li>\r" +
+    "\n" +
+    "</ul>"
+  );
+
+
   $templateCache.put('views/news.html',
     "<div id=\"smallmenu\">\r" +
     "\n" +
-    "    <ul class=\"container\">\r" +
-    "\n" +
-    "        <li class=\"places\">\r" +
-    "\n" +
-    "            <a ui-sref=\"places({type: 'SHELTER'})\"><span>Places</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <li class=\"jobs\">\r" +
-    "\n" +
-    "            <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <li class=\"news\">\r" +
-    "\n" +
-    "            <a ui-sref=\"news\"><span>News</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <li class=\"about\">\r" +
-    "\n" +
-    "            <a href=\"\"><span>About Crosscut</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "    </ul>\r" +
+    "    <ng-include src=\"'views/mainmenu.html'\"></ng-include>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1972,39 +1916,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
   $templateCache.put('views/place.html',
     "<div id=\"smallmenu\">\r" +
     "\n" +
-    "    <ul class=\"container\">\r" +
-    "\n" +
-    "        <li class=\"places\">\r" +
-    "\n" +
-    "            <a ui-sref=\"places({type: 'SHELTER'})\"><span>Places</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"jobs\">\r" +
-    "\n" +
-    "            <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"news\">\r" +
-    "\n" +
-    "            <a ui-sref=\"news\"><span>News</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"about\">\r" +
-    "\n" +
-    "            <a href=\"\"><span>About Crosscut</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "    </ul>\r" +
+    "    <ng-include src=\"'views/mainmenu.html'\"></ng-include>\r" +
     "\n" +
     "    \r" +
     "\n" +
@@ -2175,39 +2087,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
   $templateCache.put('views/places.html',
     "<div id=\"smallmenu\">\r" +
     "\n" +
-    "    <ul class=\"container\">\r" +
-    "\n" +
-    "        <li class=\"places\">\r" +
-    "\n" +
-    "            <a ui-sref=\"places({type: 'SHELTER'})\"><span>Places</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"jobs\">\r" +
-    "\n" +
-    "            <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"news\">\r" +
-    "\n" +
-    "            <a ui-sref=\"news\"><span>News</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "        \r" +
-    "\n" +
-    "        <li class=\"about\">\r" +
-    "\n" +
-    "            <a href=\"\"><span>About Crosscut</span></a>\r" +
-    "\n" +
-    "        </li>\r" +
-    "\n" +
-    "    </ul>\r" +
+    "    <ng-include src=\"'views/mainmenu.html'\"></ng-include>\r" +
     "\n" +
     "    \r" +
     "\n" +

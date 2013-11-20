@@ -11,6 +11,9 @@
             $scope.modalIsVisible = false;
 
             function setLayout() {
+                $scope.mainMenuIsClosed = true;
+                $scope.accountMenuIsClosed = true;
+
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }
