@@ -57,4 +57,4 @@
         }
     ]);
 
-}).call(this.Crosscut);
+}).call(this.Crosscut, this.angular);

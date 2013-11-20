@@ -36,6 +36,7 @@
 
                         function () {
                             self.location = C.LOCATION.DEFAULT;
+                            callback.call(undefined, self.location);
                         }
                     );
                 }

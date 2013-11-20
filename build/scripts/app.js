@@ -54,8 +54,8 @@
             },
 
             DEFAULT: {
-                lat: -118.2025121,
-                lng: 34.0483953
+                lat: 34.0483953,
+                lng: -118.2025121
             }
         },
 
@@ -222,7 +222,7 @@
         }
     ]);
 
-}).call(this.Crosscut);
+}).call(this.Crosscut, this.angular);
 
 (function (maps, undefined) {
     'use strict';
@@ -455,6 +455,7 @@
 
                         function () {
                             self.location = C.LOCATION.DEFAULT;
+                            callback.call(undefined, self.location);
                         }
                     );
                 }
@@ -1021,7 +1022,7 @@
             $scope.setLocation = function () {
                 location.get(function (latLng) {
                     $scope.place.location = latLng;
-                    if ($scope.place.address === '') {
+                    if (!$scope.place.address || $scope.place.address === '') {
                         location.geocode(latLng, function (address) {
                             $scope.place.address = address;
                         });
@@ -1110,7 +1111,7 @@
                     return 0;
                 }
 
-                return $scope.getFullHeight().replace('px', '') / 2 - $('#addplace').height() / 2;
+                return $scope.getFullHeight().replace('px', '') / 2 - $('#addreview').height() / 2;
             };
         }
     ]);
@@ -1192,7 +1193,7 @@
                     return 0;
                 }
 
-                return $scope.getFullHeight().replace('px', '') / 2 - $('#addplace').height() / 2;
+                return $scope.getFullHeight().replace('px', '') / 2 - $('#addjob').height() / 2;
             };
         }
     ]);

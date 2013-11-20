@@ -32,7 +32,7 @@
             $scope.setLocation = function () {
                 location.get(function (latLng) {
                     $scope.place.location = latLng;
-                    if ($scope.place.address === '') {
+                    if (!$scope.place.address || $scope.place.address === '') {
                         location.geocode(latLng, function (address) {
                             $scope.place.address = address;
                         });

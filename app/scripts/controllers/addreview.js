@@ -47,7 +47,7 @@
                     return 0;
                 }
 
-                return $scope.getFullHeight().replace('px', '') / 2 - $('#addplace').height() / 2;
+                return $scope.getFullHeight().replace('px', '') / 2 - $('#addreview').height() / 2;
             };
         }
     ]);
