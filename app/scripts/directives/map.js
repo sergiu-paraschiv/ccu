@@ -105,7 +105,6 @@
                         if (id !== true && $scope.id !== id) {
                             return;
                         }
-
                         centerMap();
                     });
 

@@ -342,7 +342,6 @@
                         if (id !== true && $scope.id !== id) {
                             return;
                         }
-
                         centerMap();
                     });
 
@@ -545,6 +544,24 @@
                 }
             }
 
+            function getReal(callback) {
+                getLocation(
+                       function (position) {
+                           var real = {
+                               lat: position.coords.latitude,
+                               lng: position.coords.longitude
+                           };
+
+                           callback.call(undefined, real);
+                       },
+
+                       function () {
+                           var real = C.LOCATION.DEFAULT;
+                           callback.call(undefined, real);
+                       }
+                   );
+            }
+
             function set(position) {
                 self.location = position;
                 $cookieStore.put('location', position, {
@@ -565,6 +582,7 @@
 
             return {
                 get: get,
+                getReal: getReal,
                 set: set,
                 geocode: geocode
             };
@@ -1382,6 +1400,18 @@
 
             $scope.cancel = hide;
 
+            $scope.setCurrentLocation = function () {
+                location.getReal(function (position) {
+                    $scope.map.location = position;
+                    if (!$scope.$$phase) {
+                        $scope.$apply();
+                    }
+
+                    newPosition = position;
+                    $rootScope.$broadcast('resetMaps', 'changelocation');
+                }, true);
+            };
+
             $scope.setLocation = function (position) {
                 newPosition = position;
             };
@@ -1863,19 +1893,31 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <form name=\"changelocation\">\r" +
     "\n" +
-    "           <map \r" +
+    "           <p class=\"spaced\">\r" +
     "\n" +
-    "               data-location=\"map.location\" \r" +
+    "               <map \r" +
     "\n" +
-    "               data-title=\"'Choose your current location.'\" \r" +
+    "                   data-location=\"map.location\" \r" +
     "\n" +
-    "               data-read-only=\"false\" \r" +
+    "                   data-title=\"'Choose your current location.'\" \r" +
     "\n" +
-    "               data-id=\"'changelocation'\" \r" +
+    "                   data-read-only=\"false\" \r" +
     "\n" +
-    "               data-set-function=\"setLocation\"\r" +
+    "                   data-id=\"'changelocation'\" \r" +
     "\n" +
-    "               ></map>\r" +
+    "                   data-set-function=\"setLocation\"\r" +
+    "\n" +
+    "                   ></map>\r" +
+    "\n" +
+    "            </p>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <p class=\"spaced\">\r" +
+    "\n" +
+    "                <a class=\"button location\" ng-click=\"setCurrentLocation()\"><span>Current location</span></a>\r" +
+    "\n" +
+    "            </p>\r" +
     "\n" +
     "        </form>\r" +
     "\n" +

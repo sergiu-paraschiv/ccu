@@ -9014,6 +9014,7 @@ ul {
     width: 400px;
     float: none;
 }
+
 @media (min-width: 960px) {
     #addjob .actions {
         width: 232px;
@@ -9041,6 +9042,11 @@ ul {
     height: 464px;
 }
 
+#changelocation .button.location {
+    margin: 0 auto;
+    width: 400px;
+    float: none;
+}
 
 @media (min-width: 960px) {
     #changelocation .actions {
@@ -9056,4 +9062,8 @@ ul {
         height: 232px;
     }
     
+    #changelocation .button.location {
+        width: 200px;
+    }
+
 }

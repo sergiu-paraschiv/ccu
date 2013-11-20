@@ -11,6 +11,11 @@
     height: 464px;
 }
 
+#changelocation .button.location {
+    margin: 0 auto;
+    width: 400px;
+    float: none;
+}
 
 @media (min-width: 960px) {
     #changelocation .actions {
@@ -26,4 +31,8 @@
         height: 232px;
     }
     
+    #changelocation .button.location {
+        width: 200px;
+    }
+
 }

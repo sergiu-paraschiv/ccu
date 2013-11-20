@@ -51,6 +51,24 @@
                 }
             }
 
+            function getReal(callback) {
+                getLocation(
+                       function (position) {
+                           var real = {
+                               lat: position.coords.latitude,
+                               lng: position.coords.longitude
+                           };
+
+                           callback.call(undefined, real);
+                       },
+
+                       function () {
+                           var real = C.LOCATION.DEFAULT;
+                           callback.call(undefined, real);
+                       }
+                   );
+            }
+
             function set(position) {
                 self.location = position;
                 $cookieStore.put('location', position, {
@@ -71,6 +89,7 @@
 
             return {
                 get: get,
+                getReal: getReal,
                 set: set,
                 geocode: geocode
             };

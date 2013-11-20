@@ -41,6 +41,18 @@
 
             $scope.cancel = hide;
 
+            $scope.setCurrentLocation = function () {
+                location.getReal(function (position) {
+                    $scope.map.location = position;
+                    if (!$scope.$$phase) {
+                        $scope.$apply();
+                    }
+
+                    newPosition = position;
+                    $rootScope.$broadcast('resetMaps', 'changelocation');
+                }, true);
+            };
+
             $scope.setLocation = function (position) {
                 newPosition = position;
             };

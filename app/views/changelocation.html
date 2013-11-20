@@ -8,13 +8,19 @@
         <a href="" class="modalclose" ng-click="cancel()"><span>Close</span></a>
         
         <form name="changelocation">
-           <map 
-               data-location="map.location" 
-               data-title="'Choose your current location.'" 
-               data-read-only="false" 
-               data-id="'changelocation'" 
-               data-set-function="setLocation"
-               ></map>
+           <p class="spaced">
+               <map 
+                   data-location="map.location" 
+                   data-title="'Choose your current location.'" 
+                   data-read-only="false" 
+                   data-id="'changelocation'" 
+                   data-set-function="setLocation"
+                   ></map>
+            </p>
+
+            <p class="spaced">
+                <a class="button location" ng-click="setCurrentLocation()"><span>Current location</span></a>
+            </p>
         </form>
 
         <div class="actions">
