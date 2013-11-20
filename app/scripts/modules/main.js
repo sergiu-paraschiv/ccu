@@ -10,66 +10,77 @@
         $urlRouterProvider.otherwise('/');
 
         $stateProvider
-            .state('home', {
+            .state('base', {
+                url: '',
+                abstract: true,
+                views: {
+                    'changeLocation': {
+                        templateUrl: 'views/changelocation.html',
+                        controller: 'ChangeLocationCtrl'
+                    }
+                }
+            })
+
+            .state('base.home', {
                 url: '/',
                 controller: 'MainCtrl',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/home.html',
                         controller: 'HomeCtrl'
                     }
                 }    
             })
             
-            .state('places', {
+            .state('base.places', {
                 url: '/places/{type}',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/places.html',
                         controller: 'PlacesCtrl'
                     },
 
-                    'addPlace': {
+                    'addPlace@': {
                         templateUrl: 'views/addplace.html',
                         controller: 'AddPlaceCtrl'
                     }
                 }    
             })
 
-            .state('place', {
+            .state('base.place', {
                 url: '/places/{type}/place/{id}',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/place.html',
                         controller: 'PlaceCtrl'
                     },
 
-                    'addReview': {
+                    'addReview@': {
                         templateUrl: 'views/addreview.html',
                         controller: 'AddReviewCtrl'
                     }
                 }
             })
             
-            .state('jobs', {
+            .state('base.jobs', {
                 url: '/jobs',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/jobs.html',
                         controller: 'JobsCtrl'
                     },
 
-                    'addJob': {
+                    'addJob@': {
                         templateUrl: 'views/addjob.html',
                         controller: 'AddJobCtrl'
                     }
                 }    
             })
             
-            .state('news', {
+            .state('base.news', {
                 url: '/news',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/news.html',
                         controller: 'NewsCtrl'
                     }

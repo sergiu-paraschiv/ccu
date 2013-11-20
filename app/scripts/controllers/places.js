@@ -72,6 +72,10 @@
                 init();
             });
 
+            $scope.$on('refresh', function () {
+                init();
+            });
+
             $scope.addPlace = function () {
                 $rootScope.$broadcast('addPlace', { type: $stateParams.type });
             };

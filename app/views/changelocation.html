@@ -1,0 +1,25 @@
+﻿<div class="modalwrap" ng-show="visible" ng-style="{'marginTop': getMarginTop() + 'px'}">
+    <div class="modalview container" id="changelocation">
+
+        <h1 class="title">
+            <strong>Change location</strong>
+        </h1>
+
+        <a href="" class="modalclose" ng-click="cancel()"><span>Close</span></a>
+        
+        <form name="changelocation">
+           <map 
+               data-location="map.location" 
+               data-title="'Choose your current location.'" 
+               data-read-only="false" 
+               data-id="'changelocation'" 
+               data-set-function="setLocation"
+               ></map>
+        </form>
+
+        <div class="actions">
+            <a href="" class="button save" ng-click="save()"><span>Save</span></a>
+            <a href="" class="button cancel" ng-click="cancel()"><span>Cancel</span></a>
+        </div>
+    </div>
+</div>

@@ -81,66 +81,77 @@
         $urlRouterProvider.otherwise('/');
 
         $stateProvider
-            .state('home', {
+            .state('base', {
+                url: '',
+                abstract: true,
+                views: {
+                    'changeLocation': {
+                        templateUrl: 'views/changelocation.html',
+                        controller: 'ChangeLocationCtrl'
+                    }
+                }
+            })
+
+            .state('base.home', {
                 url: '/',
                 controller: 'MainCtrl',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/home.html',
                         controller: 'HomeCtrl'
                     }
                 }    
             })
             
-            .state('places', {
+            .state('base.places', {
                 url: '/places/{type}',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/places.html',
                         controller: 'PlacesCtrl'
                     },
 
-                    'addPlace': {
+                    'addPlace@': {
                         templateUrl: 'views/addplace.html',
                         controller: 'AddPlaceCtrl'
                     }
                 }    
             })
 
-            .state('place', {
+            .state('base.place', {
                 url: '/places/{type}/place/{id}',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/place.html',
                         controller: 'PlaceCtrl'
                     },
 
-                    'addReview': {
+                    'addReview@': {
                         templateUrl: 'views/addreview.html',
                         controller: 'AddReviewCtrl'
                     }
                 }
             })
             
-            .state('jobs', {
+            .state('base.jobs', {
                 url: '/jobs',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/jobs.html',
                         controller: 'JobsCtrl'
                     },
 
-                    'addJob': {
+                    'addJob@': {
                         templateUrl: 'views/addjob.html',
                         controller: 'AddJobCtrl'
                     }
                 }    
             })
             
-            .state('news', {
+            .state('base.news', {
                 url: '/news',
                 views: {
-                    'content': {
+                    'content@': {
                         templateUrl: 'views/news.html',
                         controller: 'NewsCtrl'
                     }
@@ -234,50 +245,114 @@
                 transclude: false,
                 replace: true,
                 scope: {
+                    id: '=',
                     location: '=',
-                    title: '='
+                    title: '=',
+                    readOnly: '=',
+                    setFunction: '='
                 },
                 templateUrl: 'views/directives/map.html',
 
                 controller: function ($scope, $element) {
                     var map, marker, center, directionsService, directionsDisplay;
+                    var initialized = false;
 
-                    
                     var mapOptions = {
                         zoom: 14,
-                        mapTypeId: maps.MapTypeId.ROADMAP,
-                        scrollwheel: false
+                        mapTypeId: maps.MapTypeId.ROADMAP
                     };
+
+                    if ($scope.readOnly) {
+                        mapOptions.scrollwheel = false;
+                    }
 
                     directionsService = new maps.DirectionsService();
                     directionsDisplay = new maps.DirectionsRenderer();
 
                     map = new maps.Map($element[0], mapOptions);
 
+                    function centerMap() {
+                        center = new maps.LatLng($scope.location.lat, $scope.location.lng);
+                        map.panTo(center);
+                        marker.setPosition(center);
+                    }
+
+                    function initMap() {
+                        if (initialized) {
+                            centerMap();
+                            return;
+                        }
+
+                        initialized = true;
+
+                        var markerOptions = {
+                            position: center,
+                            map: map,
+                            title: $scope.title
+                        };
+
+                        if (!$scope.readOnly) {
+                            markerOptions.draggable = true;
+                        }
+
+                        marker = new maps.Marker(markerOptions);
+
+                        centerMap();
+
+                        if (!$scope.readOnly) {
+                            maps.event.addListener(marker, 'mouseup', function () {
+                                var position = marker.getPosition();
+
+                                $scope.setFunction.call(undefined, {
+                                    lat: position.lat(),
+                                    lng: position.lng()
+                                });
+                            });
+                        }
+                       
+                        maps.event.addDomListener(window, 'resize', function () {
+                            map.setCenter(center);
+                        });
+                    }
+
                     directionsDisplay.setMap(map);
 
-                    $scope.$watch('location', function (newData, oldData) {
-                        if (oldData === undefined && newData !== undefined) {
-                            center = new maps.LatLng($scope.location.lat, $scope.location.lng);
+                    if ($scope.location !== undefined) {
+                        initMap();
+                    }
 
-                            map.panTo(center);
-
-                            marker = new maps.Marker({
-                                position: center,
-                                map: map,
-                                title: $scope.title
-                            });
-
-                            maps.event.addDomListener(window, 'resize', function () {
-                                map.setCenter(center);
-                            });
-
+                    $scope.$watch('location', function (newData) {
+                        if (newData !== undefined) {
+                            initMap();
                         }
                     }, true);
 
-                    $scope.$on('showDirections', function (e, latLng) {
+                    $scope.$on('fixMaps', function (e, id) {
+                        if (id !== true && $scope.id !== id) {
+                            return;
+                        }
+
+                        setTimeout(function () {
+                            maps.event.trigger(map, 'resize');
+                            map.panTo(center);
+                        }, 100);
+                    });
+
+                    $scope.$on('resetMaps', function (e, id) {
+                        if (id !== true && $scope.id !== id) {
+                            return;
+                        }
+
+                        centerMap();
+                    });
+
+                    $scope.$on('showDirections', function (e, config) {
+                        if ($scope.id !== config.id) {
+                            return;
+                        }
+
                         var request = {
-                            origin: new maps.LatLng(latLng.lat, latLng.lng),
+                            origin: new maps.LatLng(config.latLng.lat, config.latLng.lng),
                             destination: center,
                             travelMode: maps.TravelMode.DRIVING
                         };
@@ -417,7 +492,7 @@
     });
 
 }).call(this.Crosscut);
-(function(undefined) {
+(function(ng, undefined) {
     'use strict';
 
     var C = this.Constants;
@@ -426,11 +501,17 @@
         '$rootScope',
         '$http',
         '$window',
+        '$cookieStore',
 
-        function ($rootScope, $http, $window) {
+        function ($rootScope, $http, $window, $cookieStore) {
             var self = this;
 
             this.location = null;
+
+            var cookieLocation = $cookieStore.get('location');
+            if (cookieLocation) {
+                this.location = cookieLocation;
+            }
 
             function getLocation(successCallback, errorCallback) {
                 if ($window.navigator && $window.navigator.geolocation) {
@@ -464,6 +545,14 @@
                 }
             }
 
+            function set(position) {
+                self.location = position;
+                $cookieStore.put('location', position, {
+                    path: '/',
+                    expires: 9999
+                });
+            }
+
             function geocode(latLng, callback) {
                 var url = C.LOCATION.URL.GEOCODE
                             .replace('{lat}', latLng.lat)
@@ -476,12 +565,13 @@
 
             return {
                 get: get,
+                set: set,
                 geocode: geocode
             };
         }
     ]);
         
-}).call(this.Crosscut);
+}).call(this.Crosscut, this.angular);
 (function(window, $, undefined) {
     'use strict';
 
@@ -682,6 +772,40 @@
     ]);
         
 }).call(this.Crosscut);
+(function (undefined) {
+    'use strict';
+
+    var C = this.Constants;
+
+    this.Main.provider('$cookieStore', function () {
+        var self = this;
+        self.defaultOptions = {};
+
+        self.setDefaultOptions = function (options) {
+            self.defaultOptions = options;
+        };
+
+        self.$get = function () {
+            return {
+                get: function (name) {
+                    var jsonCookie = $.cookie(name);
+                    if (jsonCookie) {
+                        return angular.fromJson(jsonCookie);
+                    }
+                },
+                put: function (name, value, options) {
+                    options = $.extend({}, self.defaultOptions, options);
+                    $.cookie(name, angular.toJson(value), options);
+                },
+                remove: function (name, options) {
+                    options = $.extend({}, self.defaultOptions, options);
+                    $.removeCookie(name, options);
+                }
+            };
+        };
+    });
+
+}).call(this.Crosscut);;
 (function (_, undefined) {
     'use strict';
 
@@ -807,9 +931,10 @@
    
     this.Main.controller('MainCtrl', [
         '$scope',
+        '$rootScope',
         'ResponsiveSrvc',
         
-        function ($scope, responsive) {
+        function ($scope, $rootScope, responsive) {
             $scope.mainMenuIsClosed = true;
             $scope.accountMenuIsClosed = true;
             $scope.modalIsVisible = false;
@@ -825,6 +950,10 @@
 
             $scope.toggleMainMenu = function() {
                 $scope.mainMenuIsClosed = !$scope.mainMenuIsClosed;
+            };
+
+            $scope.changeLocation = function () {
+                $rootScope.$broadcast('changeLocation', {});
             };
             
             $scope.toggleAccountMenu = function() {
@@ -938,6 +1067,10 @@
                 init();
             });
 
+            $scope.$on('refresh', function () {
+                init();
+            });
+
             $scope.addPlace = function () {
                 $rootScope.$broadcast('addPlace', { type: $stateParams.type });
             };
@@ -968,7 +1101,10 @@
 
             $scope.showDirections = function () {
                 location.get(function (latLng) {
-                    $rootScope.$broadcast('showDirections', latLng);
+                    $rootScope.$broadcast('showDirections', {
+                        latLng: latLng,
+                        id: 'place'
+                    });
                 })                
             };
 
@@ -1202,6 +1338,74 @@
     ]);
         
 }).call(this.Crosscut, this.jQuery);
+(function($, ng, undefined) {
+    'use strict';
+   
+    var Job = this.Models.Job;
+
+    var C = this.Constants;
+
+    this.Main.controller('ChangeLocationCtrl', [
+        '$scope', 
+        '$rootScope',
+        'LocationSrvc',
+
+        function ($scope, $rootScope, location) {
+            $scope.visible = false;
+
+            var newPosition = null;
+
+            $scope.map = {
+                location: C.LOCATION.DEFAULT
+            };
+     
+            $scope.$on('changeLocation', function (e, config) {
+                newPosition = null;
+
+                location.get(function (position) {
+                    $scope.map.location = position;
+                    newPosition = position;
+
+                    $rootScope.$broadcast('fixMaps', 'changelocation');
+                    $rootScope.$broadcast('resetMaps', 'changelocation');
+                });
+
+                $rootScope.$broadcast('showModal');
+                $scope.visible = true;
+            });
+
+            function hide() {
+                $rootScope.$broadcast('hideModal');
+                $scope.visible = false;
+            }
+
+            $scope.cancel = hide;
+
+            $scope.setLocation = function (position) {
+                newPosition = position;
+            };
+
+            $scope.save = function () {
+                if (newPosition !== null) {
+                    location.set(newPosition);
+                    $rootScope.$broadcast('refresh');
+                    hide();
+                }
+            };
+
+            $scope.getMarginTop = function () {
+                var fullHeight = $scope.getFullHeight();
+
+                if (fullHeight === 'auto') {
+                    return 0;
+                }
+
+                return $scope.getFullHeight().replace('px', '') / 2 - $('#changelocation').height() / 2;
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut, this.jQuery, this.angular);
 (function(undefined) {
     'use strict';
    
@@ -1282,6 +1486,10 @@
             };
 
             $scope.$on('jobAdded', function () {
+                init();
+            });
+
+            $scope.$on('refresh', function () {
                 init();
             });
 
@@ -1633,6 +1841,59 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('views/changelocation.html',
+    "<div class=\"modalwrap\" ng-show=\"visible\" ng-style=\"{'marginTop': getMarginTop() + 'px'}\">\r" +
+    "\n" +
+    "    <div class=\"modalview container\" id=\"changelocation\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <h1 class=\"title\">\r" +
+    "\n" +
+    "            <strong>Change location</strong>\r" +
+    "\n" +
+    "        </h1>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <a href=\"\" class=\"modalclose\" ng-click=\"cancel()\"><span>Close</span></a>\r" +
+    "\n" +
+    "        \r" +
+    "\n" +
+    "        <form name=\"changelocation\">\r" +
+    "\n" +
+    "           <map \r" +
+    "\n" +
+    "               data-location=\"map.location\" \r" +
+    "\n" +
+    "               data-title=\"'Choose your current location.'\" \r" +
+    "\n" +
+    "               data-read-only=\"false\" \r" +
+    "\n" +
+    "               data-id=\"'changelocation'\" \r" +
+    "\n" +
+    "               data-set-function=\"setLocation\"\r" +
+    "\n" +
+    "               ></map>\r" +
+    "\n" +
+    "        </form>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <div class=\"actions\">\r" +
+    "\n" +
+    "            <a href=\"\" class=\"button save\" ng-click=\"save()\"><span>Save</span></a>\r" +
+    "\n" +
+    "            <a href=\"\" class=\"button cancel\" ng-click=\"cancel()\"><span>Cancel</span></a>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('views/directives/map.html',
     "<div class=\"map\">&nbsp;</div>"
   );
@@ -1826,7 +2087,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <li class=\"places\">\r" +
     "\n" +
-    "        <a ui-sref=\"places({type: 'SHELTER'})\">Places</a>\r" +
+    "        <a ui-sref=\"base.places({type: 'SHELTER'})\">Places</a>\r" +
     "\n" +
     "    </li>\r" +
     "\n" +
@@ -1834,7 +2095,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <li class=\"jobs\">\r" +
     "\n" +
-    "        <a ui-sref=\"jobs\"><span>Jobs</span></a>\r" +
+    "        <a ui-sref=\"base.jobs\"><span>Jobs</span></a>\r" +
     "\n" +
     "    </li>\r" +
     "\n" +
@@ -1842,7 +2103,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <li class=\"news\">\r" +
     "\n" +
-    "        <a ui-sref=\"news\"><span>News</span></a>\r" +
+    "        <a ui-sref=\"base.news\"><span>News</span></a>\r" +
     "\n" +
     "    </li>\r" +
     "\n" +
@@ -1934,7 +2195,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <li ng-class=\"{'active': currentTab('SHELTER')}\">\r" +
     "\n" +
-    "                <a ui-sref=\"places({type: 'SHELTER'})\">Shelters</a>\r" +
+    "                <a ui-sref=\"base.places({type: 'SHELTER'})\">Shelters</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -1942,7 +2203,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <li ng-class=\"{'active': currentTab('FOOD_PANTRIES')}\">\r" +
     "\n" +
-    "                <a ui-sref=\"places({type: 'FOOD_PANTRIES'})\">Food Pantries</a>\r" +
+    "                <a ui-sref=\"base.places({type: 'FOOD_PANTRIES'})\">Food Pantries</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -1950,7 +2211,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <li ng-class=\"{'active': currentTab('FOOD_BANK')}\">\r" +
     "\n" +
-    "                <a ui-sref=\"places({type: 'FOOD_BANK'})\">Food Banks</a>\r" +
+    "                <a ui-sref=\"base.places({type: 'FOOD_BANK'})\">Food Banks</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -2008,7 +2269,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "        <map data-location=\"place.location\" data-title=\"place.title\"></map>\r" +
+    "        <map data-location=\"place.location\" data-title=\"place.title\" data-read-only=\"true\" data-id=\"'place'\"></map>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -2105,7 +2366,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <li ng-class=\"{'active': currentTab('SHELTER')}\">\r" +
     "\n" +
-    "                <a ui-sref=\"places({type: 'SHELTER'})\">Shelters</a>\r" +
+    "                <a ui-sref=\"base.places({type: 'SHELTER'})\">Shelters</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -2113,7 +2374,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <li ng-class=\"{'active': currentTab('FOOD_PANTRIES')}\">\r" +
     "\n" +
-    "                <a ui-sref=\"places({type: 'FOOD_PANTRIES'})\">Food Pantries</a>\r" +
+    "                <a ui-sref=\"base.places({type: 'FOOD_PANTRIES'})\">Food Pantries</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -2121,7 +2382,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <li ng-class=\"{'active': currentTab('FOOD_BANK')}\">\r" +
     "\n" +
-    "                <a ui-sref=\"places({type: 'FOOD_BANK'})\">Food Banks</a>\r" +
+    "                <a ui-sref=\"base.places({type: 'FOOD_BANK'})\">Food Banks</a>\r" +
     "\n" +
     "            </li>\r" +
     "\n" +
@@ -2161,7 +2422,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"container\">\r" +
     "\n" +
-    "                <a class=\"item\" ng-repeat=\"place in pagedPlaces()\" ui-sref=\"place({type: place.type, id: place.id})\">\r" +
+    "                <a class=\"item\" ng-repeat=\"place in pagedPlaces()\" ui-sref=\"base.place({type: place.type, id: place.id})\">\r" +
     "\n" +
     "                    <img ng-src=\"{{getPlaceImage(place.image)}}\" alt=\"\" />\r" +
     "\n" +

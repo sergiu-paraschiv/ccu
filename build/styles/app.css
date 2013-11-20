@@ -9028,3 +9028,32 @@ ul {
     }
     
 }
+#changelocation .actions {
+    width: 464px;
+}
+
+    #changelocation .actions .button {
+        width: 200px;
+    }
+
+#changelocation .map {
+    width: 576px;
+    height: 464px;
+}
+
+
+@media (min-width: 960px) {
+    #changelocation .actions {
+        width: 232px;
+    }
+
+        #changelocation .actions .button {
+            width: 100px;
+        }
+
+    #changelocation .map {
+        width: 384px;
+        height: 232px;
+    }
+    
+}

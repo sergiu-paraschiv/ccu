@@ -8,15 +8,15 @@
     <div class="container">
         <ul class="tabs">
             <li ng-class="{'active': currentTab('SHELTER')}">
-                <a ui-sref="places({type: 'SHELTER'})">Shelters</a>
+                <a ui-sref="base.places({type: 'SHELTER'})">Shelters</a>
             </li>
         
             <li ng-class="{'active': currentTab('FOOD_PANTRIES')}">
-                <a ui-sref="places({type: 'FOOD_PANTRIES'})">Food Pantries</a>
+                <a ui-sref="base.places({type: 'FOOD_PANTRIES'})">Food Pantries</a>
             </li>
         
             <li ng-class="{'active': currentTab('FOOD_BANK')}">
-                <a ui-sref="places({type: 'FOOD_BANK'})">Food Banks</a>
+                <a ui-sref="base.places({type: 'FOOD_BANK'})">Food Banks</a>
             </li>
         </ul>
     
@@ -36,7 +36,7 @@
             </div>
         
             <div class="container">
-                <a class="item" ng-repeat="place in pagedPlaces()" ui-sref="place({type: place.type, id: place.id})">
+                <a class="item" ng-repeat="place in pagedPlaces()" ui-sref="base.place({type: place.type, id: place.id})">
                     <img ng-src="{{getPlaceImage(place.image)}}" alt="" />
                     <h3 class="title">{{place.title}}</h3>
                     <span class="address">{{place.address}}</span>

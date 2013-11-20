@@ -81,6 +81,10 @@
                 init();
             });
 
+            $scope.$on('refresh', function () {
+                init();
+            });
+
             $scope.addJob = function (type) {
                 $rootScope.$broadcast('addJob', { type: type });
             };

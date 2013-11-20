@@ -3,9 +3,10 @@
    
     this.Main.controller('MainCtrl', [
         '$scope',
+        '$rootScope',
         'ResponsiveSrvc',
         
-        function ($scope, responsive) {
+        function ($scope, $rootScope, responsive) {
             $scope.mainMenuIsClosed = true;
             $scope.accountMenuIsClosed = true;
             $scope.modalIsVisible = false;
@@ -21,6 +22,10 @@
 
             $scope.toggleMainMenu = function() {
                 $scope.mainMenuIsClosed = !$scope.mainMenuIsClosed;
+            };
+
+            $scope.changeLocation = function () {
+                $rootScope.$broadcast('changeLocation', {});
             };
             
             $scope.toggleAccountMenu = function() {

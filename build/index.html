@@ -17,7 +17,7 @@
     <body ng-app="Crosscut" ng-controller="MainCtrl">
         <header id="header">
             <div class="container clearfix">
-                <a ui-sref="home" class="logo">
+                <a ui-sref="base.home" class="logo">
                     <h1>crosscut USA</h1>
                 </a>
                 
@@ -26,7 +26,7 @@
                     
                     <ul class="content">
                         <li>
-                            <a href="">Location</a>
+                            <a href="" ng-click="changeLocation()">Location</a>
                         </li>
                         
                         <li>
@@ -58,6 +58,7 @@
             <div ui-view="addPlace"></div>
             <div ui-view="addReview"></div>
             <div ui-view="addJob"></div>
+            <div ui-view="changeLocation"></div>
         </div>
         
         <footer id="footer">

@@ -19,7 +19,10 @@
 
             $scope.showDirections = function () {
                 location.get(function (latLng) {
-                    $rootScope.$broadcast('showDirections', latLng);
+                    $rootScope.$broadcast('showDirections', {
+                        latLng: latLng,
+                        id: 'place'
+                    });
                 })                
             };
 

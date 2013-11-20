@@ -1,4 +1,4 @@
-﻿(function(undefined) {
+﻿(function(ng, undefined) {
     'use strict';
 
     var C = this.Constants;
@@ -7,11 +7,17 @@
         '$rootScope',
         '$http',
         '$window',
+        '$cookieStore',
 
-        function ($rootScope, $http, $window) {
+        function ($rootScope, $http, $window, $cookieStore) {
             var self = this;
 
             this.location = null;
+
+            var cookieLocation = $cookieStore.get('location');
+            if (cookieLocation) {
+                this.location = cookieLocation;
+            }
 
             function getLocation(successCallback, errorCallback) {
                 if ($window.navigator && $window.navigator.geolocation) {
@@ -45,6 +51,14 @@
                 }
             }
 
+            function set(position) {
+                self.location = position;
+                $cookieStore.put('location', position, {
+                    path: '/',
+                    expires: 9999
+                });
+            }
+
             function geocode(latLng, callback) {
                 var url = C.LOCATION.URL.GEOCODE
                             .replace('{lat}', latLng.lat)
@@ -57,9 +71,10 @@
 
             return {
                 get: get,
+                set: set,
                 geocode: geocode
             };
         }
     ]);
         
-}).call(this.Crosscut);
+}).call(this.Crosscut, this.angular);
