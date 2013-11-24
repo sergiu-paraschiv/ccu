@@ -88,6 +88,11 @@
                     'changeLocation': {
                         templateUrl: 'views/changelocation.html',
                         controller: 'ChangeLocationCtrl'
+                    },
+
+                    'preloader': {
+                        templateUrl: 'views/preloader.html',
+                        controller: 'PreloaderCtrl'
                     }
                 }
             })
@@ -173,6 +178,16 @@
         };
     });
 
+    this.Main.filter('numbersOnly', function ($sce) {
+        return function (val) {
+            if (val) {
+                return val.replace(/\D+/g, '');
+            }
+
+            return '';
+        };
+    });
+
 }).call(this.Crosscut);
 (function (ng, undefined) {
     'use strict';
@@ -193,7 +208,7 @@
 
                     var maxRange = 5;
 
-                    function createRateObjects(states) {
+                    function createRateObjects() {
                         var states = [];
 
                         for (var i = 0, n = maxRange; i < n; i++) {
@@ -203,7 +218,7 @@
                         }
 
                         return states;
-                    };
+                    }
 
                     $scope.range = createRateObjects();
 
@@ -349,7 +364,7 @@
                         if ($scope.id !== config.id) {
                             return;
                         }
-
+                        
                         var request = {
                             origin: new maps.LatLng(config.latLng.lat, config.latLng.lng),
                             destination: center,
@@ -571,12 +586,15 @@
             }
 
             function geocode(latLng, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.LOCATION.URL.GEOCODE
                             .replace('{lat}', latLng.lat)
                             .replace('{lng}', latLng.lng);
 
                 $http.get(url).success(function (data) {
                     callback.call(undefined, data.formatedAddress);
+                    $rootScope.$broadcast('preloadEnd');
                 });
             }
 
@@ -631,6 +649,8 @@
         function ($rootScope, $http, location, placesMapper, reviewsMapper) {
             
             function get(type, id, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.PLACE.URL.GET
                                 .replace('{guid}', id);
 
@@ -638,10 +658,13 @@
                     var place = placesMapper.mapOne(data, type);
                     place.reviews = reviewsMapper.map(data.reviews);
                     callback.call(undefined, place);
+                    $rootScope.$broadcast('preloadEnd');
                 });
             }
 
             function search(type, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 location.get(function (latLng) {
                     var url = C.PLACE.URL.SEARCH
                                 .replace('{lat}', latLng.lat)
@@ -650,11 +673,14 @@
 
                     $http.get(url).success(function (data) {
                         callback.call(undefined, placesMapper.map(data.items, type));
+                        $rootScope.$broadcast('preloadEnd');
                     });
                 });
             }
 
             function add(place, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.PLACE.URL.ADD
                                 .replace('{type}', place.type);
 
@@ -662,6 +688,7 @@
 
                 $http.post(url, data).success(function (data) {
                     callback.call(undefined);
+                    $rootScope.$broadcast('preloadEnd');
                 });
             }
 
@@ -689,6 +716,7 @@
         function ($rootScope, $http, location, user, jobsMapper) {
 
             function search(type, callback) {
+                $rootScope.$broadcast('preloadStart');
                 location.get(function (latLng) {
                     var url = C.JOB.URL.SEARCH
                                 .replace('{lat}', latLng.lat)
@@ -697,11 +725,14 @@
 
                     $http.get(url).success(function (data) {
                         callback.call(undefined, jobsMapper.map(data.items, type));
+                        $rootScope.$broadcast('preloadEnd');
                     });
                 });
             }
 
             function add(job, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.JOB.URL.ADD
                                 .replace('{due}', '12.12.2014')
                                 .replace('{type}', job.type);
@@ -713,6 +744,7 @@
 
                     $http.post(url, data).success(function (data) {
                         callback.call(undefined);
+                        $rootScope.$broadcast('preloadEnd');
                     });
                 });
                 
@@ -740,6 +772,8 @@
         function ($rootScope, $http, user, reviewsMapper) {
             
             function add(review, reference, type, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.REVIEW.URL.ADD
                                 .replace('{type}', type);
 
@@ -752,6 +786,7 @@
 
                     $http.post(url, data).success(function (data) {
                         callback.call(undefined);
+                        $rootScope.$broadcast('preloadEnd');
                     });
                 });
             }
@@ -823,7 +858,7 @@
         };
     });
 
-}).call(this.Crosscut);;
+}).call(this.Crosscut);
 (function (_, undefined) {
     'use strict';
 
@@ -987,6 +1022,14 @@
                 return 'auto';
             };
 
+            $scope.getRealFullHeight = function () {
+                return $(window).height() + 'px';
+            };
+
+            $scope.getMinContentHeight = function () {
+                return ($(window).height() - $('#header').outerHeight() - $('#footer').outerHeight() - $('#footer').css('marginTop').replace('px', '')) + 'px';
+            };
+
             $scope.$on('showModal', function () {
                 $scope.modalIsVisible = true;
             });
@@ -1124,7 +1167,7 @@
                         latLng: latLng,
                         id: 'place'
                     });
-                })                
+                });
             };
 
             $scope.$on('reviewAdded', function () {
@@ -1204,7 +1247,7 @@
                 places.add($scope.place, function () {
                     $rootScope.$broadcast('placeAdded');
                     hide();
-                })
+                });
             };
 
             $scope.getMarginTop = function () {
@@ -1259,7 +1302,7 @@
                 reviews.add($scope.review, $scope.reference, 'PLACE', function () {
                     $rootScope.$broadcast('reviewAdded');
                     hide();
-                })
+                });
             };
 
             $scope.getMarginTop = function () {
@@ -1341,7 +1384,7 @@
                 jobs.add($scope.job, function () {
                     $rootScope.$broadcast('jobAdded');
                     hide();
-                })
+                });
             };
 
             $scope.getMarginTop = function () {
@@ -1647,6 +1690,45 @@
     ]);
         
 }).call(this.Crosscut);
+(function($, undefined) {
+    'use strict';
+   
+    this.Main.controller('PreloaderCtrl', [
+        '$scope', 
+
+        function ($scope) {
+            $scope.preloadCount = 0;
+            $scope.visible = false;
+
+
+            $scope.$on('preloadStart', function () {
+                $scope.preloadCount += 1;
+                handleCount();
+            });
+
+            $scope.$on('preloadEnd', function () {
+                if ($scope.preloadCount > 0) {
+                    $scope.preloadCount -= 1;
+                    handleCount();
+                }
+            });
+
+            function handleCount() {
+                if ($scope.preloadCount > 0 && !$scope.visible) {
+                    $scope.visible = true;
+                }
+                else {
+                    $scope.visible = false;
+                }
+            }
+
+            $scope.getMarginTop = function () {
+                return $scope.getRealFullHeight().replace('px', '') / 2 - $('#preloader .container').height() / 2;
+            };
+        }
+    ]);
+        
+}).call(this.Crosscut, this.jQuery);
 angular.module('Crosscut').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('views/addjob.html',
@@ -2097,7 +2179,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "            <div class=\"container\">\r" +
+    "            <div class=\"wrap\">\r" +
     "\n" +
     "                <a href=\"\" class=\"item\" ng-repeat=\"job in pagedVolunteeringJobs()\" ng-class=\"job.icon\">\r" +
     "\n" +
@@ -2189,7 +2271,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "            <div class=\"container\">\r" +
+    "            <div class=\"wrap\">\r" +
     "\n" +
     "                <a href=\"\" class=\"item\" ng-repeat=\"newsArticle in news\">\r" +
     "\n" +
@@ -2294,7 +2376,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "                <li>\r" +
     "\n" +
-    "                    <a href=\"tel:{{place.phone}}\" class=\"button phone notext\"><span>Call phone</span></a>\r" +
+    "                    <a href=\"tel:{{place.phone | numbersOnly}}\" class=\"button phone notext\"><span>Call phone</span></a>\r" +
     "\n" +
     "                </li>\r" +
     "\n" +
@@ -2463,7 +2545,7 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "\n" +
     "        \r" +
     "\n" +
-    "            <div class=\"container\">\r" +
+    "            <div class=\"wrap\">\r" +
     "\n" +
     "                <a class=\"item\" ng-repeat=\"place in pagedPlaces()\" ui-sref=\"base.place({type: place.type, id: place.id})\">\r" +
     "\n" +
@@ -2486,6 +2568,21 @@ angular.module('Crosscut').run(['$templateCache', function($templateCache) {
     "            <a class=\"button more\" ng-click=\"loadMore()\" ng-show=\"haveMore\">Load more</a>\r" +
     "\n" +
     "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('views/preloader.html',
+    "<div id=\"preloader\" ng-show=\"visible\">\r" +
+    "\n" +
+    "    <div class=\"background\"></div>\r" +
+    "\n" +
+    "    <div class=\"container\" ng-style=\"{'marginTop': getMarginTop() + 'px'}\">\r" +
+    "\n" +
+    "        <span>Loading...</span>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +

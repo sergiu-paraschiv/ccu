@@ -23,7 +23,7 @@
                         latLng: latLng,
                         id: 'place'
                     });
-                })                
+                });
             };
 
             $scope.$on('reviewAdded', function () {

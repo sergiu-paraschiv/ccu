@@ -13,6 +13,8 @@
         function ($rootScope, $http, location, placesMapper, reviewsMapper) {
             
             function get(type, id, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.PLACE.URL.GET
                                 .replace('{guid}', id);
 
@@ -20,10 +22,13 @@
                     var place = placesMapper.mapOne(data, type);
                     place.reviews = reviewsMapper.map(data.reviews);
                     callback.call(undefined, place);
+                    $rootScope.$broadcast('preloadEnd');
                 });
             }
 
             function search(type, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 location.get(function (latLng) {
                     var url = C.PLACE.URL.SEARCH
                                 .replace('{lat}', latLng.lat)
@@ -32,11 +37,14 @@
 
                     $http.get(url).success(function (data) {
                         callback.call(undefined, placesMapper.map(data.items, type));
+                        $rootScope.$broadcast('preloadEnd');
                     });
                 });
             }
 
             function add(place, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.PLACE.URL.ADD
                                 .replace('{type}', place.type);
 
@@ -44,6 +52,7 @@
 
                 $http.post(url, data).success(function (data) {
                     callback.call(undefined);
+                    $rootScope.$broadcast('preloadEnd');
                 });
             }
 

@@ -112,7 +112,7 @@
                         if ($scope.id !== config.id) {
                             return;
                         }
-
+                        
                         var request = {
                             origin: new maps.LatLng(config.latLng.lat, config.latLng.lng),
                             destination: center,

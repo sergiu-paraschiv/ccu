@@ -34,6 +34,10 @@ ul {
     position: relative;
 }
 
+.wrap {
+    overflow: hidden;
+}
+
 @-ms-viewport {
     width: 640px;
 }

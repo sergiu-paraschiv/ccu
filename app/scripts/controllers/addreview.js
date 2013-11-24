@@ -37,7 +37,7 @@
                 reviews.add($scope.review, $scope.reference, 'PLACE', function () {
                     $rootScope.$broadcast('reviewAdded');
                     hide();
-                })
+                });
             };
 
             $scope.getMarginTop = function () {

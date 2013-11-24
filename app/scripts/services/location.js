@@ -78,12 +78,15 @@
             }
 
             function geocode(latLng, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.LOCATION.URL.GEOCODE
                             .replace('{lat}', latLng.lat)
                             .replace('{lng}', latLng.lng);
 
                 $http.get(url).success(function (data) {
                     callback.call(undefined, data.formatedAddress);
+                    $rootScope.$broadcast('preloadEnd');
                 });
             }
 

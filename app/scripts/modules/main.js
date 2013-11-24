@@ -17,6 +17,11 @@
                     'changeLocation': {
                         templateUrl: 'views/changelocation.html',
                         controller: 'ChangeLocationCtrl'
+                    },
+
+                    'preloader': {
+                        templateUrl: 'views/preloader.html',
+                        controller: 'PreloaderCtrl'
                     }
                 }
             })

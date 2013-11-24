@@ -17,7 +17,7 @@
 
                     var maxRange = 5;
 
-                    function createRateObjects(states) {
+                    function createRateObjects() {
                         var states = [];
 
                         for (var i = 0, n = maxRange; i < n; i++) {
@@ -27,7 +27,7 @@
                         }
 
                         return states;
-                    };
+                    }
 
                     $scope.range = createRateObjects();
 

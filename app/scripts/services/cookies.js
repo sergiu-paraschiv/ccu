@@ -31,4 +31,4 @@
         };
     });
 
-}).call(this.Crosscut);;
+}).call(this.Crosscut);

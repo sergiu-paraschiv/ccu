@@ -35,7 +35,7 @@
                 </a>
             </div>
         
-            <div class="container">
+            <div class="wrap">
                 <a class="item" ng-repeat="place in pagedPlaces()" ui-sref="base.place({type: place.type, id: place.id})">
                     <img ng-src="{{getPlaceImage(place.image)}}" alt="" />
                     <h3 class="title">{{place.title}}</h3>

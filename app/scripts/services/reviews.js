@@ -12,6 +12,8 @@
         function ($rootScope, $http, user, reviewsMapper) {
             
             function add(review, reference, type, callback) {
+                $rootScope.$broadcast('preloadStart');
+
                 var url = C.REVIEW.URL.ADD
                                 .replace('{type}', type);
 
@@ -24,6 +26,7 @@
 
                     $http.post(url, data).success(function (data) {
                         callback.call(undefined);
+                        $rootScope.$broadcast('preloadEnd');
                     });
                 });
             }

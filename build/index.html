@@ -11,10 +11,12 @@
         
         <link rel="stylesheet" href="styles/app.css"/>
 
-        <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=true"></script>
     </head>
     
     <body ng-app="Crosscut" ng-controller="MainCtrl">
+        <div ui-view="preloader"></div>
+
         <header id="header">
             <div class="container clearfix">
                 <a ui-sref="base.home" class="logo">
@@ -51,7 +53,7 @@
             </div>
         </header>
         
-        <div ui-view="content" class="contentparent" ng-class="{'hideme': modalIsVisible}"></div>
+        <div ui-view="content" class="contentparent" ng-class="{'hideme': modalIsVisible}" ng-style="{'minHeight': getMinContentHeight()}"></div>
 
         <div  class="modalparent" ng-class="{'hideme': !modalIsVisible}" ng-style="{'height': getFullHeight()}">
             <div class="background">&nbsp;</div>
@@ -60,7 +62,7 @@
             <div ui-view="addJob"></div>
             <div ui-view="changeLocation"></div>
         </div>
-        
+
         <footer id="footer">
             <div class="container">
                 <strong class="copy">Copyright © 2013 CrosscutUSA. All rights reserved.</strong>

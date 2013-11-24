@@ -56,7 +56,7 @@
                 places.add($scope.place, function () {
                     $rootScope.$broadcast('placeAdded');
                     hide();
-                })
+                });
             };
 
             $scope.getMarginTop = function () {

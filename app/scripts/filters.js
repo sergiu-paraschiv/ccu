@@ -7,4 +7,14 @@
         };
     });
 
+    this.Main.filter('numbersOnly', function ($sce) {
+        return function (val) {
+            if (val) {
+                return val.replace(/\D+/g, '');
+            }
+
+            return '';
+        };
+    });
+
 }).call(this.Crosscut);

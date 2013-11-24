@@ -41,6 +41,14 @@
                 return 'auto';
             };
 
+            $scope.getRealFullHeight = function () {
+                return $(window).height() + 'px';
+            };
+
+            $scope.getMinContentHeight = function () {
+                return ($(window).height() - $('#header').outerHeight() - $('#footer').outerHeight() - $('#footer').css('marginTop').replace('px', '')) + 'px';
+            };
+
             $scope.$on('showModal', function () {
                 $scope.modalIsVisible = true;
             });

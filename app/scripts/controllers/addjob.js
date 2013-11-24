@@ -64,7 +64,7 @@
                 jobs.add($scope.job, function () {
                     $rootScope.$broadcast('jobAdded');
                     hide();
-                })
+                });
             };
 
             $scope.getMarginTop = function () {
