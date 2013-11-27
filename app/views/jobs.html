@@ -26,8 +26,8 @@
                 <a href="" class="item" ng-repeat="job in pagedJobs()" ng-class="job.icon">
                     <span class="date">{{job.date | date:'dd MMM yyyy'}}</span>
 
-                    <h3 class="title">{{job.title}}</h3>
-                    <span class="address">{{job.address}}</span>
+                    <h3 class="title">{{job.title | limit:36:32:'...'}}</h3>
+                    <span class="address">{{job.address | limit:44:36:'...'}}</span>
                 </a>
             </div>
 
@@ -44,8 +44,8 @@
                 <a href="" class="item" ng-repeat="job in pagedVolunteeringJobs()" ng-class="job.icon">
                     <span class="date">{{job.date | date:'dd MMM yyyy'}}</span>
 
-                    <h3 class="title">{{job.title}}</h3>
-                    <span class="address">{{job.address}}</span>
+                    <h3 class="title">{{job.title | limit:36:32:'...'}}</h3>
+                    <span class="address">{{job.address | limit:44:36:'...'}}</span>
                 </a>
             </div>
 

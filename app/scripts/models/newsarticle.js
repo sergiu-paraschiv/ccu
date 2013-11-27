@@ -6,6 +6,7 @@
         this.title = data.title || '';
         this.description = data.description || '';
         this.date = data.date || '';
+        this.url = data.url || '';
     }
 
     this.exports(this.Models, {

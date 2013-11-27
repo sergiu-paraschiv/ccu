@@ -38,8 +38,8 @@
             <div class="wrap">
                 <a class="item" ng-repeat="place in pagedPlaces()" ui-sref="base.place({type: place.type, id: place.id})">
                     <img ng-src="{{getPlaceImage(place.image)}}" alt="" />
-                    <h3 class="title">{{place.title}}</h3>
-                    <span class="address">{{place.address}}</span>
+                    <h3 class="title">{{place.title | limit:35:17:'...'}}</h3>
+                    <span class="address">{{place.address | limit:44:26:'...'}}</span>
 
                     <rating data-value="place.rating" data-read-only="true"></rating>
                 </a>

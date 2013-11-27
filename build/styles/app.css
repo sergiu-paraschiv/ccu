@@ -8880,7 +8880,7 @@ ul {
             height: 14px;
 
             font-size: 14px;
-            line-height: 14px;
+            line-height: 12px;
         }
 
         #jobs .list .item .date {
@@ -8954,6 +8954,7 @@ ul {
 
         #news .list .item .description {
             margin-top: 5px;
+            height: 38px;
 
             font-size: 14px;
             line-height: 18px;

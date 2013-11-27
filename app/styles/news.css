@@ -55,6 +55,7 @@
 
         #news .list .item .description {
             margin-top: 5px;
+            height: 38px;
 
             font-size: 14px;
             line-height: 18px;

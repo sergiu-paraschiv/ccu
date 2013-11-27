@@ -36,6 +36,11 @@
             PER_PAGE_XDPI: 10
         },
 
+        NEWS: {
+            PER_PAGE: 5,
+            PER_PAGE_XDPI: 10
+        },
+
         LOCATION: {
             URL: {
                 GEOCODE: 'https://gcdc2013-crosscut.appspot.com/_ah/api/location/v1/locations?lat={lat}&long={lng}'
